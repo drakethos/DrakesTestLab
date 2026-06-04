@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set version
+        id: ver
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore NuGet packages
+        run: |
+          nuget restore DrakesTestLab.csproj -PackagesDirectory packages
+
+      - name: Stage game DLLs from Pfhoenix package
+        run: |
+          PFHOENIX_LIB=$(ls -d packages/Pfhoenix.Valheim.ModProjectReferences.*/lib/net46 2>/dev/null | head -1)
+          if [ -z "$PFHOENIX_LIB" ]; then
+            echo "ERROR: Pfhoenix package not found" >&2; ls packages/ >&2; exit 1
+          fi
+          echo "Pfhoenix lib: $PFHOENIX_LIB"
+
+          MANAGED="ci_valheim/valheim_Data/Managed"
+          PUBLICIZED="$MANAGED/publicized_assemblies"
+          BEPINEX="ci_valheim/BepInEx/core"
+          mkdir -p "$MANAGED" "$PUBLICIZED" "$BEPINEX"
+
+          cp "$PFHOENIX_LIB/"*.dll "$MANAGED/"
+
+          cp "$PFHOENIX_LIB/assembly_valheim.dll" "$PUBLICIZED/assembly_valheim_publicized.dll"
+          cp "$PFHOENIX_LIB/assembly_utils.dll"   "$PUBLICIZED/assembly_utils_publicized.dll"
+          cp "$PFHOENIX_LIB/gui_framework.dll"    "$PUBLICIZED/gui_framework_publicized.dll"
+
+          for src in assembly_googleanalytics assembly_guiutils assembly_lux \
+                     assembly_postprocessing assembly_simplemeshcombine \
+                     assembly_sunshafts SoftReferenceableAssets; do
+            [ -f "$PFHOENIX_LIB/$src.dll" ] && \
+              cp "$PFHOENIX_LIB/$src.dll" "$PUBLICIZED/${src}_publicized.dll" || true
+          done
+
+          cp "$PFHOENIX_LIB/0Harmony.dll" "$BEPINEX/"
+          cp "$PFHOENIX_LIB/bepinex.dll"  "$BEPINEX/BepInEx.dll"
+
+          echo "VALHEIM_INSTALL=$(pwd)/ci_valheim" >> "$GITHUB_ENV"
+
+      - name: Build
+        env:
+          CI_NET48_FWPATH: ${{ github.workspace }}/packages/Microsoft.NETFramework.ReferenceAssemblies.net48.1.0.3/build
+          CI_SKIP_POST_BUILD: "true"
+        run: |
+          CI_ROOT="$(pwd)/ci_valheim"
+          MANAGED="$CI_ROOT/valheim_Data/Managed"
+          dotnet msbuild DrakesTestLab.csproj \
+            /p:Configuration=Release \
+            /p:TargetFrameworkVersion=v4.8 \
+            /p:BepInExPath="$CI_ROOT/BepInEx" \
+            /p:CorlibPath="$MANAGED" \
+            /p:PublicizedAssembliesPath="$MANAGED/publicized_assemblies" \
+            /p:Version="${{ steps.ver.outputs.version }}" \
+            /t:Build \
+            /v:minimal
+
+      - name: Assemble Thunderstore package
+        id: pkg
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          PKG_DIR="DrakeMods-DrakesTestLab-${VERSION}"
+          ZIP_NAME="DrakeMods-DrakesTestLab-${VERSION}.zip"
+          mkdir -p "$PKG_DIR"
+          cp bin/Release/DrakesTestLab.dll "$PKG_DIR/"
+          cp README.md                      "$PKG_DIR/"
+          cp icon.png                       "$PKG_DIR/"
+          cp CHANGELOG.md                   "$PKG_DIR/"
+          dotnet msbuild DrakesTestLab.csproj \
+            /p:Version="$VERSION" \
+            /p:ThunderstoreManifestDir="$PKG_DIR" \
+            /t:WriteThunderstoreManifest \
+            /v:minimal
+          cd "$PKG_DIR" && zip -r "../$ZIP_NAME" . && cd ..
+          echo "zip=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+          ls -lh "$ZIP_NAME"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: "DrakesTestLab ${{ steps.ver.outputs.version }}"
+          prerelease: true
+          body: |
+            ## DrakesTestLab v${{ steps.ver.outputs.version }}
+
+            Experimental test lab mod (not part of DrakesWorkshop).
+
+            ### Install
+            Import the zip in r2modman / Thunderstore Mod Manager, or extract to:
+            ```
+            BepInEx/plugins/DrakeMods-DrakesTestLab/
+            ```
+          files: ${{ steps.pkg.outputs.zip }}

@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <ThunderstoreName>DrakesTestLab</ThunderstoreName>
+    <ThunderstoreAuthor>DrakeMods</ThunderstoreAuthor>
+    <RootNamespace>DrakesTestLab</RootNamespace>
+    <AssemblyName>DrakesTestLab</AssemblyName>
+    <Version>0.1.0</Version>
+    <BepInPluginName>DrakesTestLab</BepInPluginName>
+    <BepInGuid>com.drakemods.testlab</BepInGuid>
+    <ModInfoClass>TestLabPlugin</ModInfoClass>
+    <Description>DrakeMods test lab — experimental Valheim modding sandbox (not part of DrakesWorkshop).</Description>
+    <WebsiteUrl>https://github.com/drakethos/DrakesTestLab</WebsiteUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <ThunderstoreDependency Include="denikson-BepInExPack_Valheim-5.4.2333" />
+    <ThunderstoreDependency Include="ValheimModding-Jotunn-2.29.0" />
+  </ItemGroup>
+</Project>
