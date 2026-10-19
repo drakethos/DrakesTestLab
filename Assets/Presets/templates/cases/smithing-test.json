@@ -1,0 +1,24 @@
+{
+  "name": "smithing-test",
+  "description": "Flat arena, super stations (level 7), free crafting, plenty of materials, bronze sword equipped, a couple of boars to hunt.",
+  "arena": "build",
+  "noBuild": "off",
+  "stationLevel": 7,
+  "costMultiplier": 0,
+  "carryWeight": 9999,
+  "maxHealth": 500,
+  "health": 500,
+  "timeOfDay": 0.5,
+  "freezeTime": 1,
+  "discover": "tier:3",
+  "god": 1,
+  "items": [
+    { "prefab": "Hammer", "count": 1, "quality": 1, "equip": false },
+    { "prefab": "Wood", "count": 500, "quality": 1, "equip": false },
+    { "prefab": "Stone", "count": 500, "quality": 1, "equip": false },
+    { "prefab": "Iron", "count": 200, "quality": 1, "equip": false },
+    { "prefab": "SwordBronze", "count": 1, "quality": 2, "equip": true }
+  ],
+  "skills": [ { "name": "Swords", "level": 50 } ],
+  "spawns": [ { "prefab": "Boar", "count": 2, "level": 1, "dx": 0, "dz": 12, "tamed": false } ]
+}

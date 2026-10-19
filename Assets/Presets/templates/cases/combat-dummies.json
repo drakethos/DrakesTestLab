@@ -1,0 +1,21 @@
+{
+  "name": "combat-dummies",
+  "description": "Hostile creatures at night, no god mode: check damage, drops and AI. Greydwarfs close by, a troll further out.",
+  "arena": "build",
+  "noBuild": "off",
+  "timeOfDay": 0,
+  "freezeTime": 1,
+  "hostile": 1,
+  "god": 0,
+  "maxHealth": 300,
+  "health": 300,
+  "items": [
+    { "prefab": "SwordBronze", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "ShieldBronzeBuckler", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "MeadHealthMinor", "count": 10, "quality": 1, "equip": false }
+  ],
+  "spawns": [
+    { "prefab": "Greydwarf", "count": 3, "level": 2, "dx": 0, "dz": 12, "tamed": false },
+    { "prefab": "Troll", "count": 1, "level": 1, "dx": 0, "dz": 28, "tamed": false }
+  ]
+}

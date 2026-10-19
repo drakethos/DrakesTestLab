@@ -1,0 +1,19 @@
+{
+  "name": "vanilla-baseline",
+  "description": "Everything back to normal Valheim rules: vanilla stations, vanilla costs, vanilla no-build zones and fall damage, hostile creatures, no god mode. Use it to check that your mod behaves in a normal game.",
+  "arena": "build",
+  "stationLevel": 0,
+  "costMultiplier": 1,
+  "carryWeight": 300,
+  "noBuild": "vanilla",
+  "fallDamageMultiplier": 1,
+  "fallAutoSafe": 0,
+  "hostile": 1,
+  "god": 0,
+  "ghost": 0,
+  "fly": 0,
+  "noCost": 0,
+  "infiniteStamina": 0,
+  "freezeTime": 0,
+  "clearInventory": true
+}

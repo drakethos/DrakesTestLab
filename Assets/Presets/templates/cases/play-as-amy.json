@@ -1,0 +1,21 @@
+{
+  "name": "play-as-amy",
+  "description": "You become Amy (new name, id and look) and stand next to Amy's ward, so you are its owner. Use F9 > Wards to switch to Bob and see the same ward turn into a stranger's.",
+  "arena": "build",
+  "noBuild": "off",
+  "timeOfDay": 0.5,
+  "freezeTime": 1,
+  "god": 1,
+  "playAs": "Amy",
+  "playAsLook": true,
+  "carryWeight": 9999,
+  "globalKeys": ["AllPiecesUnlocked"],
+  "items": [
+    { "prefab": "Hammer", "count": 1, "quality": 1, "equip": false },
+    { "prefab": "Wood", "count": 200, "quality": 1, "equip": false },
+    { "prefab": "Stone", "count": 100, "quality": 1, "equip": false }
+  ],
+  "wards": [
+    { "dx": 0, "dz": 9, "owner": "Amy", "enabled": true, "permitted": ["Bob"], "radius": 10 }
+  ]
+}

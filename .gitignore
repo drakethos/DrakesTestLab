@@ -419,3 +419,4 @@ FodyWeavers.xsd
 
 # different per computer
 environment.props
+_backups/

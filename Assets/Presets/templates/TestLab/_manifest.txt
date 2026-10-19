@@ -1,0 +1,12 @@
+1e_1e__1_1.chunk
+1e_20__1_1.chunk
+20_1e__1_1.chunk
+20_20__1_1.chunk
+cacheMinimapBiome
+cacheMinimapHeight
+cacheMinimapMask
+cacheMinimapMeta
+_main.1.chunks
+_main.1.db2
+_main.1.fwl2
+_main.1.ok

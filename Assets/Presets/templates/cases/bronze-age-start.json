@@ -1,0 +1,32 @@
+{
+  "name": "bronze-age-start",
+  "description": "A typical early-mid game character: bronze gear worn, tools and a bow, Meadows and Black Forest discovered, vanilla stations and rules. Good baseline for gear and combat mods.",
+  "arena": "build",
+  "stationLevel": 0,
+  "noBuild": "off",
+  "timeOfDay": 0.5,
+  "freezeTime": 1,
+  "discover": "tier:1",
+  "maxHealth": 150,
+  "health": 150,
+  "maxStamina": 100,
+  "carryWeight": 450,
+  "bosses": ["Eikthyr", "The Elder"],
+  "items": [
+    { "prefab": "ArmorBronzeChest", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "ArmorBronzeLegs", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "HelmetBronze", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "SwordBronze", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "ShieldBronzeBuckler", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "Hammer", "count": 1, "quality": 1, "equip": false },
+    { "prefab": "Bow", "count": 1, "quality": 1, "equip": false },
+    { "prefab": "ArrowWood", "count": 100, "quality": 1, "equip": false },
+    { "prefab": "CookedMeat", "count": 20, "quality": 1, "equip": false },
+    { "prefab": "MeadHealthMinor", "count": 5, "quality": 1, "equip": false }
+  ],
+  "skills": [
+    { "name": "Swords", "level": 30 },
+    { "name": "Blocking", "level": 25 },
+    { "name": "Bows", "level": 20 }
+  ]
+}

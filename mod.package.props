@@ -8,11 +8,10 @@
     <BepInPluginName>DrakesTestLab</BepInPluginName>
     <BepInGuid>com.drakemods.testlab</BepInGuid>
     <ModInfoClass>TestLabPlugin</ModInfoClass>
-    <Description>DrakeMods test lab — experimental Valheim modding sandbox (not part of DrakesWorkshop).</Description>
+    <Description>QA bench for Valheim modders: launch into a fresh test world as a new character, in a flat arena with a house of every crafting station. F9 toolbox: time, weather, spawns, rules, wards, JSON test cases. Valheim 1.0.</Description>
     <WebsiteUrl>https://github.com/drakethos/DrakesTestLab</WebsiteUrl>
   </PropertyGroup>
   <ItemGroup>
-    <ThunderstoreDependency Include="denikson-BepInExPack_Valheim-5.4.2333" />
-    <ThunderstoreDependency Include="ValheimModding-Jotunn-2.29.0" />
+    <ThunderstoreDependency Include="denikson-BepInExPack_Valheim-5.4.2351" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,12 @@
+{
+  "name": "boss-progress-all",
+  "description": "Late-game world state: every boss marked defeated (world keys, a guardian power and trophies), everything discovered, god mode and a big carry weight. For testing progression-gated features.",
+  "arena": "build",
+  "noBuild": "off",
+  "timeOfDay": 0.5,
+  "freezeTime": 1,
+  "god": 1,
+  "carryWeight": 9999,
+  "discover": "all",
+  "bosses": ["Eikthyr", "The Elder", "Bonemass", "Moder", "Yagluth", "The Queen", "Fader"]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "ward-amy-owner",
+  "description": "Amy's ward is ON 10 m ahead and you are a stranger: try to build or open things inside. A second Amy ward to the east lists you as permitted. You carry a hammer, building materials and worn bronze gear.",
+  "arena": "build",
+  "stationLevel": 0,
+  "noBuild": "off",
+  "timeOfDay": 0.5,
+  "freezeTime": 1,
+  "god": 1,
+  "carryWeight": 9999,
+  "discover": "tier:1",
+  "globalKeys": ["AllPiecesUnlocked"],
+  "items": [
+    { "prefab": "Hammer", "count": 1, "quality": 1, "equip": false },
+    { "prefab": "Wood", "count": 300, "quality": 1, "equip": false },
+    { "prefab": "Stone", "count": 200, "quality": 1, "equip": false },
+    { "prefab": "ArmorBronzeChest", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "ArmorBronzeLegs", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "HelmetBronze", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "SwordBronze", "count": 1, "quality": 1, "equip": true },
+    { "prefab": "ShieldBronzeBuckler", "count": 1, "quality": 1, "equip": true }
+  ],
+  "wards": [
+    { "dx": 0, "dz": 10, "owner": "Amy", "enabled": true, "permitted": [], "radius": 12 },
+    { "dx": 30, "dz": 10, "owner": "Amy", "enabled": true, "permitted": ["me"], "radius": 12 }
+  ]
+}
