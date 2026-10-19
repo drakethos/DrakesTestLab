@@ -6,7 +6,7 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 > **Your real worlds and characters are never touched.** The test world is called `TestLab` and the character `TestBjorn`. Both are deleted and recreated on every launch.
 
-> ## First release (0.1.0)
+> ## Early release
 > Back up anything you care about, and if something misbehaves please [open an issue](https://github.com/drakethos/DrakesTestLab/issues) with your `BepInEx/LogOutput.log`.
 
 ![The test arena: the roofed house with every crafting station, fire pits under the cauldron, ketill and spit](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/arena-house.jpg)
@@ -105,7 +105,7 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 ## Good to know
 
 - Cheats and dev commands are switched on for you in the test world; that is the point of the tool.
-- **Reset** (Session tab, or logging out) relaunches the game so you always return to a clean world.
+- **Reset** (Session tab, or logging out) returns to the main menu inside the running game and loads straight back into a fresh world and character, with all your mods still loaded.
 - The shipped world is a pre-generated world folder with seed `TestWorld`. To regenerate it, use **Session > Re-bake blank world template**: the game generates a blank world, saves it as the template and quits.
 - Requires only **BepInEx Pack for Valheim**: no Jotunn, no other library, no other DrakeMods mod. It changes nothing that is synced over the network, so **friends who join your test world do not need the mod installed** (they do need the same Valheim version and any mods that change the game world).
 

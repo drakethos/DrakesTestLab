@@ -18,8 +18,8 @@ internal sealed class ModsTab : ToolboxTab
         Ui.Header("Config & files");
         Ui.Row(
             ("Reload all mod configs", () => ConfigHotReload.ReloadNow()),
-            ("Open config folder", () => Application.OpenURL(Paths.ConfigPath)),
-            ("Open BepInEx log", () => Application.OpenURL(Path.Combine(Paths.BepInExRootPath, "LogOutput.log"))));
+            ("Copy config folder path", () => Ui.Copy(Paths.ConfigPath)),
+            ("Copy BepInEx log path", () => Ui.Copy(Path.Combine(Paths.BepInExRootPath, "LogOutput.log"))));
 
         var plugins = new List<PluginInfo>(Chainloader.PluginInfos.Values);
         plugins.Sort((a, b) => string.Compare(a.Metadata.Name, b.Metadata.Name, System.StringComparison.OrdinalIgnoreCase));

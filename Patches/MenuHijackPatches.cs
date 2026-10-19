@@ -28,7 +28,7 @@ internal static class Menu_Logout_Patch
         }
 
         if (TestLabConfig.Instance.LogoutMeansReset.Value)
-            HardRestart.Execute();
+            SessionReset.Execute();
 
         return false;
     }

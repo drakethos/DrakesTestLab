@@ -47,7 +47,7 @@ internal static class ServerSettings
         {
             // Accepting the game's server terms is the player's decision; do it once through the normal Start Game screen.
             open?.SetIsOnWithoutNotify(false);
-            LastApplied = "Not opened: accept the server terms once (main menu > Start Game > tick Open server), then relaunch.";
+            LastApplied = "Not opened: accept the server terms once (main menu > Start Game > tick Open server), then start the game again.";
             TestLabPlugin.Log?.LogWarning(LastApplied);
             return;
         }

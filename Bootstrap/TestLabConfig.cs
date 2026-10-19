@@ -53,10 +53,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<bool> HotReloadEnabled { get; private set; } = null!;
     public ConfigEntry<int> HotReloadDebounceMs { get; private set; } = null!;
     public ConfigEntry<string> MenuKey { get; private set; } = null!;
-    public ConfigEntry<string> ValheimExePath { get; private set; } = null!;
-    public ConfigEntry<bool> ReloadInProcess { get; private set; } = null!;
     public ConfigEntry<bool> PanelWritesConfig { get; private set; } = null!;
-    public ConfigEntry<bool> SaveBeforeRestart { get; private set; } = null!;
 
     public ConfigEntry<bool> HijackLogout { get; private set; } = null!;
     public ConfigEntry<bool> LogoutMeansReset { get; private set; } = null!;
@@ -147,11 +144,7 @@ internal sealed class TestLabConfig
         c.HotReloadEnabled = config.Bind("Dev", "HotReloadEnabled", true, "Watch cfg file and reload on save.");
         c.HotReloadDebounceMs = config.Bind("Dev", "HotReloadDebounceMs", 500, "Debounce ms for cfg file watcher.");
         c.MenuKey = config.Bind("Dev", "MenuKey", "F9", "Key to open test control panel (Unity KeyCode name).");
-        c.ValheimExePath = config.Bind("Dev", "ValheimExePath", "", "Optional full path to valheim.exe for hard reset.");
-        c.ReloadInProcess = config.Bind("Dev", "ReloadInProcess", true,
-            "Reset by returning to the main menu inside the running game (all mods stay loaded) instead of relaunching valheim.exe, which can come back without your mod profile.");
         c.PanelWritesConfig = config.Bind("Dev", "PanelWritesConfig", true, "Panel toggles write back to cfg file.");
-        c.SaveBeforeRestart = config.Bind("Dev", "SaveBeforeRestart", true, "Flush world save before hard reset.");
 
         c.HijackLogout = config.Bind("Menu", "HijackLogout", true, "Intercept logout-to-main-menu.");
         c.LogoutMeansReset = config.Bind("Menu", "LogoutMeansReset", true, "Vanilla logout triggers hard reset instead of FejdStartup.");

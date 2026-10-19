@@ -21,7 +21,7 @@ internal sealed class SessionTab : ToolboxTab
         GUILayout.Label($"Mode: {target.Mode}\nWorld: {target.WorldName}  (template {target.TemplateWorldFile})\n" +
                         $"Character: {target.CharacterName}  ({(cfg.FreshCharacter.Value ? "fresh clean character" : "template " + target.TemplateCharacterFile)})");
         Ui.Row(
-            ("Reset world + player (restart game)", HardRestart.Execute),
+            ("Reset world + player (back to menu, straight into a fresh world)", SessionReset.Execute),
             ("Save world now", () =>
             {
                 if (ZNet.instance != null)
@@ -31,7 +31,7 @@ internal sealed class SessionTab : ToolboxTab
         if (GUILayout.Button("Re-bake blank world template (generates a brand-new world, saves it as the template, quits)"))
         {
             TemplateBaker.Request();
-            HardRestart.Execute();
+            SessionReset.Execute();
         }
 
         Ui.Header("Startup behaviour (saved to config)");

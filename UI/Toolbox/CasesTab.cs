@@ -24,7 +24,7 @@ internal sealed class CasesTab : ToolboxTab
                         "Ask Claude to write one, drop it in the folder, then press Apply.");
         Ui.Row(
             ("Refresh list", Reload),
-            ("Open folder", () => Application.OpenURL(CaseRunner.Folder)),
+            ("Copy folder path", () => Ui.Copy(CaseRunner.Folder)),
             ("Open the wiki (all fields)", () => Application.OpenURL("https://github.com/drakethos/DrakesTestLab/wiki/Test-Cases")));
 
         var reset = GUILayout.Toggle(cfg.CaseResetFirst.Value, "Reset state first (rules, modes, inventory, skills, discovery, boss keys, wards, identity) - cases never stack");

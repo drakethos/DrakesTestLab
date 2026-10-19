@@ -1,5 +1,11 @@
 # DrakesTestLab
 
+## 0.1.1
+
+- Removed the "hard reset" that relaunched valheim.exe (it started another process and could come back without your mods). Reset now always returns to the main menu inside the running game and loads a fresh world.
+- Removed the `ValheimExePath`, `SaveBeforeRestart` and `ReloadInProcess` config options that went with it.
+- The Cases and Mods tabs copy folder and log paths to the clipboard instead of opening them. The mod no longer starts any program.
+
 ## 0.1.0
 
 First release.

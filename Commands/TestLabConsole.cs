@@ -26,7 +26,7 @@ internal static class TestLabConsole
         ["testlab.menu"] = new Entry { Help = "Toggle the test toolbox (same as F9).", Run = _ => TestControlPanel.Toggle() },
         ["testlab.panel"] = new Entry { Help = "Toggle the test toolbox (same as F9).", Run = _ => TestControlPanel.Toggle() },
         ["testlab.close"] = new Entry { Help = "Close the test toolbox.", Run = _ => TestControlPanel.Hide() },
-        ["testlab.reset"] = new Entry { Help = "Reset: back to the menu and straight into a fresh world and character.", Run = _ => HardRestart.Execute() },
+        ["testlab.reset"] = new Entry { Help = "Reset: back to the menu and straight into a fresh world and character.", Run = _ => SessionReset.Execute() },
         ["testlab.savemode"] = new Entry { Help = "Print the active save mode.", Run = _ => PrintSaveMode() },
         ["testlab.clearpersistent"] = new Entry { Help = "Delete persistent test saves.", Run = _ => ClearPersistent() },
         ["testlab.clearephemeral"] = new Entry { Help = "Delete ephemeral test saves.", Run = _ => ClearEphemeral() },
