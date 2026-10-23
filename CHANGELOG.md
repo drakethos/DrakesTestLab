@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## Unreleased
+
+- `click` also works on UI Toolkit elements that are neither buttons nor toggles (DrakeModsLibs switches, cards): it sends a real click to the matching text.
+
 ## 0.2.1
 
 - **Meta suite:** `DrakesTestLab-Meta` ships with the mod: about 40 tests that exercise every step and check against plain Valheim, readable as worked examples.

@@ -103,9 +103,21 @@ internal static class UitkDriver
         if (button == null)
         {
             var toggle = Find<Toggle>(query);
-            if (toggle == null)
+            if (toggle != null)
+            {
+                toggle.value = !toggle.value;
+                return true;
+            }
+
+            // anything else clickable (a switch row, a card): send a real click to the text; it bubbles to the element's handler
+            var other = Find<VisualElement>(query);
+            if (other == null || !other.enabledInHierarchy)
                 return false;
-            toggle.value = !toggle.value;
+            using (var click = ClickEvent.GetPooled())
+            {
+                click.target = other;
+                other.SendEvent(click);
+            }
             return true;
         }
 
