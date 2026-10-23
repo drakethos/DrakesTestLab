@@ -136,6 +136,7 @@
 
   <ItemGroup>
 
+    <Compile Include="Bootstrap\BootNotice.cs" />
     <Compile Include="Bootstrap\ConfigHotReload.cs" />
 
     <Compile Include="Bootstrap\CharacterSaveLoader.cs" />

@@ -53,7 +53,13 @@ internal sealed class FastBootDriver : MonoBehaviour
         }
 
         if (!_started)
-            TestLabPlugin.Log?.LogWarning("FastBoot gave up — check BepInEx log for 'FastBoot waiting on' messages.");
+        {
+            TestLabPlugin.Log?.LogError(
+                "FastBoot gave up: the test world or character could not be loaded (see the FastBoot lines above). The main menu is back; " +
+                "reinstalling DrakesTestLab usually fixes a missing world. Please report this with BepInEx/LogOutput.log.");
+            MenuSuppressor.Restore(_fejd!);
+            BootNotice.Show("DrakesTestLab could not load its test world, so the main menu is back.\nSee BepInEx/LogOutput.log (lines starting with FastBoot). Reinstalling DrakesTestLab usually fixes it.", sticky: true);
+        }
     }
 
     private IEnumerator Poll(ActiveSaveTarget target, float timeoutSeconds)

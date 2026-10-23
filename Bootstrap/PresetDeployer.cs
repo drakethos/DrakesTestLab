@@ -18,11 +18,34 @@ internal static class PresetDeployer
     /// <summary>Purge stale saves, copy templates to disk — must finish before fast boot loads the world.</summary>
     public static void DeployBeforeLoad(ActiveSaveTarget target)
     {
+        try
+        {
+            Deploy(target);
+        }
+        catch (Exception ex)
+        {
+            // never break the main menu: report it and let the boot loop retry, or give up with the menu back
+            TestLabPlugin.Log?.LogError($"Copying the test world and character failed: {ex}");
+        }
+    }
+
+    private static void Deploy(ActiveSaveTarget target)
+    {
         var templates = ValheimPaths.TemplatesFolder;
+        if (!Directory.Exists(templates) || !HasWorldFolder(Path.Combine(templates, target.TemplateWorldFile)))
+        {
+            // some installs nest the package one folder deeper: look for the shipped world anywhere in the mod's folder
+            var found = FindTemplatesFolder(target.TemplateWorldFile);
+            if (found != null && !string.Equals(found, templates, StringComparison.OrdinalIgnoreCase))
+            {
+                TestLabPlugin.Log?.LogWarning($"Templates were not in {templates}; using {found}.");
+                templates = found;
+            }
+        }
+
         if (!Directory.Exists(templates))
         {
-            TestLabPlugin.Log?.LogWarning(
-                $"Templates folder missing: {templates}. Run WorldBuilder savemasterworld or add baked saves.");
+            TestLabPlugin.Log?.LogError($"The shipped test world is missing: no templates folder at {templates}. Reinstall DrakesTestLab.");
             return;
         }
 
@@ -42,17 +65,28 @@ internal static class PresetDeployer
         var worldFolderTemplate = Path.Combine(templates, target.TemplateWorldFile);
         if (TemplateBaker.Pending)
         {
+            TestLabPlugin.Log?.LogWarning("Baking a new template world (bake.flag is set): the game generates a brand-new world, which takes several minutes.");
+            BootNotice.Show("DrakesTestLab is baking a new template world (requested with bake.flag).\nThe game generates it from scratch, which takes several minutes, then quits.", sticky: true);
             TemplateBaker.CreateFreshWorld(target.WorldName, TemplateBaker.BakeSeed);
         }
         else if ((resetWorld || !ValheimPaths.WorldExists(target.WorldName)) && HasWorldFolder(worldFolderTemplate))
         {
             // Valheim 1.0 world folder (_main.N.fwl2/db2/chunks + minimap caches): copied as-is, so the game loads it
             // directly instead of regenerating locations and the minimap from the legacy .fwl/.db.
-            CopyDirectory(worldFolderTemplate, Path.Combine(ValheimPaths.WorldsFolder, target.WorldName));
-            TestLabPlugin.Log?.LogInfo($"Deployed world folder template {target.TemplateWorldFile} -> {target.WorldName}");
+            var dest = Path.Combine(ValheimPaths.WorldsFolder, target.WorldName);
+            BootNotice.Show("DrakesTestLab: loading the test world...");
+            CopyDirectory(worldFolderTemplate, dest);
+            if (ValheimPaths.WorldExists(target.WorldName))
+                TestLabPlugin.Log?.LogInfo($"Deployed world folder template {target.TemplateWorldFile} -> {dest}");
+            else
+                TestLabPlugin.Log?.LogError(
+                    $"Copied the world template but the game will not find it: {worldFolderTemplate} [{Describe(worldFolderTemplate)}] -> {dest} [{Describe(dest)}]");
         }
         else if (resetWorld || !ValheimPaths.WorldExists(target.WorldName))
         {
+            // only an old .fwl/.db template: the game rebuilds locations and the map on the first load, which is slow
+            TestLabPlugin.Log?.LogWarning($"No world folder template at {worldFolderTemplate}; using the old .fwl/.db template. The first load rebuilds the world and can take minutes.");
+            BootNotice.Show("DrakesTestLab: building the test world from an old template.\nThe first load can take a few minutes; later launches are quick.");
             CopyTemplateWithFallback(
                 templates,
                 target.TemplateWorldFile,
@@ -98,6 +132,37 @@ internal static class PresetDeployer
 
     private static bool HasWorldFolder(string dir) =>
         Directory.Exists(dir) && Directory.GetFiles(dir, "_main.*.fwl2").Length > 0;
+
+    /// <summary>The templates folder that holds the shipped world, searched for under the mod's own folder.</summary>
+    private static string? FindTemplatesFolder(string worldTemplate)
+    {
+        try
+        {
+            var pluginDir = Path.GetDirectoryName(TestLabPlugin.Instance?.Info.Location);
+            if (string.IsNullOrEmpty(pluginDir) || !Directory.Exists(pluginDir))
+                return null;
+            foreach (var dir in Directory.GetDirectories(pluginDir, worldTemplate, SearchOption.AllDirectories))
+            {
+                if (HasWorldFolder(dir))
+                    return Path.GetDirectoryName(dir);
+            }
+        }
+        catch (Exception ex)
+        {
+            TestLabPlugin.Log?.LogWarning($"Looking for the world template failed: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    /// <summary>The file names in a folder, for a report.</summary>
+    internal static string Describe(string dir)
+    {
+        if (!Directory.Exists(dir))
+            return "missing";
+        var names = Directory.GetFiles(dir);
+        return names.Length == 0 ? "empty" : string.Join(", ", Array.ConvertAll(names, Path.GetFileName));
+    }
 
     private static void CopyDirectory(string source, string dest)
     {

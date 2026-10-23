@@ -299,22 +299,36 @@ internal static class FejdStartupBridge
         return string.Join(", ", parts);
     }
 
+    private static bool _redeployed;
+    private static float _lastMissingLog = -999f;
+
     private static bool EnsureSaveFilesExist(string worldSaveName, string characterSaveName)
     {
-        if (!ValheimPaths.WorldExists(worldSaveName))
+        var worldOk = ValheimPaths.WorldExists(worldSaveName);
+        var charOk = ValheimPaths.CharacterExists(characterSaveName);
+        if ((!worldOk || !charOk) && !_redeployed)
         {
-            TestLabPlugin.Log?.LogWarning(
-                $"FastBoot: world '{worldSaveName}' not found in {ValheimPaths.WorldsFolder} (neither .fwl/.db nor a 1.0 world folder).");
-            return false;
+            // the copy at startup did not take (or something removed it): copy the shipped saves once more
+            _redeployed = true;
+            TestLabPlugin.Log?.LogWarning($"FastBoot: test {(worldOk ? "character" : "world")} missing; copying the shipped saves again.");
+            PresetDeployer.DeployForCurrentMode();
+            worldOk = ValheimPaths.WorldExists(worldSaveName);
+            charOk = ValheimPaths.CharacterExists(characterSaveName);
         }
 
-        if (!ValheimPaths.CharacterExists(characterSaveName))
+        if (worldOk && charOk)
+            return true;
+
+        // this runs every frame while FastBoot waits: say it every few seconds, not every frame
+        if (Time.realtimeSinceStartup - _lastMissingLog >= 5f)
         {
-            TestLabPlugin.Log?.LogWarning(
-                $"FastBoot: character file missing: {Path.Combine(ValheimPaths.CharactersFolder, characterSaveName + ".fch")}");
-            return false;
+            _lastMissingLog = Time.realtimeSinceStartup;
+            var worldDir = Path.Combine(ValheimPaths.WorldsFolder, worldSaveName);
+            TestLabPlugin.Log?.LogWarning(!worldOk
+                ? $"FastBoot: world '{worldSaveName}' not found in {ValheimPaths.WorldsFolder} (folder {worldDir}: {PresetDeployer.Describe(worldDir)}). Shipped templates: {ValheimPaths.TemplatesFolder}."
+                : $"FastBoot: character file missing: {Path.Combine(ValheimPaths.CharactersFolder, characterSaveName + ".fch")}");
         }
 
-        return true;
+        return false;
     }
 }

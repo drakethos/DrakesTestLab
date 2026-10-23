@@ -19,6 +19,13 @@ internal static class MenuSuppressor
         "m_connectionFailedPanel"
     };
 
+    /// <summary>Brings the main menu back (fast boot gave up), so the game is not stuck on an empty screen.</summary>
+    public static void Restore(FejdStartup fejd)
+    {
+        if (fejd != null && AccessTools.Field(typeof(FejdStartup), "m_mainMenu")?.GetValue(fejd) is GameObject menu)
+            menu.SetActive(true);
+    }
+
     public static void Suppress(FejdStartup fejd)
     {
         if (fejd == null)
