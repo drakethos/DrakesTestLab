@@ -1,0 +1,32 @@
+// Functions: shared steps with parameters and their own checks. This test includes the shipped library itself,
+// so it works even if suite.json does not; usually suite.json has "include": "_lib/valheim.json".
+{
+  "name": "10-functions",
+  "description": "Library functions (real-cost craft, equip, owned piece, play as), a function defined in the test, and the call forms.",
+  "include": "_lib/valheim.json",
+
+  "functions": {
+    "giveAndCount": {
+      "params": [ "prefab", { "count": 2 } ],
+      "actions": [ { "do": "give", "prefab": "{{prefab}}", "count": "{{count}}" } ],
+      "asserts": [ { "check": "hasItem", "prefab": "{{prefab}}", "count": "{{count}}" } ]
+    }
+  },
+
+  "steps": [
+    "craftAndCheck(\"Hammer\")",
+    { "do": "check", "check": "noItem", "prefab": "Wood", "label": "the real craft used the wood" },
+    { "do": "equipAndCheck", "prefab": "Club" },
+    { "do": "spawnPiece", "prefab": "piece_chest_wood", "owner": "Bob", "tag": "bobsChest" },
+    { "do": "as", "who": "Alice", "steps": [ "giveAndCount(\"Resin\", 3)" ] },
+    { "do": "use", "block": "giveAndCount", "args": { "prefab": "Flint" } }
+  ],
+
+  "asserts": [
+    { "check": "hasItem", "prefab": "Hammer" },
+    { "check": "equipped", "prefab": "Club" },
+    { "check": "hasItem", "prefab": "Resin", "count": 3 },
+    { "check": "owner", "target": "bobsChest", "expect": "Bob" },
+    { "check": "noErrors" }
+  ]
+}

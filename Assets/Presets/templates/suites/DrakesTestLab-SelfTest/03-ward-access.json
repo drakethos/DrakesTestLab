@@ -1,0 +1,16 @@
+{
+  "name": "03-ward-access",
+  "description": "Amy's ward is ON around you: as Bob you have no access, as Amy you do. Uses 'wait until' as checks in the middle of the steps.",
+  "steps": [
+    { "do": "spawn", "prefab": "guard_stone", "dz": 2, "owner": "Amy", "enabled": true, "radius": 12, "as": "ward" },
+    { "do": "playAs", "who": "Bob" },
+    { "do": "wait", "until": { "check": "wardAccess", "expect": false }, "timeout": 3 },
+    { "do": "playAs", "who": "Amy" },
+    { "do": "wait", "until": { "check": "wardAccess", "expect": true }, "timeout": 3 },
+    { "do": "playAs", "who": "me" }
+  ],
+  "asserts": [
+    { "check": "owner", "target": "ward", "expect": "Amy" },
+    { "check": "wardAccess", "expect": false }
+  ]
+}

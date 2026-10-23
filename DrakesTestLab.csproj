@@ -92,6 +92,12 @@
 
     </Reference>
 
+    <Reference Include="UnityEngine.UIElementsModule">
+
+      <HintPath>$(CorlibPath)\UnityEngine.UIElementsModule.dll</HintPath>
+
+    </Reference>
+
     <Reference Include="UnityEngine.UI">
 
       <HintPath>$(CorlibPath)\UnityEngine.UI.dll</HintPath>
@@ -147,6 +153,7 @@
     <Compile Include="Bootstrap\MenuSuppressor.cs" />
 
     <Compile Include="Bootstrap\SessionReset.cs" />
+    <Compile Include="Bootstrap\SessionRelog.cs" />
 
     <Compile Include="Bootstrap\InitialConditionsApplier.cs" />
 
@@ -216,6 +223,35 @@
 
     <Compile Include="Cases\MiniJson.cs" />
 
+    <Compile Include="Automation\SuiteModel.cs" />
+
+    <Compile Include="Automation\ModEnvironment.cs" />
+
+    <Compile Include="Automation\UiDriver.cs" />
+
+    <Compile Include="Automation\InputInjector.cs" />
+
+    <Compile Include="Automation\RunContext.cs" />
+
+    <Compile Include="Automation\Steps.cs" />
+
+    <Compile Include="Automation\Asserts.cs" />
+
+    <Compile Include="Automation\TestRunner.cs" />
+
+    <Compile Include="UI\Toolbox\TestsTab.cs" />
+
+    <Compile Include="Automation\TestHooks.cs" />
+
+    <Compile Include="Automation\MessageLog.cs" />
+
+    <Compile Include="Automation\UitkDriver.cs" />
+    <Compile Include="Automation\UiSteps.cs" />
+
+    <Compile Include="Automation\CommandLine.cs" />
+
+    <Compile Include="Automation\ResultsReport.cs" />
+
     <Compile Include="TestLabPlugin.cs" />
 
     <Compile Include="UI\TestControlPanel.cs" />
@@ -283,6 +319,12 @@
     </Content>
 
     <Content Include="Assets\Presets\templates\cases\*.json">
+
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
+    </Content>
+
+    <Content Include="Assets\Presets\templates\suites\**\*.json">
 
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 

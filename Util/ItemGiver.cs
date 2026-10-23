@@ -5,7 +5,8 @@ namespace DrakesTestLab.Util;
 internal static class ItemGiver
 {
     /// <summary>Adds items straight to the local player's inventory (stacks split by max stack size); overflow is dropped.</summary>
-    public static int Give(string prefabName, int count, int quality = 1, bool equip = false)
+    /// <param name="crafterId">With <paramref name="crafterName"/>: the item counts as crafted by that player (0 = unowned, like loot).</param>
+    public static int Give(string prefabName, int count, int quality = 1, bool equip = false, long crafterId = 0L, string crafterName = "")
     {
         var player = Player.m_localPlayer;
         var prefab = ObjectDB.instance?.GetItemPrefab(prefabName);
@@ -27,6 +28,11 @@ internal static class ItemGiver
             data.m_stack = stack;
             data.m_quality = Mathf.Max(1, quality);
             data.m_durability = data.GetMaxDurability();
+            if (crafterName.Length > 0)
+            {
+                data.m_crafterID = crafterId;
+                data.m_crafterName = crafterName;
+            }
             if (!inventory.AddItem(data))
             {
                 TestLabPlugin.Log?.LogWarning($"Give item: inventory full, dropped {stack} x {prefabName} on the ground.");

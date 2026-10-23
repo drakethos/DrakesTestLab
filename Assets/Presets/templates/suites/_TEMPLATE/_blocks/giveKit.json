@@ -1,0 +1,10 @@
+// One block per file: the file name is the block name ("giveKit"). A file may also hold { "blocks": { ... } } with several,
+// or just a [ steps ] array when there are no params.
+{
+  "params": { "weapon": "Club", "food": 5 },   // defaults; "count": "{{food}}" stays a number
+  "steps": [
+    { "do": "craft", "prefab": "{{weapon}}" },
+    { "do": "give", "prefab": "CookedMeat", "count": "{{food}}" },
+    { "do": "check", "check": "hasItem", "prefab": "{{weapon}}", "label": "got the {{weapon}}" }
+  ]
+}

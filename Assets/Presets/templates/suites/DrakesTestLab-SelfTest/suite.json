@@ -1,0 +1,17 @@
+{
+  "name": "DrakesTestLab-SelfTest",
+  "description": "Checks the test runner itself: items, equipping, opening a chest, ward access as other players, config overrides, calling mod code, fake key presses.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.1.1" } ],
+  // applied before the suite's tests and restored afterwards
+  "configOverrides": [
+    { "guid": "com.drakemods.testlab", "section": "Rules", "key": "FallDamageMultiplier", "value": "0.5" }
+  ],
+  // the shared starting state for every test (the test-case format)
+  "setup": {
+    "timeOfDay": 0.5,
+    "freezeTime": 1,
+    "god": 1,
+    "noBuild": "off"
+  },
+  "resetBetweenTests": true
+}

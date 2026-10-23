@@ -1,0 +1,24 @@
+// The checks a run can verify without a person: interact result, hover text, container contents,
+// and an unlock pop-up that is recorded even though HideUnlockPopups keeps it off the screen.
+{
+  "name": "auto-checks",
+  "description": "interact lastResult, hoverText, containerHas, unlockShown (pop-up hidden but recorded)",
+  "setup": { "hideUnlockPopups": 1, "autoDiscovery": 1 },
+  "steps": [
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 2.5, "owner": "me", "as": "chest" },
+    { "do": "face", "target": "chest" },
+    { "do": "interact", "target": "chest" },
+    { "do": "wait", "until": { "check": "uiVisible", "name": "InventoryGui" }, "timeout": 5 },
+    { "do": "closeUi" },
+    { "do": "give", "prefab": "Bronze", "count": 1 },
+    { "do": "wait", "seconds": 0.5 }
+  ],
+  "asserts": [
+    { "check": "lastResult", "expect": true },
+    { "check": "hoverText", "target": "chest" },
+    { "check": "containerHas", "target": "chest", "expect": false },
+    { "check": "unlockShown", "contains": "Bronze" },
+    { "check": "uiVisible", "name": "InventoryGui", "expect": false },
+    { "check": "noErrors", "source": "DrakesTestLab" }
+  ]
+}

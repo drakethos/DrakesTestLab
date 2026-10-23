@@ -1,0 +1,10 @@
+{
+  "name": "05-invoke-mod-code",
+  "description": "Calls a static method inside a mod and checks what it returned (the safe fall height is 4 m with vanilla jump).",
+  "steps": [
+    { "do": "invoke", "method": "DrakesTestLab.Bootstrap.TestRules.SafeFallHeight" }
+  ],
+  "asserts": [
+    { "check": "lastResult", "expect": 4 }
+  ]
+}

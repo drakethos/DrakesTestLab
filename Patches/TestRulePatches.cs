@@ -40,13 +40,6 @@ internal static class Requirement_GetAmount_Patch
     }
 }
 
-/// <summary>Swallows the unlock popups while the Discovery helper unlocks content in bulk.</summary>
-[HarmonyPatch(typeof(MessageHud), "QueueUnlockMsg")]
-internal static class MessageHud_QueueUnlockMsg_Patch
-{
-    private static bool Prefix() => !Discovery.Quiet;
-}
-
 [HarmonyPatch(typeof(Player), "GetMaxCarryWeight")]
 internal static class Player_GetMaxCarryWeight_Patch
 {

@@ -19,6 +19,15 @@ internal sealed class TestLabConfig
     public ConfigEntry<SaveModeKind> SaveMode { get; private set; } = null!;
     public ConfigEntry<string> EphemeralWorldName { get; private set; } = null!;
     public ConfigEntry<string> EphemeralCharacterName { get; private set; } = null!;
+    public ConfigEntry<string> RunOnLaunch { get; private set; } = null!;
+    public ConfigEntry<bool> QuitWhenDone { get; private set; } = null!;
+    public ConfigEntry<float> StepDelay { get; private set; } = null!;
+    public ConfigEntry<string> Screenshots { get; private set; } = null!;
+    public ConfigEntry<int> KeepRuns { get; private set; } = null!;
+    public ConfigEntry<float> TestTimeout { get; private set; } = null!;
+    public ConfigEntry<string> PickerKey { get; private set; } = null!;
+    public ConfigEntry<string> NextStepKey { get; private set; } = null!;
+    public ConfigEntry<string> StopTestsKey { get; private set; } = null!;
     public ConfigEntry<bool> OpenToFriends { get; private set; } = null!;
     public ConfigEntry<bool> PublicListing { get; private set; } = null!;
     public ConfigEntry<bool> Crossplay { get; private set; } = null!;
@@ -27,6 +36,9 @@ internal sealed class TestLabConfig
     public ConfigEntry<float> NoBuildScale { get; private set; } = null!;
     public ConfigEntry<float> NoBuildRadius { get; private set; } = null!;
     public ConfigEntry<float> FallDamage { get; private set; } = null!;
+    public ConfigEntry<bool> HideUnlockPopups { get; private set; } = null!;
+    public ConfigEntry<bool> HideTutorials { get; private set; } = null!;
+    public ConfigEntry<bool> AutoDiscovery { get; private set; } = null!;
     public ConfigEntry<bool> FallAutoSafe { get; private set; } = null!;
     public ConfigEntry<ArenaMode> ArenaPlacement { get; private set; } = null!;
     public ConfigEntry<float> ArenaRadius { get; private set; } = null!;
@@ -92,6 +104,20 @@ internal sealed class TestLabConfig
             "World file basename copied into worlds_local for ephemeral modes (e.g. NACHO_WORLD). Empty = TestLab.");
         c.EphemeralCharacterName = config.Bind("Save", "EphemeralCharacterName", PresetDeployer.DefaultEphemeralCharacterName,
             "Character file basename copied into characters_local for ephemeral modes (e.g. NACHO_TEST_BOI). Empty = TestBjorn.");
+        c.RunOnLaunch = config.Bind("Automation", "RunOnLaunch", "",
+            "Run automated test suites by themselves once the world is ready: empty = off, all = every suite, or suite folder names separated by commas.");
+        c.QuitWhenDone = config.Bind("Automation", "QuitWhenDone", true,
+            "After a RunOnLaunch run, quit the game with exit code 0 (all passed) or 1 (something failed). Results are in config/DrakesTestLab/results.");
+        c.StepDelay = config.Bind("Automation", "StepDelay", 0.25f, "Pause in seconds between test steps (0 = as fast as possible; raise it to watch).");
+        c.Screenshots = config.Bind("Automation", "Screenshots", "Failures",
+            new ConfigDescription("Screenshots saved with the results: Off, Failures (a test that failed), or Always (proof of every test's end state).",
+                new AcceptableValueList<string>("Off", "Failures", "Always")));
+        c.KeepRuns = config.Bind("Automation", "KeepRuns", 5,
+            "How many runs' screenshot folders (results/run-<date>) to keep; older ones are deleted when a run starts. 0 = keep all.");
+        c.TestTimeout = config.Bind("Automation", "TestTimeout", 120f, "Seconds a single test may take before it fails (a test can set its own \"timeout\").");
+        c.PickerKey = config.Bind("Automation", "PickerKey", "F8", "With the UI picker on, this key copies the name of the game button or window under the mouse.");
+        c.NextStepKey = config.Bind("Automation", "NextStepKey", "F7", "In step mode, run the next test step.");
+        c.StopTestsKey = config.Bind("Automation", "StopTestsKey", "F6", "Stop the running tests.");
         c.OpenToFriends = config.Bind("Server", "OpenToFriends", false,
             "Share the test world: friends can join through Steam (Friends list > Join game) while you play. Off = single player. Applied when the world starts (use Reset to apply). The server terms must have been accepted once in the normal Start Game screen.");
         c.PublicListing = config.Bind("Server", "PublicListing", false,
@@ -104,6 +130,11 @@ internal sealed class TestLabConfig
             "Vanilla = keep the game's no-build zones around the spawn temple/altars. Off = build anywhere. Scaled = use NoBuildScale / NoBuildRadius.");
         c.NoBuildScale = config.Bind("Rules", "NoBuildScale", 1f, "Scaled mode: multiplier for every no-build zone radius (0.5 half, 2 double).");
         c.NoBuildRadius = config.Bind("Rules", "NoBuildRadius", 0f, "Scaled mode: if above 0, every no-build zone uses exactly this radius (metres).");
+        c.HideUnlockPopups = config.Bind("Rules", "HideUnlockPopups", true,
+            "Hide the 'New crafting recipe / item / station' pop-ups (noise when the test house is built). Tests can still check them with unlockShown.");
+        c.HideTutorials = config.Bind("Rules", "HideTutorials", true, "Hide the raven (Hugin) tutorial pop-ups. Tests can still check them with the message check.");
+        c.AutoDiscovery = config.Bind("Rules", "AutoDiscovery", true,
+            "Off = picking items up no longer teaches materials and recipes; only the toolbox and test cases discover things.");
         c.FallDamage = config.Bind("Rules", "FallDamageMultiplier", 1f, "1 = vanilla fall damage, 0 = none.");
         c.FallAutoSafe = config.Bind("Rules", "FallAutoSafe", true, "With a raised jump multiplier, falls up to the height you can jump do no damage.");
         c.ArenaPlacement = config.Bind("Arena", "Placement", ArenaMode.Spawn,

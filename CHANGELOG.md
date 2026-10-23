@@ -1,5 +1,23 @@
 # DrakesTestLab
 
+## 0.2.0
+
+**Automated tests.** Suites of JSON tests that set up the world, act like a player, check the result and write a report, run from F9 > Tests, step by step, or unattended from the command line.
+
+- **Suites:** one folder per mod (`config/DrakesTestLab/suites/<Suite>/`) with required mods, a config baseline, shared setup and one file per test. Ships a self-test suite, a commented `_TEMPLATE` and a function library (`_lib/valheim.json`).
+- **Acting like a player:** `craft` (the game's crafting code, real owner; `by` crafts as someone else), `place` (builds with the hammer: build menu, materials unless free, you as creator), `give`, `drop`, `interact`, `itemClick` (inventory clicks with Shift/Ctrl held), `holdKey` / `pressKey` (keys the game and mods read as real), `lookAt` (aims the crosshair), `click` / `toggle` / `type` (Unity UI and UI Toolkit windows, fields found by their title), `playAs` (Alice, Bob, any name), `setLanguage`, `relog` (log out and load the same world back: persistence), plus teleport, face, wait/until, spawn, console, case, invoke, setConfig (this test only), screenshot, checkpoint.
+- **Checks:** items and custom data, owner, objects, chests, saved values, windows, UI text, enabled buttons, hover and crosshair text, on-screen messages (including Libs message cards), unlock pop-ups, log lines, no errors per mod, config, skills, stats, ward access, test hooks. Checks can also sit between steps (`check` step, `expect` on hook steps).
+- **Test hooks:** mods expose functions to tests with their own `[TestHook("name")]` attribute (found by name, no dependency) or `DrakesTestLab.TestHooks.Register`.
+- **Reuse:** step blocks and functions with parameters and their own asserts (`{ "do": "craftAndCheck", "prefab": "Hammer" }` or `"craftAndCheck(\"Hammer\")"`), `include` for shared baselines and libraries, case files.
+- **Results:** `results/latest.html` (every test, check, step log and screenshot), `latest.json` / `latest.md`, saved after every test. Screenshots Off / Failures / Always (proof); older runs cleaned up (`KeepRuns`). A requested suite that is missing fails instead of passing silently.
+- **Tests tab:** run all / suite / test, re-run failed, stop, step mode, delay, screenshot mode, details per test, test hooks found, UI picker (hover a button, copy its name).
+- **Unattended:** `[Automation] RunOnLaunch`, or command-line `-testlab-run <suites>` with `-testlab-quit` / `-testlab-stay` / `-testlab-attended` (manual suites) / `-testlab-delay` / `-testlab-screenshots`; exits 0 (passed) or 1. The repository's `tools/Run-TestLabSuites.ps1` launches a run through Steam and reads the results (not part of the mod).
+- **Quiet switches** (F9 > Lab > Noise, `[Rules]`, per test case): hide unlock pop-ups and raven tutorials (still recorded for checks), turn auto-discovery off.
+- **AI assistants:** the repository's `ai/` folder has an authoring guide, a Claude Code skill, a Cursor rule and a chat prompt for writing suites and test hooks.
+- Config reload no longer warns about mods that never wrote a config file.
+
+Known: saving results when the game is closed in the middle of a run is in place but not yet seen working.
+
 ## 0.1.1
 
 - Removed the "hard reset" that relaunched valheim.exe (it started another process and could come back without your mods). Reset now always returns to the main menu inside the running game and loads a fresh world.

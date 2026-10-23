@@ -1,0 +1,11 @@
+{
+  "name": "04-config-override",
+  "description": "The suite set [Rules] FallDamageMultiplier to 0.5; this test also changes NoBuildScale. Both are restored when the suite ends.",
+  "steps": [
+    { "do": "setConfig", "guid": "com.drakemods.testlab", "section": "Rules", "key": "NoBuildScale", "value": "2" }
+  ],
+  "asserts": [
+    { "check": "config", "guid": "com.drakemods.testlab", "section": "Rules", "key": "FallDamageMultiplier", "expect": 0.5 },
+    { "check": "config", "guid": "com.drakemods.testlab", "section": "Rules", "key": "NoBuildScale", "expect": 2 }
+  ]
+}

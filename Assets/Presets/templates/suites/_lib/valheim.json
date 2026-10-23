@@ -1,0 +1,52 @@
+// DrakesTestLab's shared function library: generic Valheim steps any suite can use.
+// Pull it in with  "include": "_lib/valheim.json"  in suite.json (or in one test file). Folders starting with _ never run as suites.
+// Call a function like a step:  { "do": "craftAndCheck", "prefab": "Hammer" }
+// or as a string step:          "craftAndCheck(\"Hammer\", 2)"   (arguments in "params" order)
+// This file is copied into config/DrakesTestLab/suites/_lib/ when missing; put your own functions in another file.
+{
+  "functions": {
+    "craftAndCheck": {
+      "description": "Gives the recipe's materials, crafts at real cost through the game, and checks the item arrived.",
+      "params": [ "prefab", { "count": 1 } ],
+      "actions": [
+        { "do": "give", "materialsFor": "{{prefab}}", "count": "{{count}}" },
+        { "do": "craft", "prefab": "{{prefab}}", "count": "{{count}}", "free": false }
+      ],
+      "asserts": [
+        { "check": "hasItem", "prefab": "{{prefab}}", "count": "{{count}}", "label": "crafted {{prefab}}" }
+      ]
+    },
+
+    "equipAndCheck": {
+      "description": "Gives an item, equips it and checks it is equipped.",
+      "params": [ "prefab" ],
+      "actions": [
+        { "do": "give", "prefab": "{{prefab}}", "equip": true }
+      ],
+      "asserts": [
+        { "check": "equipped", "prefab": "{{prefab}}", "label": "{{prefab}} equipped" }
+      ]
+    },
+
+    "spawnPiece": {
+      "description": "Places a building piece owned by someone (tag it with \"tag\" to target it later) and checks the owner.",
+      "params": [ "prefab", { "owner": "me" }, { "tag": "piece" }, { "dz": 3 } ],
+      "actions": [
+        { "do": "spawn", "prefab": "{{prefab}}", "dz": "{{dz}}", "owner": "{{owner}}", "as": "{{tag}}" }
+      ],
+      "asserts": [
+        { "check": "owner", "target": "{{tag}}", "expect": "{{owner}}", "label": "{{prefab}} owned by {{owner}}" }
+      ]
+    },
+
+    "as": {
+      "description": "Runs steps as another player, then switches back to you:  { \"do\": \"as\", \"who\": \"Bob\", \"steps\": [ ... ] }",
+      "params": [ "who", "steps" ],
+      "actions": [
+        { "do": "playAs", "who": "{{who}}" },
+        "{{steps}}",
+        { "do": "playAs", "who": "me" }
+      ]
+    }
+  }
+}

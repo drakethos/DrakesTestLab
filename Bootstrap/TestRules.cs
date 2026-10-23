@@ -69,7 +69,19 @@ internal static class TestRules
         NoBuildRadius = cfg.NoBuildRadius.Value;
         FallDamageMultiplier = cfg.FallDamage.Value;
         FallAutoSafe = cfg.FallAutoSafe.Value;
+        HideUnlockPopups = cfg.HideUnlockPopups.Value;
+        HideTutorials = cfg.HideTutorials.Value;
+        AutoDiscovery = cfg.AutoDiscovery.Value;
     }
+
+    /// <summary>Hide "New crafting recipe / item / station" pop-ups (still recorded for the unlockShown check).</summary>
+    public static bool HideUnlockPopups = true;
+
+    /// <summary>Hide the raven (Hugin) tutorials (still recorded for the message check).</summary>
+    public static bool HideTutorials = true;
+
+    /// <summary>Off = picking items up does not teach recipes; only the toolbox / cases discover things.</summary>
+    public static bool AutoDiscovery = true;
 
     public static BuildRule BuildRule = BuildRule.Off;
     public static Vector3 ArenaCenter;

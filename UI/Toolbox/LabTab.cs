@@ -74,6 +74,11 @@ internal sealed class LabTab : ToolboxTab
         TestRules.RunSpeedMultiplier = Ui.Slider("Run speed", TestRules.RunSpeedMultiplier, 0.5f, 5f, "0.0x");
         TestRules.JumpMultiplier = Ui.Slider("Jump height", TestRules.JumpMultiplier, 0.5f, 5f, "0.0x");
 
+        Ui.Header("Noise");
+        CfgToggle(TestLabConfig.Instance.HideUnlockPopups, v => TestRules.HideUnlockPopups = v, "Hide 'new recipe / item / station' pop-ups");
+        CfgToggle(TestLabConfig.Instance.HideTutorials, v => TestRules.HideTutorials = v, "Hide raven tutorials");
+        CfgToggle(TestLabConfig.Instance.AutoDiscovery, v => TestRules.AutoDiscovery = v, "Auto-discovery (picking items up teaches recipes)");
+
         Ui.Header("Discovery");
         Ui.Row(
             ("Discover everything", Discovery.DiscoverAll),
@@ -163,6 +168,17 @@ internal sealed class LabTab : ToolboxTab
         Ui.Header("Everything back to normal");
         if (GUILayout.Button("Reset all test rules (stations, cost, carry, stats, speed, build rule)"))
             TestRules.ResetRules();
+    }
+
+    private static void CfgToggle(BepInEx.Configuration.ConfigEntry<bool> entry, Action<bool> apply, string label)
+    {
+        var next = GUILayout.Toggle(entry.Value, label);
+        if (next == entry.Value)
+            return;
+        entry.Value = next;
+        apply(next);
+        if (TestLabConfig.Instance.PanelWritesConfig.Value)
+            entry.ConfigFile.Save();
     }
 
     private static void StatRow(string label, ref string text, Action<float> apply, float pinned)

@@ -54,6 +54,10 @@ internal sealed class ConfigHotReload : IDisposable
                 if (info.Instance is not BaseUnityPlugin plugin)
                     continue;
 
+                // mods that never saved a .cfg (nothing bound yet) have nothing to reload
+                if (!System.IO.File.Exists(plugin.Config.ConfigFilePath))
+                    continue;
+
                 try
                 {
                     plugin.Config.Reload();

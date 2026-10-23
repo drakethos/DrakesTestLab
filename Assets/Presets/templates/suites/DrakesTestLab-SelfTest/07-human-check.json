@@ -1,0 +1,11 @@
+{
+  "name": "07-human-check",
+  "description": "A test that needs a person: places a workbench and asks you to confirm it. Skipped in unattended runs.",
+  "manualOnly": true,
+  "steps": [
+    { "do": "spawn", "prefab": "piece_workbench", "dz": 3, "as": "bench" },
+    { "do": "face", "target": "bench" },
+    { "do": "checkpoint", "message": "Is there a workbench right in front of you?" }
+  ],
+  "asserts": []
+}

@@ -111,11 +111,15 @@ internal static class CaseRunner
         if (name.Length > 0 && File.Exists(Path.Combine(Folder, name + ".json")))
         {
             Run(name);
+            Automation.TestRunner.MaybeRunOnLaunch();
             return;
         }
 
         if (cfg.AutoBuildArena.Value)
             host.StartCoroutine(Apply(new TestCase { name = "default", arena = "build", stationLevel = 7 }, "default"));
+
+        // [Automation] RunOnLaunch: the runner waits until the arena and any case above are finished
+        Automation.TestRunner.MaybeRunOnLaunch();
     }
 
     /// <summary>Writes the README and copies every shipped test case that is not already in the config folder.</summary>
@@ -150,7 +154,10 @@ internal static class CaseRunner
             File.WriteAllText(path, text);
     }
 
-    private static IEnumerator Apply(TestCase c, string label)
+    /// <summary>Applies a case from code (the automation runner). quick: do not wait for the player to settle.</summary>
+    public static IEnumerator ApplyCase(TestCase c, string label, bool quick) => Apply(c, label, quick);
+
+    private static IEnumerator Apply(TestCase c, string label, bool quick = false)
     {
         Running = true;
         LastResult = $"Applying '{label}'...";
@@ -167,7 +174,7 @@ internal static class CaseRunner
             {
                 if (ReferenceEquals(cur, last)) stable += Time.unscaledDeltaTime;
                 else { last = cur; stable = 0f; }
-                if (stable >= 3f)
+                if (stable >= (quick ? 0f : 3f))
                     break;
             }
             else
@@ -210,6 +217,9 @@ internal static class CaseRunner
         if (c.fallDamageMultiplier >= 0f) TestRules.FallDamageMultiplier = c.fallDamageMultiplier;
         if (c.fallAutoSafe >= 0) TestRules.FallAutoSafe = c.fallAutoSafe == 1;
         if (c.fallSafeExtra >= 0f) TestRules.FallSafeExtra = c.fallSafeExtra;
+        if (c.hideUnlockPopups >= 0) TestRules.HideUnlockPopups = c.hideUnlockPopups == 1;
+        if (c.hideTutorials >= 0) TestRules.HideTutorials = c.hideTutorials == 1;
+        if (c.autoDiscovery >= 0) TestRules.AutoDiscovery = c.autoDiscovery == 1;
 
         if (c.stationLevel >= 0) TestRules.StationLevel = c.stationLevel;
         if (c.costMultiplier >= 0f) TestRules.CostMultiplier = c.costMultiplier;

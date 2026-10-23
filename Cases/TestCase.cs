@@ -92,6 +92,11 @@ public sealed class TestCase
     public float noBuildScale = -1f;
     public float noBuildRadius = -1f;
 
+    // noise switches (-1 leave, 0 off, 1 on): unlock pop-ups and raven tutorials (still recorded for checks), auto-discovery
+    public int hideUnlockPopups = -1;
+    public int hideTutorials = -1;
+    public int autoDiscovery = -1;
+
     // fall damage: multiplier (-1 leave, 0 none, 1 vanilla); auto-safe tri-state; extra safe metres (-1 leave)
     public float fallDamageMultiplier = -1f;
     public int fallAutoSafe = -1;

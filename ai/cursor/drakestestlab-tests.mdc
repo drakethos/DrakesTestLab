@@ -1,0 +1,16 @@
+---
+description: Writing DrakesTestLab test suites (JSON) and [TestHook] methods for a Valheim mod
+globs: ["**/Tests/suites/**/*.json", "**/*TestHooks.cs"]
+alwaysApply: false
+---
+
+When writing or editing DrakesTestLab tests or test hooks, follow `ai/TESTLAB-AUTHORING.md` from the DrakesTestLab repository
+(copy it into this project, e.g. `docs/TESTLAB-AUTHORING.md`, and keep it in context).
+
+Rules:
+- One JSON file per test under `Tests/suites/<Suite>/`; `suite.json` holds `requireMods`, a full `configOverrides` baseline and `setup`.
+- Owned items come from the `craft` step (`"by": "Alice"` for someone else), never `give` with a fake owner.
+- Other players: `playAs`. Per-test settings: `setConfig` with `values` (restored after the test). Shared setups: `case` files. Repeated steps: functions in `_functions/` (params, actions, asserts) called by name like a step, or `"name(\"arg\")"`; generic ones in `_lib/valheim.json`. Shared baseline or blocks between suites: `include`.
+- Checks: `check` steps or `expect`/`contains`/`notContains` on `hook` steps; end every test with `noErrors` for the mod's log source.
+- Test hooks: the mod declares its own `TestHookAttribute` (no reference to DrakesTestLab); hooks call the mod's real code paths.
+- Things a person must see or press go into a `<Suite>-Manual` suite with `checkpoint` steps.

@@ -1,0 +1,14 @@
+{
+  "name": "01-give-and-equip",
+  "description": "Gives a hammer and a bronze sword (equipped) and checks both arrived.",
+  "steps": [
+    { "do": "give", "prefab": "Hammer" },
+    { "do": "give", "prefab": "SwordBronze", "quality": 2, "equip": true }
+  ],
+  "asserts": [
+    { "check": "hasItem", "prefab": "Hammer" },
+    { "check": "hasItem", "prefab": "SwordBronze", "quality": 2 },
+    { "check": "equipped", "prefab": "SwordBronze" },
+    { "check": "noErrors", "source": "DrakesTestLab" }
+  ]
+}

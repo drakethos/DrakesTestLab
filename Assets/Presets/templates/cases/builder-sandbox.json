@@ -17,11 +17,11 @@
     { "prefab": "Hammer", "count": 1, "quality": 4, "equip": false },
     { "prefab": "Hoe", "count": 1, "quality": 1, "equip": false },
     { "prefab": "Cultivator", "count": 1, "quality": 1, "equip": false },
-    { "prefab": "Wood", "count": 999, "quality": 1, "equip": false },
-    { "prefab": "FineWood", "count": 500, "quality": 1, "equip": false },
-    { "prefab": "Stone", "count": 999, "quality": 1, "equip": false },
-    { "prefab": "Iron", "count": 300, "quality": 1, "equip": false },
-    { "prefab": "BronzeNails", "count": 500, "quality": 1, "equip": false },
-    { "prefab": "IronNails", "count": 500, "quality": 1, "equip": false }
+    { "prefab": "Wood", "count": 300, "quality": 1, "equip": false },
+    { "prefab": "FineWood", "count": 150, "quality": 1, "equip": false },
+    { "prefab": "Stone", "count": 300, "quality": 1, "equip": false },
+    { "prefab": "Iron", "count": 60, "quality": 1, "equip": false },
+    { "prefab": "BronzeNails", "count": 200, "quality": 1, "equip": false },
+    { "prefab": "IronNails", "count": 200, "quality": 1, "equip": false }
   ]
 }

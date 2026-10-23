@@ -1,0 +1,66 @@
+// Copy this folder, rename it after your mod (folders starting with _ are ignored), and edit.
+// Comments and trailing commas are allowed. Full reference: https://github.com/drakethos/DrakesTestLab/wiki/Automation
+{
+  "name": "MyMod",
+  "description": "What this suite covers.",
+
+  // the suite is skipped (with the reason shown) if a mod is missing or too old
+  "requireMods": [
+    { "guid": "com.example.mymod", "minVersion": "1.0.0" }
+  ],
+
+  // set on the mod's live config before the tests, put back afterwards
+  "configOverrides": [
+    // { "guid": "com.example.mymod", "section": "General", "key": "Enabled", "value": "true" }
+  ],
+
+  // shared starting state for every test: any field of the test-case format
+  // (items, skills, wards, playAs, bosses, rules, time...)
+  "setup": {
+    "timeOfDay": 0.5,
+    "freezeTime": 1,
+    "god": 1
+  },
+
+  // reset inventory, skills, wards, identity... before each test (recommended)
+  "resetBetweenTests": true,
+
+  // optional explicit order; otherwise test files run alphabetically
+  "tests": [],
+
+  // pull in other files: requireMods, configOverrides, setup and blocks from a shared file, or a folder of block files.
+  // Paths are relative to this file, else to the suites folder. This suite's own values win.
+  "include": [
+    "_lib/valheim.json",                 // the shipped function library: craftAndCheck, equipAndCheck, spawnPiece, as
+    // "_Shared/my-mods-baseline.json",
+    // "../MyOtherMod/_blocks"
+  ],
+
+  // reusable steps, called from a test with { "do": "use", "block": "openChest", "args": { "owner": "Bob" } }.
+  // {{name}} is replaced by the arg; "params" holds defaults (a param without one is required, null = optional).
+  // Blocks can also live one per file in _blocks/<name>.json (see _blocks/giveKit.json).
+  // Blocks and functions are the same thing; "functions" just reads better for the ones with their own checks.
+  "blocks": {
+    "openChest": {
+      "params": { "owner": "me", "label": null },
+      "steps": [
+        { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "{{owner}}", "as": "chest" },
+        { "do": "face", "target": "chest" },
+        { "do": "interact", "target": "chest" },
+        { "do": "check", "check": "lastResult", "expect": true, "label": "{{label}}" }   // left out label = no label
+      ]
+    }
+  },
+
+  // functions: a repeatable step with parameters, actions and its own asserts (run as checks after the actions,
+  // reported as "<function>: <label>"). Call it like a step: { "do": "giveStack", "prefab": "Wood" }
+  // or as a string: "giveStack(\"Wood\", 50)". A params list sets the order of those positional arguments:
+  // a plain name is required, { "name": default } is optional.
+  "functions": {
+    "giveStack": {
+      "params": [ "prefab", { "count": 10 } ],
+      "actions": [ { "do": "give", "prefab": "{{prefab}}", "count": "{{count}}" } ],
+      "asserts": [ { "check": "hasItem", "prefab": "{{prefab}}", "count": "{{count}}", "label": "got {{count}} {{prefab}}" } ]
+    }
+  }
+}

@@ -276,6 +276,25 @@ internal static class WardTools
         Refresh(ward);
     }
 
+    /// <summary>Owner of any building piece (chest, door, station): the same creator id the ward and chest checks read.</summary>
+    public static void SetPieceOwner(Piece piece, Identity owner)
+    {
+        var view = piece.GetComponent<ZNetView>();
+        var zdo = view != null && view.IsValid() ? view.GetZDO() : null;
+        if (zdo != null)
+        {
+            if (!view!.IsOwner())
+                view.ClaimOwnership();
+            zdo.Set(Key("s_creator"), owner.Id);
+            zdo.Set(Key("s_creatorName"), owner.Name);
+        }
+
+        PieceCreatorField?.SetValue(piece, owner.Id);
+        var ward = piece.GetComponent<PrivateArea>();
+        if (ward != null)
+            Refresh(ward);
+    }
+
     public static void SetEnabled(PrivateArea ward, bool enabled)
     {
         Zdo(ward)?.Set(Key("s_enabled"), enabled);

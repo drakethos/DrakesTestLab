@@ -88,6 +88,14 @@ Eight example cases ship with the mod and are copied into that folder on first r
 
 ---
 
+## Automated tests
+
+Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report and failure screenshots are written to `config/DrakesTestLab/results/`.
+
+Mods can expose **test hooks** with no dependency on DrakesTestLab: put your own `[TestHook("name")]` attribute on a static method and tests can call it. Full reference: [Automation on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Automation).
+
+---
+
 ## Configuration
 
 Every key, its default and what it does: [Configuration on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Configuration).

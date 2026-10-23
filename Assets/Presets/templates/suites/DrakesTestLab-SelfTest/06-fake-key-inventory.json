@@ -1,0 +1,12 @@
+{
+  "name": "06-fake-key-inventory",
+  "description": "Presses the game's Inventory button (Tab) with a fake key press and checks the inventory opened.",
+  "steps": [
+    { "do": "pressKey", "button": "Inventory" },
+    { "do": "wait", "until": { "check": "uiVisible", "name": "InventoryGui" }, "timeout": 5 },
+    { "do": "closeUi" }
+  ],
+  "asserts": [
+    { "check": "uiVisible", "name": "InventoryGui", "expect": false }
+  ]
+}

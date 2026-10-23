@@ -1,0 +1,17 @@
+{
+  "name": "02-chest-opens",
+  "description": "Places a chest you own, opens it like pressing E, checks the chest window opened, then closes it.",
+  "steps": [
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 2.5, "owner": "me", "as": "chest" },
+    { "do": "face", "target": "chest" },
+    { "do": "interact", "target": "chest" },
+    { "do": "wait", "until": { "check": "uiVisible", "name": "InventoryGui" }, "timeout": 5 },
+    { "do": "closeUi" },
+    { "do": "wait", "until": { "check": "uiVisible", "name": "InventoryGui", "expect": false }, "timeout": 5 }
+  ],
+  "asserts": [
+    { "check": "owner", "target": "chest", "expect": "me" },
+    { "check": "objectNear", "target": "piece_chest_wood", "radius": 6 },
+    { "check": "uiVisible", "name": "InventoryGui", "expect": false }
+  ]
+}

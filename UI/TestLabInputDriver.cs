@@ -24,6 +24,14 @@ internal sealed class TestLabInputDriver : MonoBehaviour
             overlay.Value = !overlay.Value;
         }
 
+        if (Automation.TestRunner.Running)
+        {
+            if (KeyPressed(TestLabConfig.Instance.StopTestsKey.Value))
+                Automation.TestRunner.Stop();
+            if (KeyPressed(TestLabConfig.Instance.NextStepKey.Value))
+                Automation.TestRunner.Next();
+        }
+
         var keyName = TestLabConfig.Instance.MenuKey.Value;
         if (string.IsNullOrWhiteSpace(keyName))
             return;

@@ -29,6 +29,7 @@ internal sealed class ToolboxHost : MonoBehaviour
         _tabs.Add(new LabTab());
         _tabs.Add(new CasesTab());
         _tabs.Add(new WardsTab());
+        _tabs.Add(new TestsTab());
         _tabs.Add(spawn);
         _tabs.Add(new InspectTab(spawn));
         _tabs.Add(new ModsTab());
@@ -38,6 +39,18 @@ internal sealed class ToolboxHost : MonoBehaviour
     }
 
     public static void Toggle() => Set(!IsOpen);
+
+    /// <summary>Opens the toolbox on the tab with this title.</summary>
+    public static void ShowTab(string title)
+    {
+        if (Instance == null)
+            return;
+
+        var index = Instance._tabs.FindIndex(t => t.Title == title);
+        if (index >= 0)
+            Instance._tab = index;
+        Set(true);
+    }
 
     public static void Set(bool open)
     {
@@ -50,6 +63,7 @@ internal sealed class ToolboxHost : MonoBehaviour
     private void Update()
     {
         LogCapture.Instance.Drain();
+        Automation.UiPicker.Update();
         foreach (var tab in _tabs)
             tab.Tick();
     }
@@ -57,7 +71,7 @@ internal sealed class ToolboxHost : MonoBehaviour
     private void OnGUI()
     {
         var cfg = TestLabConfig.Instance;
-        if (!IsOpen && !cfg.ShowOverlay.Value && !CraftHelper.ShouldShow())
+        if (!IsOpen && !cfg.ShowOverlay.Value && !CraftHelper.ShouldShow() && !Automation.UiPicker.Active && !Automation.TestRunner.Running)
             return;
 
         EnsureSkin();
@@ -69,6 +83,16 @@ internal sealed class ToolboxHost : MonoBehaviour
 
         if (CraftHelper.ShouldShow())
             CraftHelper.Draw(s);
+
+        if (Automation.TestRunner.Running && !IsOpen)
+        {
+            var keys = $"{cfg.StopTestsKey.Value} stop" + (Automation.TestRunner.StepMode ? $" / {cfg.NextStepKey.Value} next step" : "");
+            GUI.Box(new Rect(Screen.width / s / 2f - 330f, 30f, 660f, 44f), GUIContent.none);
+            GUI.Label(new Rect(Screen.width / s / 2f - 322f, 33f, 644f, 40f),
+                "<color=#f0b45a><b>Testing</b></color> " + Automation.TestRunner.Status + "  <color=#999999>(" + keys + ")</color>");
+        }
+
+        Automation.UiPicker.DrawOverlay();
 
         if (cfg.ShowOverlay.Value)
             GUI.Label(new Rect(10f, 4f, 1400f, 24f), "<color=#f0b45a>" + InspectTab.StatusLine() + "</color>");

@@ -1,0 +1,13 @@
+{
+  "name": "08-test-hooks",
+  "description": "Calls test hooks (functions a mod exposes for tests) as a step and as checks.",
+  "steps": [
+    { "do": "give", "prefab": "Wood", "count": 5 },
+    { "do": "hook", "name": "testlab.inventoryCount" }
+  ],
+  "asserts": [
+    { "check": "lastResult", "min": 1 },
+    { "check": "hook", "name": "testlab.echo", "args": { "value": "hello" }, "expect": "hello" },
+    { "check": "hook", "name": "testlab.echo", "args": { "value": true } }
+  ]
+}

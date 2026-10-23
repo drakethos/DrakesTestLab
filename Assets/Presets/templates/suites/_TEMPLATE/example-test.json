@@ -1,0 +1,78 @@
+// One test = optional setup, steps (what to do), asserts (what must be true afterwards).
+// A step fails the test immediately when it cannot be done; every assert is checked and reported.
+{
+  "name": "example-test",
+  "description": "Shown in the Tests tab.",
+  "manualOnly": false,          // true = skipped in unattended runs (for tests with a checkpoint)
+  "timeout": 60,                // seconds; default [Automation] TestTimeout
+
+  "setup": { "items": [ { "prefab": "Hammer", "count": 1, "quality": 1, "equip": false } ] },
+
+  "steps": [
+    // ---- position
+    { "do": "teleport", "dx": 0, "dz": 5 },                 // or x/z (world), or "to": "<tag or prefab>", "distance": 2
+    { "do": "face", "target": "chest" },                    // or x/z, dx/dz
+
+    // ---- world and player
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "Amy", "as": "chest" },  // count, level, yaw, keep, enabled/permitted/radius for wards
+    { "do": "give", "prefab": "Wood", "count": 10 },        // quality, equip
+    { "do": "clearInventory" },
+    { "do": "playAs", "who": "Bob" },                       // Alice, Amy, Bob, Carol, any name, Name:12345, me
+    { "do": "console", "command": "tod 0.5" },
+    { "do": "case", "name": "builder-sandbox" },            // apply a test case from the cases folder
+    { "do": "setConfig", "guid": "com.example.mymod", "section": "General", "key": "Speed", "value": "2" },
+    { "do": "destroy", "target": "chest" },
+    { "do": "reset" },                                      // the test-state reset
+
+    // ---- blocks: steps shared by many tests (suite.json "blocks", _blocks/*.json, or included files)
+    { "do": "use", "block": "openChest", "args": { "owner": "Bob", "label": "Bob's chest opens" } },
+    { "do": "use", "block": "giveKit", "weapon": "AxeStone" },   // args may also go straight on the step
+    { "do": "log", "message": "only with a value", "if": "" },   // "if": false / 0 / "" / null drops a step (mostly "{{param}}" in blocks)
+
+    // ---- functions: called by name like a step, or as a one-line string (arguments in "params" order)
+    { "do": "giveStack", "prefab": "Wood" },
+    "giveStack(\"Stone\", 20)",
+    "craftAndCheck(\"Hammer\")",                          // from _lib/valheim.json: materials + real craft + check
+    { "do": "as", "who": "Bob", "steps": [ "equipAndCheck(\"Club\")" ] },   // run steps as Bob, then back to you
+    { "do": "give", "materialsFor": "Hammer", "count": 2 },  // a recipe's (or building piece's) materials
+
+    // ---- interact and UI
+    { "do": "interact", "target": "chest" },                // like pressing E on it; "alt": true, "hold": true
+    { "do": "click", "button": "Take all" },                // button or toggle by object name, label text or path
+    { "do": "toggle", "name": "SomeToggle", "value": true },
+    { "do": "type", "field": "NameInput", "text": "Hello" },
+    { "do": "pressKey", "button": "Use" },                  // game button names: Use, Inventory, Jump, Attack...; or "key": "E"
+    { "do": "closeUi" },
+
+    // ---- time
+    { "do": "wait", "seconds": 1 },
+    { "do": "wait", "until": { "check": "uiVisible", "name": "InventoryGui" }, "timeout": 5 },
+
+    // ---- mod code, people, evidence
+    { "do": "invoke", "method": "MyNamespace.MyApi.GetCount", "args": [ "Wood" ] },   // result -> lastResult check
+    { "do": "checkpoint", "message": "Does the sign show Hello?" },                   // asks the tester Pass / Fail
+    { "do": "screenshot", "name": "after-click" },
+    { "do": "log", "message": "anything for the report" }
+  ],
+
+  "asserts": [
+    { "check": "hasItem", "prefab": "Wood", "count": 10 },                   // quality, data: { "customKey": "value" or "*" }
+    { "check": "noItem", "prefab": "Stone" },
+    { "check": "equipped", "prefab": "SwordBronze" },
+    { "check": "globalKey", "key": "defeated_eikthyr", "expect": true },
+    { "check": "objectNear", "target": "piece_chest_wood", "radius": 10 },   // count, expect, x/z or dx/dz
+    { "check": "owner", "target": "chest", "expect": "Amy" },
+    { "check": "zdo", "target": "chest", "key": "someKey", "expect": "value" },
+    { "check": "uiVisible", "name": "InventoryGui", "expect": false },       // InventoryGui, Menu, TextInput, Console, Map, Store, or any object name
+    { "check": "uiText", "name": "Title", "contains": "Chest" },
+    { "check": "logContains", "source": "MyMod", "text": "saved" },
+    { "check": "noErrors", "source": "MyMod" },                              // leave out source = no errors from anyone
+    { "check": "config", "guid": "com.example.mymod", "section": "General", "key": "Speed", "expect": 2 },
+    { "check": "skill", "name": "Swords", "min": 10 },
+    { "check": "stat", "name": "health", "min": 50 },                        // health, maxHealth, stamina, maxStamina, eitr, weight, carryWeight
+    { "check": "position", "x": 0, "z": 0, "radius": 5 },                    // or target
+    { "check": "guardianPower", "expect": "GP_Eikthyr" },
+    { "check": "wardAccess", "expect": false },
+    { "check": "lastResult", "expect": 10 }                                  // expect, contains, min, max
+  ]
+}

@@ -28,8 +28,10 @@ internal static class PresetDeployer
 
         // "Keep" toggles let you carry the world and/or the character over a restart instead of resetting them.
         var cfgKeep = TestLabConfig.Instance;
-        var resetWorld = target.CopyTemplatesEveryLaunch && !cfgKeep.KeepWorld.Value;
-        var resetCharacter = target.CopyTemplatesEveryLaunch && !cfgKeep.KeepCharacter.Value;
+        // a relog (persistence test) keeps both: the logout just saved them
+        var relog = SessionRelog.Active;
+        var resetWorld = target.CopyTemplatesEveryLaunch && !cfgKeep.KeepWorld.Value && !relog;
+        var resetCharacter = target.CopyTemplatesEveryLaunch && !cfgKeep.KeepCharacter.Value && !relog;
         if (resetWorld)
             ValheimPaths.DeleteWorld(target.WorldName);
         if (resetCharacter)
