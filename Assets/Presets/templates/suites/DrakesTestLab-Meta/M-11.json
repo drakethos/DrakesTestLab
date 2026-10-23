@@ -1,0 +1,33 @@
+{
+  "name": "M-11 reset between tests puts identity back",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "logContains",
+      "text": "Test state reset",
+      "source": "DrakesTestLab",
+      "label": "observed: the reset ran before this test"
+    },
+    {
+      "do": "spawn",
+      "prefab": "guard_stone",
+      "dz": 2,
+      "owner": "me",
+      "enabled": true,
+      "radius": 12
+    },
+    {
+      "do": "check",
+      "check": "wardAccess",
+      "expect": true,
+      "label": "I am myself again (not Amy from the last test)"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

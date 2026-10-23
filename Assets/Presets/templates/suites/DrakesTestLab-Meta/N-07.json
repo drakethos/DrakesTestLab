@@ -1,0 +1,21 @@
+{
+  "name": "N-07 wait until a check that never comes true fails",
+  "description": "",
+  "steps": [
+    {
+      "do": "wait",
+      "until": {
+        "check": "hasItem",
+        "prefab": "DragonEgg"
+      },
+      "timeout": 1.5
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": ""
+}

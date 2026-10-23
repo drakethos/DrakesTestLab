@@ -347,45 +347,73 @@ internal static class UiSteps
         var p = P;
         var center = Center(target);
 
+        // stand "distance" metres from the object's own position (what the game's use-distance checks measure), aim at its middle.
+        // When something is in the way from that side (a wall), walk round and try the other sides.
         var distance = step.Num("distance", 2f);
-        var flat = p.transform.position - center;
+        var anchor = target.transform.position;
+        var flat = p.transform.position - anchor;
         flat.y = 0f;
-        if (flat.magnitude > distance + 0.5f || flat.magnitude < 0.6f)
+        var startDir = flat.sqrMagnitude > 0.01f ? flat.normalized : -p.transform.forward;
+        var inRange = flat.magnitude <= distance + 0.5f && flat.magnitude >= 0.6f;
+        var perSide = step.Num("timeout", 3f) / 4f;
+        GameObject? hover = null;
+        for (var side = 0; side < 4; side++)
         {
-            var dir = flat.sqrMagnitude > 0.01f ? flat.normalized : -p.transform.forward;
-            var spot = center + dir * distance;
-            spot.y = p.transform.position.y;
-            if (ZoneSystem.instance != null && ZoneSystem.instance.GetGroundHeight(spot, out var ground))
-                spot.y = ground;
-            p.transform.position = spot;
-            yield return null;
+            if (side > 0 || !inRange)
+            {
+                var dir = Quaternion.Euler(0f, 90f * side, 0f) * startDir;
+                MoveTo(p, anchor + dir * distance);
+                yield return null;
+            }
+
+            var deadline = Time.realtimeSinceStartup + Mathf.Max(0.75f, perSide);
+            var steady = 0;
+            while (Time.realtimeSinceStartup <= deadline)
+            {
+                // aim from the camera, which sits above and behind the player (and settles for a few frames after a move)
+                var cam = GameCamera.instance != null ? GameCamera.instance.transform.position : p.GetEyePoint();
+                Aim(p, (center - cam).normalized);
+                yield return null;
+
+                hover = p.GetHoverObject();
+                if (hover != null && (hover == target || hover.transform.IsChildOf(target.transform) || target.transform.IsChildOf(hover.transform)))
+                {
+                    // done once the hover holds for a few frames: the camera has settled and the HUD shows the crosshair text
+                    if (++steady >= 4)
+                    {
+                        ctx.Log($"  looking at {target.name}");
+                        yield break;
+                    }
+                    continue;
+                }
+                steady = 0;
+
+                // things without a hover (walls, floors) only need to be in the crosshair's line of sight
+                if (CameraHits(target))
+                {
+                    ctx.Log($"  aiming at {target.name}");
+                    yield break;
+                }
+            }
         }
 
-        var deadline = Time.realtimeSinceStartup + step.Num("timeout", 3f);
-        while (true)
+        throw new StepFailed($"could not aim at '{name}' from any side (hovering {(hover != null ? hover.name : "nothing")})");
+    }
+
+    /// <summary>Puts the player on whatever floor is under that spot (terrain, a stone or wood floor), not at the old height.</summary>
+    private static void MoveTo(Player p, Vector3 spot)
+    {
+        spot.y = p.transform.position.y;
+        var floorMask = LayerMask.GetMask("Default", "static_solid", "terrain", "piece", "Default_small");
+        if (Physics.Raycast(spot + Vector3.up * 4f, Vector3.down, out var floor, 12f, floorMask, QueryTriggerInteraction.Ignore))
+            spot.y = floor.point.y;
+        else if (ZoneSystem.instance != null && ZoneSystem.instance.GetGroundHeight(spot, out var ground))
+            spot.y = Mathf.Max(spot.y, ground);
+        p.transform.position = spot;
+        if (p.GetComponent<Rigidbody>() is { } body)
         {
-            // aim from the camera, which sits above and behind the player
-            var cam = GameCamera.instance != null ? GameCamera.instance.transform.position : p.GetEyePoint();
-            var look = (center - cam).normalized;
-            Aim(p, look);
-            yield return null;
-
-            var hover = p.GetHoverObject();
-            if (hover != null && (hover == target || hover.transform.IsChildOf(target.transform) || target.transform.IsChildOf(hover.transform)))
-            {
-                ctx.Log($"  looking at {target.name}");
-                yield break;
-            }
-
-            // things without a hover (walls, floors) only need to be in the crosshair's line of sight
-            if (CameraHits(target))
-            {
-                ctx.Log($"  aiming at {target.name}");
-                yield break;
-            }
-
-            if (Time.realtimeSinceStartup > deadline)
-                throw new StepFailed($"could not aim at '{name}' (hovering {(hover != null ? hover.name : "nothing")})");
+            body.position = spot;
+            body.velocity = Vector3.zero;
         }
     }
 
@@ -435,6 +463,58 @@ internal static class UiSteps
         return col != null ? col.bounds.center : go.transform.position + Vector3.up * 0.3f;
     }
 
+    private static IEnumerable<string> HoverToolkitTexts(Hud hud)
+    {
+        // panels the HUD itself owns, plus any UI document whose object is named like a hover panel
+        const BindingFlags all = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        var roots = new List<UnityEngine.UIElements.VisualElement>();
+        foreach (var f in typeof(Hud).GetFields(all))
+        {
+            var value = f.GetValue(hud);
+            if (value is UnityEngine.UIElements.UIDocument doc && doc != null && doc.rootVisualElement != null)
+                roots.Add(doc.rootVisualElement);
+            else if (value is UnityEngine.UIElements.VisualElement ve)
+                roots.Add(ve);
+        }
+        foreach (var doc in UnityEngine.Object.FindObjectsOfType<UnityEngine.UIElements.UIDocument>())
+        {
+            if (doc != null && doc.isActiveAndEnabled && doc.rootVisualElement != null && doc.gameObject.name.IndexOf("hover", StringComparison.OrdinalIgnoreCase) >= 0)
+                roots.Add(doc.rootVisualElement);
+        }
+
+        var seen = new HashSet<UnityEngine.UIElements.TextElement>();
+        foreach (var root in roots)
+        {
+            foreach (var t in UnityEngine.UIElements.UQueryExtensions.Query<UnityEngine.UIElements.TextElement>(root).ToList())
+            {
+                if (seen.Add(t) && !string.IsNullOrWhiteSpace(t.text) && UitkDriver.Shown(t))
+                    yield return t.text;
+            }
+        }
+    }
+
+    /// <summary>For a report when the crosshair reads empty: the texts shown on the HUD and where they sit.</summary>
+    public static string HudTextsForReport()
+    {
+        var all = UnityEngine.Object.FindObjectsOfType<TMPro.TMP_Text>()
+            .Where(t => t != null && t.isActiveAndEnabled && !string.IsNullOrWhiteSpace(t.text))
+            .Select(t =>
+            {
+                var path = t.name;
+                for (var cur = t.transform.parent; cur != null; cur = cur.parent)
+                    path = cur.name + "/" + path;
+                return $"{path} = '{t.text.Replace("\n", " ")}'";
+            })
+            .Where(line => line.IndexOf("IngameGui", StringComparison.Ordinal) >= 0 && line.IndexOf("HotKeyBar", StringComparison.Ordinal) < 0)
+            .Concat(UnityEngine.Object.FindObjectsOfType<UnityEngine.UI.Text>()
+                .Where(t => t != null && t.isActiveAndEnabled && !string.IsNullOrWhiteSpace(t.text))
+                .Select(t => $"text:{t.transform.parent?.name}/{t.name} = '{t.text.Replace("\n", " ")}'"))
+            .Concat(UitkDriver.ShownTexts())
+            .Take(16)
+            .ToList();
+        return all.Count == 0 ? " (no texts on screen)" : " (texts on screen: " + string.Join("; ", all) + ")";
+    }
+
     /// <summary>What the crosshair shows right now (the game's hover name text), rich text stripped.</summary>
     public static string CrosshairText()
     {
@@ -444,10 +524,32 @@ internal static class UiSteps
         var field = AccessTools.Field(typeof(Hud), "m_hoverName");
         var raw = field?.GetValue(hud) switch
         {
-            TMPro.TMP_Text t => t.text,
-            UnityEngine.UI.Text t => t.text,
+            TMPro.TMP_Text t when t.isActiveAndEnabled => t.text,
+            UnityEngine.UI.Text t when t.isActiveAndEnabled => t.text,
             _ => ""
         } ?? "";
+        // Valheim 1.0 shows pieces (workbench "Use [E]") in a newer hover panel: read every shown text under a "hover" object
+        if (raw.Trim().Length == 0)
+        {
+            var parts = new System.Collections.Generic.List<string>();
+            foreach (var t in hud.GetComponentsInChildren<TMPro.TMP_Text>(false))
+            {
+                if (t == null || !t.isActiveAndEnabled || string.IsNullOrWhiteSpace(t.text) || ReferenceEquals(t, field?.GetValue(hud)))
+                    continue;
+                for (var cur = t.transform; cur != null && cur != hud.transform; cur = cur.parent)
+                {
+                    if (cur.name.IndexOf("hover", StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
+                    parts.Add(t.text);
+                    break;
+                }
+            }
+            raw = string.Join("\n", parts);
+        }
+
+        // ...or a UI Toolkit hover panel that replaces the game's (DrakeModsLibs' "drakes_world_hover"): a document named like "hover"
+        if (raw.Trim().Length == 0)
+            raw = string.Join("\n", HoverToolkitTexts(hud));
         var sb = new System.Text.StringBuilder();
         var inTag = false;
         foreach (var ch in raw)

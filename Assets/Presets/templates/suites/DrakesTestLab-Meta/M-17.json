@@ -1,0 +1,29 @@
+{
+  "name": "M-17 bosses and guardian power",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "guardianPower",
+      "contains": "Eikthyr",
+      "label": "Eikthyr made my guardian power"
+    },
+    {
+      "do": "check",
+      "check": "globalKey",
+      "key": "defeated_eikthyr",
+      "label": "and set the boss key"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "setup": {
+    "bosses": [
+      "Eikthyr"
+    ]
+  }
+}

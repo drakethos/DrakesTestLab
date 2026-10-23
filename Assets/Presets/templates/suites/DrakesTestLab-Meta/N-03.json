@@ -1,0 +1,24 @@
+{
+  "name": "N-03 stop: true halts the test at a failed check",
+  "description": "If stop did not halt, the destroy step would fail with a different reason.",
+  "steps": [
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "DragonEgg",
+      "stop": true,
+      "label": "stopping check"
+    },
+    {
+      "do": "destroy",
+      "target": "nothing-with-this-name"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "stopping check"
+}

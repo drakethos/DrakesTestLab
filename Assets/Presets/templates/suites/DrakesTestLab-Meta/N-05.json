@@ -1,0 +1,17 @@
+{
+  "name": "N-05 a step that cannot be done fails the test",
+  "description": "",
+  "steps": [
+    {
+      "do": "give",
+      "prefab": "NoSuchItemAnywhere"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "could not give"
+}

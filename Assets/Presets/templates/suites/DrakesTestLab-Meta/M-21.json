@@ -1,0 +1,25 @@
+{
+  "name": "M-21 held keys are let go when a test ends",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.keyHeld",
+      "args": {
+        "key": "LeftShift"
+      },
+      "expect": false,
+      "label": "Shift is not stuck from an earlier test"
+    },
+    {
+      "do": "holdKey",
+      "key": "LeftShift"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

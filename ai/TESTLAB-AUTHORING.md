@@ -145,6 +145,7 @@ owner check, `as(who, steps)`.
 - Checks can go anywhere: a `check` step, or `expect` / `contains` / `notContains` on a `hook` step. A failed check fails the test but the steps continue (add `"stop": true` to stop).
 - `asserts` run at the end.
 - `manualOnly: true` + a `checkpoint` step = a test that asks a person Pass / Fail (skipped in unattended runs).
+- `expectFailure: true` (or a text the failure reason must contain) = a negative test: it passes only when it fails. Use it to prove a check catches the problem. Examples: the shipped `DrakesTestLab-Meta` suite.
 
 ### Steps
 
@@ -160,17 +161,18 @@ owner check, `as(who, steps)`.
 | `hook` | `name`, `args`, `as`, `expect`/`contains`/`notContains`, `label`, `stop` | Calls a test hook the mod exposes |
 | `check` | `check` + that check's fields, `label`, `stop`, `screenshot` | A check in the middle of the steps |
 | `interact` | `target`, `alt`, `hold` | Press E on an object; the game's answer becomes `lastResult` |
-| `click` / `toggle` / `type` | `button` / `name`,`value` / `field`,`text` | Drive Unity UI and UI Toolkit windows by name or label |
+| `click` / `toggle` / `type` | `button` / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label |
 | `pressKey` | `button` (Use, Inventory, Jump...) or `key`, `frames` | Fake key press the game reads as real |
 | `teleport`, `face`, `wait` | position or `target`; `seconds` or `until` + `timeout` | Movement and timing |
 | `invoke` | `method` (`Namespace.Type.Member`), `args` | Calls a static method / reads a static property; result = `lastResult` |
 | `relog` | `timeout` | Persistence: log out and load the same world and character back (no restart); tags re-found |
+| `store` | `target`, `prefab`, `count`, `index`/`match` | Put an inventory stack into a chest (custom data and crafter kept) |
 | `clearInventory`, `closeUi`, `destroy`, `reset` | | Housekeeping |
 | `screenshot`, `log`, `checkpoint` | `name` / `message` / `message` | Proof and notes; checkpoint asks a person |
 
 ### Checks
 
-`hasItem` (prefab, count, quality, data), `noItem`, `equipped`, `globalKey`, `objectNear`, `owner` (piece creator), `zdo`,
+`hasItem` (prefab, count, quality, data, crafter: `me`/`Alice`/`none`), `noItem`, `equipped`, `globalKey`, `objectNear`, `owner` (piece creator), `zdo`,
 `uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
 `hoverText`, `containerHas`, `logContains`, `noErrors` (`source`), `config`, `skill`, `stat`, `position`, `guardianPower`,
 `wardAccess`, `lastResult`, `hook`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,

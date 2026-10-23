@@ -1,0 +1,18 @@
+{
+  "name": "N-06 an impossible real-cost craft fails",
+  "description": "",
+  "steps": [
+    {
+      "do": "craft",
+      "prefab": "AxeFlint",
+      "free": false
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "made nothing"
+}

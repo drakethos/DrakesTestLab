@@ -1,0 +1,43 @@
+{
+  "name": "M-09 teleport, face, position",
+  "description": "",
+  "steps": [
+    {
+      "do": "teleport",
+      "dx": 0,
+      "dz": 15
+    },
+    {
+      "do": "wait",
+      "seconds": 0.2
+    },
+    {
+      "do": "spawn",
+      "prefab": "piece_chest_wood",
+      "dz": 4,
+      "as": "chest"
+    },
+    {
+      "do": "teleport",
+      "to": "chest",
+      "distance": 2
+    },
+    {
+      "do": "check",
+      "check": "position",
+      "target": "chest",
+      "radius": 3,
+      "label": "next to the chest"
+    },
+    {
+      "do": "face",
+      "target": "chest"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

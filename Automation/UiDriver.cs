@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
@@ -103,6 +104,26 @@ internal static class UiDriver
 
     public static string Type(string query, string text)
     {
+        // "*" = the text box that just opened: the game's own text prompt (signs, portals), else any shown field, else UI Toolkit's
+        if (query.Trim() == "*")
+        {
+            var open = UnityEngine.Object.FindObjectsOfType<TMP_InputField>().FirstOrDefault(f => f != null && f.isActiveAndEnabled && f.interactable);
+            if (open != null)
+            {
+                open.text = text;
+                open.onEndEdit?.Invoke(text);
+                return "";
+            }
+            var openLegacy = UnityEngine.Object.FindObjectsOfType<InputField>().FirstOrDefault(f => f != null && f.isActiveAndEnabled && f.interactable);
+            if (openLegacy != null)
+            {
+                openLegacy.text = text;
+                openLegacy.onEndEdit?.Invoke(text);
+                return "";
+            }
+            return UitkDriver.Type(query, text) ? "" : "no text field is open";
+        }
+
         var tmp = Find<TMP_InputField>(query);
         if (tmp != null)
         {

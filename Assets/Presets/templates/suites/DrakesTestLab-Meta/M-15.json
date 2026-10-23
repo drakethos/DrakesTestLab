@@ -1,0 +1,22 @@
+{
+  "name": "M-15 reset between tests: the next test starts clean",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Coins",
+      "label": "the coins are gone"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.1
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "N-12 expectFailure itself: a test expected to fail that passes is reported",
+  "description": "Kept manual-only: it fails by design to show what a wrong expectFailure looks like.",
+  "steps": [
+    {
+      "do": "log",
+      "message": "this test passes"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "this text never appears in a reason",
+  "manualOnly": true
+}

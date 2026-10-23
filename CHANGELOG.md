@@ -1,5 +1,13 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **Meta suite:** `DrakesTestLab-Meta` ships with the mod: about 40 tests that exercise every step and check against plain Valheim, readable as worked examples.
+- **Negative tests:** `expectFailure` on a test (true, or the text the failure must contain) passes only when the test fails. Used to prove checks catch problems.
+- **New:** `store` step (put a stack into a chest), `crafter` on `hasItem`, `submit` on `type` (confirms the game's text prompt), `station` on `craft` (real-cost craft at a placed station), `exact` on `uiVisible`, `type` `"field": "*"` for the game's own prompt, `testlab.keyHeld` hook, `launchConfig` in suites (settings read only at game start, applied by the run script).
+- **Boot:** the shipped test world is checked after it is copied, found even when a mod manager nests the package one folder deeper, and copied again once if it went missing. The "world not found" warning is no longer logged every frame (every few seconds, with what the folders contain). An on-screen line says what is happening (loading the test world; baking a new template takes minutes; an old .fwl/.db template rebuilds on first load), and if the world cannot be loaded the main menu comes back with the reason instead of an empty screen.
+- **Fixed:** a test that ran past its `timeout` during its last step was reported as passed. `lookAt` stood at your old height (below a raised floor, "too far" to use the piece) and measured from the piece's middle instead of its position; it now stands on the floor there, waits for a steady hover, and walks round to another side when a wall is in the way. `crosshair` also reads UI Toolkit hover panels (DrakeModsLibs' world hover). Windows are matched topmost first.
+
 ## 0.2.0
 
 **Automated tests.** Suites of JSON tests that set up the world, act like a player, check the result and write a report, run from F9 > Tests, step by step, or unattended from the command line.

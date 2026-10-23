@@ -1,0 +1,18 @@
+{
+  "name": "N-10 a place the hammer refuses fails unless expect: false",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "free": false
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": ""
+}

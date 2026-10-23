@@ -1,0 +1,94 @@
+{
+  "name": "M-05 place (hammer path), owner, objectNear, interact, store, containerHas",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 2.5,
+      "as": "chest"
+    },
+    {
+      "do": "check",
+      "check": "owner",
+      "target": "chest",
+      "expect": "me",
+      "label": "I built it"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "piece_chest_wood",
+      "radius": 5,
+      "label": "it is there"
+    },
+    {
+      "do": "give",
+      "prefab": "Stone",
+      "count": 30
+    },
+    {
+      "do": "store",
+      "target": "chest",
+      "prefab": "Stone",
+      "count": 20
+    },
+    {
+      "do": "check",
+      "check": "containerHas",
+      "target": "chest",
+      "prefab": "Stone",
+      "count": 20,
+      "label": "the chest holds 20 stone"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Stone",
+      "count": 10,
+      "label": "10 stayed with me"
+    },
+    {
+      "do": "check",
+      "check": "containerHas",
+      "target": "chest",
+      "prefab": "Wood",
+      "expect": false,
+      "label": "no wood in the chest"
+    },
+    {
+      "do": "interact",
+      "target": "chest"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "InventoryGui",
+      "label": "E opens the chest"
+    },
+    {
+      "do": "closeUi"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.2
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "InventoryGui",
+      "expect": false,
+      "label": "closeUi closes it"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

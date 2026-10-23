@@ -1,0 +1,30 @@
+{
+  "name": "M-26 the language is back to English afterwards",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "dz": 3,
+      "as": "bench"
+    },
+    {
+      "do": "lookAt",
+      "target": "bench",
+      "distance": 1.5
+    },
+    {
+      "do": "check",
+      "check": "hoverText",
+      "target": "bench",
+      "contains": "Workbench",
+      "label": "English again"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

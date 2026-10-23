@@ -1,0 +1,17 @@
+{
+  "name": "N-08 an unknown hook fails",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.noSuchHook"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "noSuchHook"
+}

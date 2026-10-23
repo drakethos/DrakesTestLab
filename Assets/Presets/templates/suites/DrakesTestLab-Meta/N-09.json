@@ -1,0 +1,18 @@
+{
+  "name": "N-09 the test timeout stops a stuck test",
+  "description": "",
+  "steps": [
+    {
+      "do": "wait",
+      "seconds": 8
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "timed out",
+  "timeout": 2
+}

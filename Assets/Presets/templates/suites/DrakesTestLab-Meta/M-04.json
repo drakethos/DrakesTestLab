@@ -1,0 +1,43 @@
+{
+  "name": "M-04 the shared function library (include, functions, string calls)",
+  "description": "",
+  "steps": [
+    {
+      "do": "craftAndCheck",
+      "prefab": "Hammer"
+    },
+    "equipAndCheck(\"Club\")",
+    {
+      "do": "spawnPiece",
+      "prefab": "piece_chest_wood",
+      "owner": "Alice",
+      "tag": "chest"
+    },
+    {
+      "do": "as",
+      "who": "Bob",
+      "steps": [
+        {
+          "do": "log",
+          "message": "a step run as Bob"
+        }
+      ]
+    }
+  ],
+  "asserts": [
+    {
+      "check": "owner",
+      "target": "chest",
+      "expect": "Alice"
+    },
+    {
+      "check": "logContains",
+      "text": "Now playing as Bob",
+      "source": "DrakesTestLab"
+    },
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

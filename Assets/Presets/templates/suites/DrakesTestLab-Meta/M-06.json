@@ -1,0 +1,36 @@
+{
+  "name": "M-06 place refusals: no materials, unknown piece",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "free": false,
+      "expect": false,
+      "label": "no wood: the hammer refuses"
+    },
+    {
+      "do": "give",
+      "materialsFor": "piece_workbench"
+    },
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "free": false,
+      "as": "bench",
+      "label": "with the wood it builds"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Wood",
+      "label": "and the wood is used"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

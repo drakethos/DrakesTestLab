@@ -1,0 +1,68 @@
+{
+  "name": "M-07 spawn, drop, destroy",
+  "description": "",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Boar",
+      "dz": 6,
+      "as": "boar"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "Boar",
+      "radius": 10,
+      "label": "a boar appeared"
+    },
+    {
+      "do": "give",
+      "prefab": "Resin",
+      "count": 3
+    },
+    {
+      "do": "drop",
+      "prefab": "Resin",
+      "as": "resin"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.0
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Resin",
+      "label": "dropped from the bag"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "Resin",
+      "radius": 4,
+      "label": "lying on the ground, not picked up again"
+    },
+    {
+      "do": "destroy",
+      "target": "boar"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.3
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "Boar",
+      "radius": 10,
+      "expect": false,
+      "label": "destroy removed the boar"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

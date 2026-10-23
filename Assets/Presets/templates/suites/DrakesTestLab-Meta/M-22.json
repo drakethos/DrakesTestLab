@@ -1,0 +1,21 @@
+{
+  "name": "M-22 ...checked again after a test that held a key to the end",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.keyHeld",
+      "args": {
+        "key": "LeftShift"
+      },
+      "expect": false,
+      "label": "Shift was released by the runner"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

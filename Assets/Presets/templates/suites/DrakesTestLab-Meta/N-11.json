@@ -1,0 +1,22 @@
+{
+  "name": "N-11 hook compare mismatch fails",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": "yes"
+      },
+      "expect": "no",
+      "label": "echo mismatch"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "echo mismatch"
+}

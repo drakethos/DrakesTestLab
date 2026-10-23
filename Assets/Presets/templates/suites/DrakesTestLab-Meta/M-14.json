@@ -1,0 +1,27 @@
+{
+  "name": "M-14 reset between tests: leave things behind",
+  "description": "",
+  "steps": [
+    {
+      "do": "give",
+      "prefab": "Coins",
+      "count": 77
+    },
+    {
+      "do": "console",
+      "command": "setkey drake_meta_key"
+    },
+    {
+      "do": "check",
+      "check": "globalKey",
+      "key": "drake_meta_key",
+      "label": "console set a world key"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "M-25 setLanguage switches for one test",
+  "description": "",
+  "steps": [
+    {
+      "do": "setLanguage",
+      "language": "Spanish"
+    },
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "dz": 3,
+      "as": "bench"
+    },
+    {
+      "do": "lookAt",
+      "target": "bench",
+      "distance": 1.5
+    },
+    {
+      "do": "check",
+      "check": "hoverText",
+      "target": "bench",
+      "contains": "Banco",
+      "label": "the workbench reads in Spanish"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "DrakesTestLab-Meta",
+  "description": "Tests the tester: every step and check against plain Valheim, and negative tests proving broken tests are caught.",
+  "requireMods": [
+    {
+      "guid": "com.drakemods.testlab",
+      "minVersion": "0.2.0"
+    }
+  ],
+  "configOverrides": [
+    {
+      "guid": "com.drakemods.testlab",
+      "section": "Rules",
+      "key": "FallDamageMultiplier",
+      "value": "0.25"
+    }
+  ],
+  "include": "_lib/valheim.json",
+  "setup": {
+    "timeOfDay": 0.5,
+    "freezeTime": 1,
+    "god": 1,
+    "noBuild": "off",
+    "hideUnlockPopups": 1
+  },
+  "resetBetweenTests": true
+}

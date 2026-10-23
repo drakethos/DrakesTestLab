@@ -1,0 +1,54 @@
+{
+  "name": "M-20 holdKey, releaseKeys, pressKey",
+  "description": "",
+  "steps": [
+    {
+      "do": "holdKey",
+      "key": "LeftShift"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.keyHeld",
+      "args": {
+        "key": "LeftShift"
+      },
+      "expect": true,
+      "label": "the game sees Shift held"
+    },
+    {
+      "do": "releaseKeys"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.keyHeld",
+      "args": {
+        "key": "LeftShift"
+      },
+      "expect": false,
+      "label": "released"
+    },
+    {
+      "do": "pressKey",
+      "button": "Inventory"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "InventoryGui",
+      "label": "the Inventory key opened the inventory"
+    },
+    {
+      "do": "closeUi"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -243,7 +243,7 @@ internal static class Asserts
             case "crosshair":
             {
                 var text = UiSteps.CrosshairText();
-                return (Matches(text, a), $"crosshair shows '{text.Replace("\n", " | ")}'");
+                return (Matches(text, a), $"crosshair shows '{text.Replace("\n", " | ")}'" + (text.Length == 0 ? UiSteps.HudTextsForReport() : ""));
             }
             case "uienabled":
             {
@@ -272,6 +272,9 @@ internal static class Asserts
         var prefab = a.Str("prefab");
         var quality = (int)a.Num("quality", -1);
         var data = a.Obj("data");
+        // "crafter": "me" / "Alice" / "Name:123" = made by that player; "none" = unowned (given, looted)
+        var crafter = a.Str("crafter");
+        var maker = crafter.Length > 0 && !crafter.Equals("none", StringComparison.OrdinalIgnoreCase) ? WardTools.Parse(crafter) : null;
         var count = 0;
         foreach (var item in P.GetInventory().GetAllItems())
         {
@@ -282,10 +285,13 @@ internal static class Asserts
                 continue;
             if (data != null && !DataMatches(item, data))
                 continue;
+            if (crafter.Length > 0 && (maker == null ? item.m_crafterID != 0 : item.m_crafterID != maker.Id))
+                continue;
             count += item.m_stack;
         }
 
-        return (count, data != null ? " with matching custom data" : "");
+        var detail = (data != null ? " with matching custom data" : "") + (crafter.Length > 0 ? $" crafted by {crafter}" : "");
+        return (count, detail);
     }
 
     private static bool DataMatches(ItemDrop.ItemData item, Dictionary<string, object?> data)

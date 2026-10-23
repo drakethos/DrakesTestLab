@@ -1,0 +1,63 @@
+{
+  "name": "M-10 playAs, wards, wardAccess, owner",
+  "description": "",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "guard_stone",
+      "dz": 2,
+      "owner": "Amy",
+      "enabled": true,
+      "radius": 12,
+      "permitted": [
+        "Carol"
+      ],
+      "as": "ward"
+    },
+    {
+      "do": "playAs",
+      "who": "Bob"
+    },
+    {
+      "do": "check",
+      "check": "wardAccess",
+      "expect": false,
+      "label": "Bob is a stranger"
+    },
+    {
+      "do": "playAs",
+      "who": "Carol"
+    },
+    {
+      "do": "check",
+      "check": "wardAccess",
+      "expect": true,
+      "label": "Carol is on the permitted list"
+    },
+    {
+      "do": "playAs",
+      "who": "Amy"
+    },
+    {
+      "do": "check",
+      "check": "wardAccess",
+      "expect": true,
+      "label": "Amy owns it"
+    },
+    {
+      "do": "playAs",
+      "who": "me"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "owner",
+      "target": "ward",
+      "expect": "Amy"
+    },
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

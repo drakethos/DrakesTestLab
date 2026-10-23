@@ -1,0 +1,36 @@
+{
+  "name": "M-12 suite configOverrides and test setConfig",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "config",
+      "guid": "com.drakemods.testlab",
+      "section": "Rules",
+      "key": "FallDamageMultiplier",
+      "expect": "0.25",
+      "label": "the suite override is on"
+    },
+    {
+      "do": "setConfig",
+      "values": {
+        "Rules/FallDamageMultiplier": "0.75"
+      }
+    },
+    {
+      "do": "check",
+      "check": "config",
+      "guid": "com.drakemods.testlab",
+      "section": "Rules",
+      "key": "FallDamageMultiplier",
+      "expect": "0.75",
+      "label": "setConfig changed it for this test"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

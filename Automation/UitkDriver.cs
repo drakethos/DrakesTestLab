@@ -156,6 +156,21 @@ internal static class UitkDriver
         return true;
     }
 
+    /// <summary>Every shown UI Toolkit text (for reports).</summary>
+    public static IEnumerable<string> ShownTexts()
+    {
+        foreach (var doc in UnityEngine.Object.FindObjectsOfType<UIDocument>())
+        {
+            if (doc == null || !doc.isActiveAndEnabled || doc.rootVisualElement == null)
+                continue;
+            foreach (var ve in doc.rootVisualElement.Query<TextElement>().ToList())
+            {
+                if (!string.IsNullOrWhiteSpace(ve.text) && Shown(ve))
+                    yield return $"uitk:{doc.gameObject.name}/{ve.name} = '{ve.text.Replace("\n", " ")}'";
+            }
+        }
+    }
+
     public static bool IsVisible(string query) => Find<VisualElement>(query) != null;
 
     /// <summary>A shown element whose name or whole text is exactly the query (no "contains" match: "Shop" is not "Workshop").</summary>

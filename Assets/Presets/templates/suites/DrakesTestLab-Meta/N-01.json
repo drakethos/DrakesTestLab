@@ -1,0 +1,19 @@
+{
+  "name": "N-01 a failing check fails the test",
+  "description": "Negative test: passes only because the runner reports the failed check.",
+  "steps": [
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "DragonEgg",
+      "label": "a check that cannot pass"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "a check that cannot pass"
+}

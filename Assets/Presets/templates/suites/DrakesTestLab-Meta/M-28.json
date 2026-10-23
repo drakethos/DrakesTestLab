@@ -1,0 +1,53 @@
+{
+  "name": "M-28 relog: built pieces and chest contents survive; tags are found again",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 2.5,
+      "as": "chest",
+      "keep": true
+    },
+    {
+      "do": "give",
+      "prefab": "Flint",
+      "count": 7
+    },
+    {
+      "do": "store",
+      "target": "chest",
+      "prefab": "Flint"
+    },
+    {
+      "do": "relog",
+      "timeout": 240
+    },
+    {
+      "do": "check",
+      "check": "containerHas",
+      "target": "chest",
+      "prefab": "Flint",
+      "count": 7,
+      "label": "the flint is still in the chest after logging out and in"
+    },
+    {
+      "do": "check",
+      "check": "owner",
+      "target": "chest",
+      "expect": "me",
+      "label": "still mine"
+    },
+    {
+      "do": "destroy",
+      "target": "chest"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "timeout": 400
+}

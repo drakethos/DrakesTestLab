@@ -1,0 +1,21 @@
+{
+  "name": "M-13 setConfig is put back after the test",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "config",
+      "guid": "com.drakemods.testlab",
+      "section": "Rules",
+      "key": "FallDamageMultiplier",
+      "expect": "0.25",
+      "label": "back to the suite value"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

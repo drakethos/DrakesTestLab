@@ -1,0 +1,34 @@
+{
+  "name": "M-23 itemClick opens the inventory and clicks a slot",
+  "description": "",
+  "steps": [
+    {
+      "do": "give",
+      "prefab": "Club"
+    },
+    {
+      "do": "itemClick",
+      "prefab": "Club",
+      "button": "right"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "check",
+      "check": "equipped",
+      "prefab": "Club",
+      "label": "right-clicking the club wields it, like a player"
+    },
+    {
+      "do": "closeUi"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

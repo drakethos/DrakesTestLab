@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using DrakesTestLab.Bootstrap;
 using DrakesTestLab.Cases;
@@ -25,7 +26,7 @@ internal static class StepNames
     public static readonly string[] All =
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
-        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "use"
+        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "use"
     };
 }
 
@@ -307,7 +308,12 @@ internal static class Steps
             case "interact": Interact(step, ctx); return null;
             case "click": Ok(UiDriver.Click(step.First("button", "target", "name"))); return null;
             case "toggle": Ok(UiDriver.SetToggle(step.First("toggle", "target", "name"), step.Bool("value", true))); return null;
-            case "type": Ok(UiDriver.Type(step.First("field", "target", "name"), step.Str("text"))); return null;
+            case "type":
+                Ok(UiDriver.Type(step.First("field", "target", "name"), step.Str("text")));
+                // "submit": true = confirm the game's text prompt (its OK / Enter), e.g. a sign saves its text
+                if (step.Bool("submit") && TextInput.instance != null && TextInput.IsVisible())
+                    (AccessTools.Method(typeof(TextInput), "OnEnter") ?? throw new StepFailed("TextInput.OnEnter not found")).Invoke(TextInput.instance, null);
+                return null;
             case "presskey": return PressKey(step);
             case "closeui":
                 if (InventoryGui.instance != null && InventoryGui.IsVisible()) InventoryGui.instance.Hide();
@@ -389,6 +395,9 @@ internal static class Steps
             case "place":
                 // "expect": false = the game should refuse it (hidden piece, admin-only, missing materials): recorded as a check
                 return step.Has("expect") && !step.Bool("expect") ? ExpectRefused(UiSteps.Place(step, ctx), step, ctx) : UiSteps.Place(step, ctx);
+            case "store":
+                Store(step, ctx);
+                return null;
             case "destroy":
             {
                 var go = Targets.Find(ctx, Need(step, "target")) ?? throw new StepFailed($"nothing named '{step.Str("target")}' to destroy");
@@ -415,6 +424,32 @@ internal static class Steps
     {
         if (error.Length > 0)
             throw new StepFailed(error);
+    }
+
+    /// <summary>
+    /// Puts items from your inventory into a container, as dragging them in does (custom data, crafter and quality come along):
+    /// target, prefab, count (default the whole stack), index / match for which stack.
+    /// </summary>
+    private static void Store(Dictionary<string, object?> step, RunContext ctx)
+    {
+        var go = Targets.Find(ctx, Need(step, "target")) ?? throw new StepFailed($"nothing named '{step.Str("target")}' to store into");
+        var container = go.GetComponentInChildren<Container>() ?? go.GetComponentInParent<Container>() ?? throw new StepFailed($"'{step.Str("target")}' is not a container");
+        var prefab = Need(step, "prefab");
+        var match = step.Str("match");
+        var stacks = P.GetInventory().GetAllItems()
+            .Where(i => i.m_dropPrefab != null && i.m_dropPrefab.name.Equals(prefab, StringComparison.OrdinalIgnoreCase)
+                        && (match.Length == 0 || Localization.instance.Localize(i.m_shared.m_name).IndexOf(match, StringComparison.OrdinalIgnoreCase) >= 0))
+            .ToList();
+        var index = (int)step.Num("index", 0);
+        if (stacks.Count <= index)
+            throw new StepFailed($"no {prefab} in the inventory to store");
+        var item = stacks[index];
+        var count = Mathf.Min((int)step.Num("count", item.m_stack), item.m_stack);
+        var moved = item.Clone();
+        moved.m_stack = count;
+        if (!container.GetInventory().AddItem(moved))
+            throw new StepFailed($"'{step.Str("target")}' has no room for {count} {prefab}");
+        P.GetInventory().RemoveItem(item, count);
     }
 
     private static IEnumerator Teleport(Dictionary<string, object?> step, RunContext ctx)

@@ -1,0 +1,67 @@
+{
+  "name": "M-24 type into a sign (TextInput), zdo",
+  "description": "",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "sign",
+      "dz": 2.5,
+      "as": "sign"
+    },
+    {
+      "do": "interact",
+      "target": "sign"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "TextInput",
+      "label": "the sign asks for text"
+    },
+    {
+      "do": "type",
+      "field": "*",
+      "text": "Meta was here",
+      "submit": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "TextInput",
+      "expect": false,
+      "label": "submit closed the prompt"
+    },
+    {
+      "do": "check",
+      "check": "zdo",
+      "target": "sign",
+      "key": "text",
+      "contains": "Meta was here",
+      "label": "the sign saved the text"
+    },
+    {
+      "do": "check",
+      "check": "hoverText",
+      "target": "sign",
+      "contains": "Meta was here",
+      "label": "and shows it"
+    },
+    {
+      "do": "closeUi"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

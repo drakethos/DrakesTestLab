@@ -1,0 +1,73 @@
+{
+  "name": "M-27 message and unlockShown capture, logContains, log, screenshot",
+  "description": "",
+  "steps": [
+    {
+      "do": "craft",
+      "prefab": "Hammer"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.1
+    },
+    {
+      "do": "spawn",
+      "prefab": "guard_stone",
+      "dz": 2,
+      "owner": "Amy",
+      "enabled": true,
+      "radius": 12
+    },
+    {
+      "do": "spawn",
+      "prefab": "piece_chest_wood",
+      "dz": 3,
+      "owner": "Amy",
+      "as": "chest"
+    },
+    {
+      "do": "playAs",
+      "who": "Bob"
+    },
+    {
+      "do": "interact",
+      "target": "chest"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "check",
+      "check": "uiVisible",
+      "name": "InventoryGui",
+      "expect": false,
+      "label": "no chest window for Bob"
+    },
+    {
+      "do": "playAs",
+      "who": "me"
+    },
+    {
+      "do": "log",
+      "message": "meta log line"
+    },
+    {
+      "do": "screenshot",
+      "name": "meta-proof"
+    },
+    {
+      "do": "check",
+      "check": "logContains",
+      "text": "Now playing as Bob",
+      "source": "DrakesTestLab",
+      "label": "the run logs who I play as"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

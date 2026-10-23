@@ -1,0 +1,29 @@
+{
+  "name": "N-02 a failing check without stop lets the steps go on",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "DragonEgg",
+      "label": "first failing check"
+    },
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 1
+    }
+  ],
+  "asserts": [
+    {
+      "check": "hasItem",
+      "prefab": "Wood",
+      "label": "the step after the failed check still ran"
+    },
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "first failing check"
+}

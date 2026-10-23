@@ -1,0 +1,47 @@
+{
+  "name": "M-02 craft (free and by someone else) sets the real crafter",
+  "description": "",
+  "steps": [
+    {
+      "do": "craft",
+      "prefab": "Hammer"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Hammer",
+      "label": "crafted"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Hammer",
+      "crafter": "me",
+      "label": "crafted by me"
+    },
+    {
+      "do": "craft",
+      "prefab": "Torch",
+      "by": "Alice"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Torch",
+      "crafter": "Alice",
+      "label": "crafted by Alice"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Club",
+      "label": "nothing else appeared"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

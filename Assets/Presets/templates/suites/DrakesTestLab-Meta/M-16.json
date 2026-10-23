@@ -1,0 +1,67 @@
+{
+  "name": "M-16 test setup: items, skills, vitals, keys",
+  "description": "",
+  "steps": [
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Bronze",
+      "count": 5,
+      "label": "setup items"
+    },
+    {
+      "do": "check",
+      "check": "equipped",
+      "prefab": "HelmetBronze",
+      "label": "setup equip"
+    },
+    {
+      "do": "check",
+      "check": "skill",
+      "name": "Swords",
+      "min": 40,
+      "label": "setup skills"
+    },
+    {
+      "do": "check",
+      "check": "stat",
+      "name": "carryWeight",
+      "min": 999,
+      "label": "carry weight from setup"
+    },
+    {
+      "do": "check",
+      "check": "globalKey",
+      "key": "defeated_eikthyr",
+      "label": "setup world key"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "setup": {
+    "items": [
+      {
+        "prefab": "Bronze",
+        "count": 5
+      },
+      {
+        "prefab": "HelmetBronze",
+        "equip": true
+      }
+    ],
+    "skills": [
+      {
+        "name": "Swords",
+        "level": 40
+      }
+    ],
+    "carryWeight": 1000,
+    "globalKeys": [
+      "defeated_eikthyr"
+    ]
+  }
+}

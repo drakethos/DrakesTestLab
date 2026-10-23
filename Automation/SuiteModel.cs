@@ -34,6 +34,9 @@ internal sealed class TestDef
     public List<Dictionary<string, object?>> Asserts = new();
     public bool ManualOnly;
     public float TimeoutSeconds = -1f;
+    /// <summary>A negative test: it passes only when it fails (and, with <see cref="ExpectFailureContains"/>, for that reason).</summary>
+    public bool ExpectFailure;
+    public string ExpectFailureContains = "";
     public string LoadError = "";
 }
 
@@ -485,6 +488,12 @@ internal static class SuiteLoader
             test.Description = d.Str("description");
             test.ManualOnly = d.Bool("manualOnly");
             test.TimeoutSeconds = d.Num("timeout", -1f);
+            // "expectFailure": true, or the text the failure reason must contain
+            if (d.TryGetValue("expectFailure", out var ef) && ef != null)
+            {
+                test.ExpectFailure = ef is not bool b || b;
+                test.ExpectFailureContains = ef is string text ? text : "";
+            }
             test.Setup = ReadSetup(d.Obj("setup"), $"Test '{suite.Name}/{test.Name}'");
 
             // a test may bring its own blocks / functions, or include a library, on top of the suite's

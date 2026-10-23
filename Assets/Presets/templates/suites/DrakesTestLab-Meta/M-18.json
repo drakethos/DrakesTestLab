@@ -1,0 +1,29 @@
+{
+  "name": "M-18 case step: apply a shipped case",
+  "description": "",
+  "steps": [
+    {
+      "do": "case",
+      "name": "builder-sandbox"
+    },
+    {
+      "do": "check",
+      "check": "globalKey",
+      "key": "AllPiecesUnlocked",
+      "label": "everything unlocked"
+    },
+    {
+      "do": "check",
+      "check": "stat",
+      "name": "carryWeight",
+      "min": 1000,
+      "label": "huge carry weight"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

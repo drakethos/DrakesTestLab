@@ -1,0 +1,66 @@
+{
+  "name": "M-19 hook and lastResult compares",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": "hello world"
+      },
+      "expect": "hello world"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": "hello world"
+      },
+      "contains": "world"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": "hello world"
+      },
+      "notContains": "bye"
+    },
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 3
+    },
+    {
+      "do": "hook",
+      "name": "testlab.inventoryCount"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "the last hook answer is kept"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": 42
+      },
+      "expect": "42"
+    },
+    {
+      "check": "hook",
+      "name": "testlab.echo",
+      "args": {
+        "value": true
+      }
+    },
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

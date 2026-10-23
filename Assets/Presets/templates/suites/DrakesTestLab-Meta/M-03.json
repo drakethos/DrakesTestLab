@@ -1,0 +1,42 @@
+{
+  "name": "M-03 real-cost craft at a placed workbench (materialsFor, station)",
+  "description": "",
+  "steps": [
+    {
+      "do": "give",
+      "materialsFor": "AxeFlint"
+    },
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "dz": 3,
+      "dx": 2,
+      "as": "bench"
+    },
+    {
+      "do": "craft",
+      "prefab": "AxeFlint",
+      "free": false,
+      "station": "bench"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "AxeFlint",
+      "crafter": "me",
+      "label": "the flint axe was made"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Flint",
+      "label": "the flint was used up"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

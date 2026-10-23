@@ -1,0 +1,26 @@
+{
+  "name": "M-29 wait until (a check that becomes true)",
+  "description": "",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Boar",
+      "dz": 6
+    },
+    {
+      "do": "wait",
+      "until": {
+        "check": "objectNear",
+        "target": "Boar",
+        "radius": 12
+      },
+      "timeout": 5
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "name": "M-01 give, hasItem, noItem, equipped, clearInventory",
+  "description": "",
+  "steps": [
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 25
+    },
+    {
+      "do": "give",
+      "prefab": "SwordBronze",
+      "quality": 3
+    },
+    {
+      "do": "give",
+      "prefab": "ShieldWood",
+      "equip": true
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Wood",
+      "count": 25,
+      "label": "at least 25 wood"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "SwordBronze",
+      "quality": 3,
+      "label": "the sword at quality 3"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Stone",
+      "label": "no stone in the bag"
+    },
+    {
+      "do": "check",
+      "check": "equipped",
+      "prefab": "ShieldWood",
+      "label": "the shield is worn"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Wood",
+      "crafter": "none",
+      "label": "given items are unowned"
+    },
+    {
+      "do": "clearInventory"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Wood",
+      "label": "clearInventory empties the bag"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "ShieldWood",
+      "label": "and takes off worn items"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

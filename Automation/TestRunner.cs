@@ -67,6 +67,8 @@ internal static class TestRunner
     {
         // DrakesTestLab's own hooks, as an example and for the self-test suite
         TestHooks.Register("testlab.echo", args => args.TryGetValue("value", out var v) ? v : null, "DrakesTestLab");
+        // is this key held as the game sees it (Input.GetKey, which holdKey / pressKey drive)? key: a Unity KeyCode name
+        TestHooks.Register("testlab.keyHeld", args => args.TryGetValue("key", out var k) && Enum.TryParse<KeyCode>(Convert.ToString(k), true, out var code) && Input.GetKey(code), "DrakesTestLab");
         TestHooks.Register("testlab.inventoryCount", _ => Player.m_localPlayer != null ? Player.m_localPlayer.GetInventory().NrOfItems() : -1, "DrakesTestLab");
     }
 
@@ -438,6 +440,10 @@ internal static class TestRunner
                 yield return new WaitForSecondsRealtime(delay);
         }
 
+        // a step that waits stops quietly at the deadline; a timeout during the last step must still fail the test
+        if (failure.Length == 0 && ctx.TimedOut)
+            failure = $"timed out after {timeout:0} s";
+
         if (failure.Length == 0)
         {
             Status = $"{suite.Name} / {test.Name}: checking";
@@ -446,8 +452,18 @@ internal static class TestRunner
         }
 
         var anyFailed = failure.Length > 0 || result.Asserts.Exists(r => !r.Passed);
-        result.Status = anyFailed ? TestStatus.Failed : TestStatus.Passed;
         result.Reason = failure.Length > 0 ? failure : anyFailed ? FirstFailedAssert(result) : "";
+        if (test.ExpectFailure && failure != "stopped")
+        {
+            // a negative test (does the runner catch this?): failing the expected way is a pass
+            var expected = test.ExpectFailureContains;
+            var asExpected = anyFailed && (expected.Length == 0 || result.Reason.IndexOf(expected, StringComparison.OrdinalIgnoreCase) >= 0);
+            result.Reason = asExpected ? "failed as expected: " + result.Reason
+                : anyFailed ? $"failed, but not with '{expected}': {result.Reason}"
+                : "expected this test to fail, but it passed";
+            anyFailed = !asExpected;
+        }
+        result.Status = anyFailed ? TestStatus.Failed : TestStatus.Passed;
         var mode = ScreenshotMode;
         if (mode == "Always" || (anyFailed && mode == "Failures"))
         {

@@ -1,0 +1,22 @@
+{
+  "name": "N-04 a failing assert fails the test",
+  "description": "",
+  "steps": [],
+  "asserts": [
+    {
+      "check": "noItem",
+      "prefab": "Wood",
+      "label": "fine"
+    },
+    {
+      "check": "globalKey",
+      "key": "drake_meta_never",
+      "label": "an assert that cannot pass"
+    },
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "expectFailure": "an assert that cannot pass"
+}
