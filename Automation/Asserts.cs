@@ -111,7 +111,7 @@ internal static class Asserts
             }
             case "uivisible":
             {
-                var visible = UiDriver.IsVisible(a.First("name", "target"));
+                var visible = a.Bool("exact", false) ? UiDriver.IsVisibleExact(a.First("name", "target")) : UiDriver.IsVisible(a.First("name", "target"));
                 var want = a.Bool("expect", true);
                 return (visible == want, visible ? "visible" : "not visible");
             }

@@ -153,6 +153,19 @@ internal static class UiDriver
         return Find<Button>(name) != null || FindText(name) != null || UitkDriver.IsVisible(name);
     }
 
+    /// <summary>Only a label or element that is exactly this text (or named so) counts: for "this tab is NOT there" checks.</summary>
+    public static bool IsVisibleExact(string name)
+    {
+        var q = name.Trim();
+        foreach (var t in UnityEngine.Object.FindObjectsOfType<TMP_Text>())
+        {
+            if (t != null && t.gameObject.activeInHierarchy && string.Equals(t.text.Trim(), q, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return UitkDriver.IsVisibleExact(q);
+    }
+
     /// <summary>Button / toggle / field clickable right now? null = not found.</summary>
     public static bool? IsEnabled(string query)
     {

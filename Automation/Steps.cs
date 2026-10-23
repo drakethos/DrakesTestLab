@@ -57,12 +57,43 @@ internal static class Steps
         return null;
     }
 
+    private static IEnumerator ExpectRefused(IEnumerator inner, Dictionary<string, object?> step, RunContext ctx)
+    {
+        string? refusal = null;
+        while (true)
+        {
+            bool more;
+            try
+            {
+                more = inner.MoveNext();
+            }
+            catch (StepFailed ex)
+            {
+                refusal = ex.Message;
+                break;
+            }
+
+            if (!more)
+                break;
+            yield return inner.Current;
+        }
+
+        var r = new AssertResult
+        {
+            Description = (step.Has("label") ? step.Str("label") + ": " : "") + "refused: " + J.Describe(step),
+            Passed = refusal != null,
+            Detail = refusal ?? "it was allowed"
+        };
+        ctx.Result.Asserts.Add(r);
+        ctx.Log($"  check {(r.Passed ? "ok" : "FAILED")}: {r.Detail}");
+    }
+
     /// <summary>
     /// Crafts through the game's own crafting code, so the item gets a real crafter (owner) like a player made it.
     /// "by": craft as someone else (Alice, Bob, Name:123), then switch back. "free": false = needs the materials
     /// (and the station level); default true = no cost. "count" crafts several times.
     /// </summary>
-    private static void Craft(Dictionary<string, object?> step)
+    private static void Craft(Dictionary<string, object?> step, RunContext ctx)
     {
         var prefab = Need(step, "prefab");
         var go = ObjectDB.instance != null ? ObjectDB.instance.GetItemPrefab(prefab) : null;
@@ -78,6 +109,22 @@ internal static class Steps
             WardTools.PlayAs(WardTools.Parse(by), applyLook: false);
 
         var player = P;
+        // "station": a placed crafting station (tag or prefab) to craft at, as if its window were open. Its roof / fire requirement
+        // is waived for this craft so a test can run anywhere.
+        CraftingStation? station = null;
+        bool oldRoof = false, oldFire = false;
+        var stationName = step.Str("station");
+        if (stationName.Length > 0)
+        {
+            var stationGo = Targets.Find(ctx, stationName) ?? throw new StepFailed($"no crafting station '{stationName}' nearby");
+            station = stationGo.GetComponentInChildren<CraftingStation>() ?? throw new StepFailed($"'{stationName}' is not a crafting station");
+            oldRoof = station.m_craftRequireRoof;
+            oldFire = station.m_craftRequireFire;
+            station.m_craftRequireRoof = false;
+            station.m_craftRequireFire = false;
+            AccessTools.Method(typeof(Player), "SetCraftingStation")?.Invoke(player, new object?[] { station });
+        }
+
         var noCost = AccessTools.Field(typeof(Player), "m_noPlacementCost");
         var oldNoCost = noCost?.GetValue(player);
         var doCrafting = AccessTools.Method(typeof(InventoryGui), "DoCrafting") ?? throw new StepFailed("InventoryGui.DoCrafting not found");
@@ -99,6 +146,12 @@ internal static class Steps
         {
             noCost?.SetValue(player, oldNoCost);
             AccessTools.Field(typeof(InventoryGui), "m_craftRecipe")?.SetValue(gui, null);
+            if (station != null)
+            {
+                station.m_craftRequireRoof = oldRoof;
+                station.m_craftRequireFire = oldFire;
+                AccessTools.Method(typeof(Player), "SetCraftingStation")?.Invoke(player, new object?[] { null });
+            }
             if (by.Length > 0)
                 WardTools.PlayAs(previous, applyLook: false);
         }
@@ -236,7 +289,7 @@ internal static class Steps
                         maker?.Id ?? 0L, maker?.Name ?? "") == 0)
                     throw new StepFailed($"could not give '{step.Str("prefab")}'");
                 return null;
-            case "craft": Craft(step); return null;
+            case "craft": Craft(step, ctx); return null;
             case "clearinventory":
                 P.UnequipAllItems();
                 P.GetInventory().RemoveAll();
@@ -333,7 +386,9 @@ internal static class Steps
             case "lookat": return UiSteps.LookAt(step, ctx);
             case "setlanguage": LanguageSwitch.Set(Need(step, "language")); return null;
             case "drop": UiSteps.Drop(step, ctx); return null;
-            case "place": return UiSteps.Place(step, ctx);
+            case "place":
+                // "expect": false = the game should refuse it (hidden piece, admin-only, missing materials): recorded as a check
+                return step.Has("expect") && !step.Bool("expect") ? ExpectRefused(UiSteps.Place(step, ctx), step, ctx) : UiSteps.Place(step, ctx);
             case "destroy":
             {
                 var go = Targets.Find(ctx, Need(step, "target")) ?? throw new StepFailed($"nothing named '{step.Str("target")}' to destroy");

@@ -150,7 +150,7 @@ owner check, `as(who, steps)`.
 
 | Step | Fields | Does |
 |---|---|---|
-| `craft` | `prefab`, `count`, `by` (craft as Alice/Bob/...), `free` (default true; false = needs materials) | Crafts through the game's crafting code: the item gets a **real crafter/owner** |
+| `craft` | `prefab`, `count`, `by` (craft as Alice/Bob/...), `free` (default true; false = needs materials), `station` (tag of a placed station to craft at; needed for real-cost station recipes; roof/fire waived) | Crafts through the game's crafting code: the item gets a **real crafter/owner** |
 | `give` | `prefab`, `count`, `quality`, `equip`, `crafter`; or `materialsFor` (+ `count`, `quality`) | Adds items. Without `crafter` they are unowned (like loot). `materialsFor` gives an item recipe's or a building piece's cost (pair with `craft` `"free": false`) |
 | `spawn` | `prefab`, `dx`/`dz` or `x`/`z`, `owner`, `as` (tag), `count`, `level`, `yaw`, `keep`; wards: `enabled`, `permitted`, `radius` | Places pieces (with owner), creatures, wards |
 | `playAs` | `who`: `me`, `Alice`, `Amy`, `Bob`, `Carol`, any name, `Name:12345` | Become another player (player id + name change; ownership and wards follow) |
@@ -171,7 +171,7 @@ owner check, `as(who, steps)`.
 ### Checks
 
 `hasItem` (prefab, count, quality, data), `noItem`, `equipped`, `globalKey`, `objectNear`, `owner` (piece creator), `zdo`,
-`uiVisible`, `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
+`uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
 `hoverText`, `containerHas`, `logContains`, `noErrors` (`source`), `config`, `skill`, `stat`, `position`, `guardianPower`,
 `wardAccess`, `lastResult`, `hook`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,
 `notContains`, `min`, `max`.

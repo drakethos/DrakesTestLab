@@ -13,7 +13,10 @@ internal static class UitkDriver
 {
     private static IEnumerable<VisualElement> All()
     {
-        foreach (var doc in UnityEngine.Object.FindObjectsOfType<UIDocument>())
+        // topmost window first (a dialog over a window wins, like the player's click would)
+        var docs = UnityEngine.Object.FindObjectsOfType<UIDocument>();
+        Array.Sort(docs, (a, b) => Order(b).CompareTo(Order(a)));
+        foreach (var doc in docs)
         {
             if (doc == null || !doc.isActiveAndEnabled)
                 continue;
@@ -24,6 +27,9 @@ internal static class UitkDriver
                 yield return ve;
         }
     }
+
+    private static float Order(UIDocument doc) =>
+        (doc.panelSettings != null ? doc.panelSettings.sortingOrder : 0f) * 1000f + doc.sortingOrder;
 
     public static bool Shown(VisualElement ve)
     {
@@ -116,6 +122,17 @@ internal static class UitkDriver
         return true;
     }
 
+    private static T? FirstShown<T>() where T : VisualElement
+    {
+        foreach (var ve in All())
+        {
+            if (ve is T typed && Shown(ve))
+                return typed;
+        }
+
+        return null;
+    }
+
     public static bool SetToggle(string query, bool value)
     {
         var toggle = Find<Toggle>(query);
@@ -127,7 +144,8 @@ internal static class UitkDriver
 
     public static bool Type(string query, string text)
     {
-        var field = Find<TextField>(query);
+        // "*" = the text field of the topmost window (e.g. a name prompt that just opened)
+        var field = query.Trim() == "*" ? FirstShown<TextField>() : Find<TextField>(query);
         if (field == null)
             return false;
         // like typing or pasting: the field's own character limit applies
@@ -139,6 +157,19 @@ internal static class UitkDriver
     }
 
     public static bool IsVisible(string query) => Find<VisualElement>(query) != null;
+
+    /// <summary>A shown element whose name or whole text is exactly the query (no "contains" match: "Shop" is not "Workshop").</summary>
+    public static bool IsVisibleExact(string query)
+    {
+        var q = query.Trim();
+        foreach (var ve in All())
+        {
+            if (Shown(ve) && (string.Equals(ve.name, q, StringComparison.OrdinalIgnoreCase) || string.Equals(TextOf(ve).Trim(), q, StringComparison.OrdinalIgnoreCase)))
+                return true;
+        }
+
+        return false;
+    }
 
     public static string? Text(string query)
     {

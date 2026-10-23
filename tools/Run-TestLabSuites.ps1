@@ -76,6 +76,61 @@ if ($StepDelay -ge 0) {
     $launchArgs += @('-testlab-delay', [string]::Format([Globalization.CultureInfo]::InvariantCulture, '{0}', $StepDelay))
 }
 
+# ---- settings some mods only read at game start ("launchConfig" in a suite.json): written into the mod's cfg before
+# launching and put back afterwards (the mod itself never edits configs)
+$suitesDir = Join-Path $bepInEx 'config\DrakesTestLab\suites'
+$restoreCfg = @{}
+
+function Set-IniValue([string]$Path, [string]$Section, [string]$Key, [string]$Value) {
+    $lines = [System.Collections.Generic.List[string]]::new()
+    if (Test-Path -LiteralPath $Path) { $lines.AddRange([string[]]((Get-Content -LiteralPath $Path -Raw) -split "`r?`n")) }
+    $header = "[$Section]"
+    $start = -1
+    for ($i = 0; $i -lt $lines.Count; $i++) { if ($lines[$i].Trim() -eq $header) { $start = $i; break } }
+    if ($start -lt 0) {
+        $lines.Add(''); $lines.Add($header); $lines.Add("$Key = $Value")
+    } else {
+        $done = $false
+        for ($i = $start + 1; $i -lt $lines.Count; $i++) {
+            $t = $lines[$i].Trim()
+            if ($t.StartsWith('[')) { break }
+            if ($t -match "^$([regex]::Escape($Key))\s*=") { $lines[$i] = "$Key = $Value"; $done = $true; break }
+        }
+        if (-not $done) { $lines.Insert($start + 1, "$Key = $Value") }
+    }
+    [IO.File]::WriteAllText($Path, ($lines -join "`r`n"))
+}
+
+function Restore-LaunchConfig {
+    foreach ($path in $restoreCfg.Keys) {
+        if ($null -eq $restoreCfg[$path]) { Remove-Item -LiteralPath $path -ErrorAction SilentlyContinue }
+        else { [IO.File]::WriteAllText($path, $restoreCfg[$path]) }
+    }
+    $restoreCfg.Clear()
+}
+
+function Finish([int]$Code) {
+    Restore-LaunchConfig
+    exit $Code
+}
+
+if (Test-Path -LiteralPath $suitesDir) {
+    $wanted = if ($Suites -eq 'all') { $null } else { $Suites.Split(',') | ForEach-Object { $_.Trim() } }
+    foreach ($dir in Get-ChildItem -LiteralPath $suitesDir -Directory) {
+        if ($dir.Name.StartsWith('_') -or ($wanted -and $wanted -notcontains $dir.Name)) { continue }
+        $file = Join-Path $dir.FullName 'suite.json'
+        if (-not (Test-Path -LiteralPath $file)) { continue }
+        try { $suite = Get-Content -LiteralPath $file -Raw | ConvertFrom-Json } catch { continue }
+        foreach ($c in @($suite.launchConfig)) {
+            if (-not $c -or -not $c.guid) { continue }
+            $cfg = Join-Path $bepInEx "config\$($c.guid).cfg"
+            if (-not $restoreCfg.ContainsKey($cfg)) { $restoreCfg[$cfg] = if (Test-Path -LiteralPath $cfg) { [IO.File]::ReadAllText($cfg) } else { $null } }
+            Set-IniValue $cfg $c.section $c.key ([string]$c.value)
+            Write-Host "Launch setting for $($dir.Name): [$($c.section)] $($c.key) = $($c.value)"
+        }
+    }
+}
+
 $started = Get-Date
 Write-Host "DrakesTestLab: running suites '$Suites' with profile $ProfilePath"
 Start-Process -FilePath $SteamExe -ArgumentList $launchArgs | Out-Null
@@ -90,7 +145,7 @@ while (-not $game -and (Get-Date) -lt $deadline) {
 
 if (-not $game) {
     Write-Host 'Valheim did not start within 2 minutes.'
-    exit 3
+    Finish 3
 }
 
 Write-Host "Valheim started (pid $($game.Id)); waiting for the tests..."
@@ -135,14 +190,14 @@ if (& $haveResults) {
 
     Write-Host ''
     Write-Host "Details: $latest"
-    if ([int]$r.failed -gt 0) { exit 1 }
+    if ([int]$r.failed -gt 0) { Finish 1 }
     if ($r.complete -eq $false) {
         Write-Host 'The run did not finish (game closed or timed out): the results above are what it got to.'
-        exit 3
+        Finish 3
     }
-    exit 0
+    Finish 0
 }
 
 Write-Host 'No new results were written (the game may have crashed or never reached the test world).'
 Write-Host "Check $(Join-Path $bepInEx 'LogOutput.log')"
-exit 3
+Finish 3
