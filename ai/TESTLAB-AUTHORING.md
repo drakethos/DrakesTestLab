@@ -163,10 +163,10 @@ owner check, `as(who, steps)`.
 | `interact` | `target`, `alt`, `hold` | Press E on an object; the game's answer becomes `lastResult` |
 | `click` / `toggle` / `type` | `button` / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label |
 | `pressKey` | `button` (Use, Inventory, Jump...) or `key`, `frames` | Fake key press the game reads as real |
-| `teleport`, `face`, `wait` | position or `target`; `seconds` or `until` + `timeout` | Movement and timing |
+| `teleport`, `face`, `wait` | position or `target` (teleport: `yaw` to face a way); `seconds` or `until` + `timeout` | Movement and timing |
 | `invoke` | `method` (`Namespace.Type.Member`), `args` | Calls a static method / reads a static property; result = `lastResult` |
 | `relog` | `timeout` | Persistence: log out and load the same world and character back (no restart); tags re-found |
-| `store` | `target`, `prefab`, `count`, `index`/`match` | Put an inventory stack into a chest (custom data and crafter kept) |
+| `store` / `take` | `target`, `prefab`, `count`, `index`/`match` | Put an inventory stack into a chest / take items out of one |
 | `clearInventory`, `closeUi`, `destroy`, `reset` | | Housekeeping |
 | `screenshot`, `log`, `checkpoint` | `name` / `message` / `message` | Proof and notes; checkpoint asks a person |
 
@@ -250,3 +250,9 @@ Results: `BepInEx/config/DrakesTestLab/results/latest.html` (report with screens
 - Settings the mod only reads at startup or registration (recipes, prefab sizes) may not change live; check them, and mark live-toggle behaviour as manual if needed.
 - Copy the suite folder **with** its `_blocks/` / `_functions/` / `_shared/` subfolders (and any `suites/_Shared/` it includes) into the profile. `_lib/` ships with DrakesTestLab.
 - Check the mod's own errors with `{ "check": "noErrors", "source": "<BepInEx log source of the mod>" }` in every test.
+
+## Recorded tests and saved cases
+
+Players can record a test in game (F9 > Tests > Record) and save the current game as a case (F9 > Cases). Those files use the same
+steps and case fields as hand-written ones (`pieces`, `configs`, item `crafter` / `data`), so treat them as a first draft: rename
+tags, drop accidental steps, turn recorded checks into the ones the test is really about.

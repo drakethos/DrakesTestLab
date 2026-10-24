@@ -1,0 +1,104 @@
+{
+  "name": "M-31 the recorder turns actions into steps",
+  "description": "",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.recordStart",
+      "args": {
+        "setup": false
+      },
+      "expect": true
+    },
+    {
+      "do": "craft",
+      "prefab": "Hammer"
+    },
+    {
+      "do": "give",
+      "prefab": "Stone",
+      "count": 5
+    },
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 3,
+      "as": "box"
+    },
+    {
+      "do": "playAs",
+      "who": "Bob"
+    },
+    {
+      "do": "playAs",
+      "who": "me"
+    },
+    {
+      "do": "console",
+      "command": "setkey drake_meta_recorded"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStop",
+      "label": "stop"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 6,
+      "label": "at least six steps were recorded"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=craft, prefab=Hammer",
+      "label": "the craft"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=give, prefab=Stone, count=5",
+      "label": "the give"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=place, prefab=piece_chest_wood",
+      "label": "the place"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "as=chest1",
+      "label": "the new chest got a tag"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=playAs, who=Bob",
+      "label": "play as Bob"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=console, command=setkey drake_meta_recorded",
+      "label": "the console command"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordSave",
+      "args": {
+        "suite": "_recorded-meta",
+        "name": "recorded"
+      },
+      "contains": "recorded.json",
+      "label": "saved as a test"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

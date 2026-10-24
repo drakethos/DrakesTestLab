@@ -14,6 +14,8 @@ internal sealed class TestsTab : ToolboxTab
 
     public override string Title => "Tests";
 
+    public override string Group => "Tests";
+
     public override string Badge
     {
         get
@@ -70,11 +72,11 @@ internal sealed class TestsTab : ToolboxTab
         }
 
         GUILayout.EndHorizontal();
-        GUILayout.Label($"<color=#999999>Tests run with the toolbox closed so the game takes input; {cfg.StopTestsKey.Value} stops them. Unattended runs: [Automation] RunOnLaunch in the config.</color>");
+        Ui.Hint($"Tests run with the lab closed so the game takes input; {cfg.StopTestsKey.Value} stops them.");
 
         // ---- suites
         Ui.Header($"Suites ({TestRunner.Suites.Count})");
-        GUILayout.Label($"<color=#999999>{SuiteLoader.Folder}</color>");
+        Ui.Hint(SuiteLoader.Folder);
         Ui.Row(("Copy suites folder path", () => Ui.Copy(SuiteLoader.Folder)),
             ("Copy results folder path", () => Ui.Copy(SuiteLoader.ResultsFolder)),
             ("Documentation", () => Application.OpenURL("https://github.com/drakethos/DrakesTestLab/wiki/Automation")));
@@ -102,7 +104,7 @@ internal sealed class TestsTab : ToolboxTab
                 continue;
 
             if (suite.Description.Length > 0)
-                GUILayout.Label($"<color=#999999>{suite.Description}</color>");
+                Ui.Hint(suite.Description);
 
             foreach (var test in suite.Tests)
             {
@@ -121,7 +123,7 @@ internal sealed class TestsTab : ToolboxTab
                 GUILayout.EndHorizontal();
 
                 if (test.Description.Length > 0)
-                    GUILayout.Label($"      <color=#999999>{test.Description}</color>");
+                    Ui.Hint("      " + test.Description);
                 if (test.LoadError.Length > 0)
                     GUILayout.Label($"      <color=#ff7070>Could not read: {test.LoadError}</color>");
                 if (result != null && result.Reason.Length > 0)
@@ -139,7 +141,7 @@ internal sealed class TestsTab : ToolboxTab
             if (TestRunner.LastResultsFile.Length > 0)
             {
                 var report = System.IO.Path.Combine(SuiteLoader.ResultsFolder, "latest.html");
-                GUILayout.Label($"<color=#999999>Report (open in a browser): {report}</color>");
+                Ui.Hint($"Report (open in a browser): {report}");
                 Ui.Row(("Copy report path", () => Ui.Copy(report)),
                     ("Copy results file path", () => Ui.Copy(TestRunner.LastResultsFile)));
             }
@@ -147,8 +149,7 @@ internal sealed class TestsTab : ToolboxTab
 
         // ---- picker
         Ui.Header("UI picker");
-        GUILayout.Label("Turn it on, close the toolbox, hover any game button or window and press " +
-                        $"{cfg.PickerKey.Value}: its name is copied for a \"click\" step or a \"uiVisible\" check.");
+        Ui.Hint($"Turn it on, close the lab, hover a game button or window and press {cfg.PickerKey.Value}: its name is copied for a click step or a uiVisible check.");
         UiPicker.Active = GUILayout.Toggle(UiPicker.Active, "UI picker on");
 
         Ui.Header("Test hooks from mods");
@@ -158,8 +159,8 @@ internal sealed class TestsTab : ToolboxTab
             : "<color=#999999>" + string.Join(", ", hooks) + "</color>");
 
         Ui.Header("Step and check names");
-        GUILayout.Label("<color=#999999>Steps: " + string.Join(", ", Steps.Names) + "</color>");
-        GUILayout.Label("<color=#999999>Checks: " + string.Join(", ", Asserts.Names) + "</color>");
+        Ui.Hint("Steps: " + string.Join(", ", Steps.Names));
+        Ui.Hint("Checks: " + string.Join(", ", Asserts.Names));
     }
 
     private static void RunAndClose(System.Action run)

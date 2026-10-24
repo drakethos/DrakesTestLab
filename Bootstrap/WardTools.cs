@@ -84,6 +84,12 @@ internal static class WardTools
     /// </summary>
     public static bool PlayAs(Identity who, bool applyLook = true)
     {
+        if (Automation.Recorder.Active)
+            Automation.Recorder.Add(new System.Collections.Generic.Dictionary<string, object?>
+            {
+                ["do"] = "playAs", ["who"] = ReferenceEquals(who, _original) || (_original != null && who.Id == _original.Id) ? "me" : Cases.CaseCapture.NameOf(who.Id, who.Name)
+            });
+
         var p = Player.m_localPlayer;
         var view = p != null ? AccessTools.Field(typeof(Player), "m_nview")?.GetValue(p) as ZNetView : null;
         var zdo = view != null && view.IsValid() ? view.GetZDO() : null;
@@ -252,6 +258,23 @@ internal static class WardTools
 
         if (radius > 0f)
             ward.m_radius = radius;
+
+        if (Automation.Recorder.Active && Player.m_localPlayer is { } me)
+        {
+            Automation.Recorder.Pose();
+            var (dx, _, dz, _) = Cases.CaseCapture.Local(me, go.transform);
+            var step = new System.Collections.Generic.Dictionary<string, object?>
+            {
+                ["do"] = "spawn", ["prefab"] = "guard_stone", ["dx"] = Automation.Recorder.Round(dx), ["dz"] = Automation.Recorder.Round(dz),
+                ["owner"] = Cases.CaseCapture.NameOf(owner.Id, owner.Name), ["enabled"] = enabled, ["as"] = Automation.Recorder.Tag(go)
+            };
+            var names = new System.Collections.Generic.List<object?>();
+            foreach (var id in permitted ?? Array.Empty<Identity>())
+                names.Add(Cases.CaseCapture.NameOf(id.Id, id.Name));
+            if (names.Count > 0) step["permitted"] = names;
+            if (radius > 0f) step["radius"] = radius;
+            Automation.Recorder.Add(step);
+        }
 
         SetOwner(ward, owner);
         ClearPermitted(ward);

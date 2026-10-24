@@ -51,7 +51,7 @@ internal sealed class SessionTab : ToolboxTab
         GUILayout.EndHorizontal();
 
         Ui.Header("Multiplayer (share the test world)");
-        GUILayout.Label("Because the game logs straight in, the Start Game choices (open / public / password) come from here. They apply when the world starts: change them, then press Reset.");
+        Ui.Hint("The game logs straight in, so the Start Game choices live here. They apply when the world starts: change them, then press Reset.");
         Toggle(cfg.OpenToFriends, "Open to friends (Steam: Friends list > Join game)");
         Toggle(cfg.PublicListing, "List in the community server browser (needs a password, 5+ characters)");
         Toggle(cfg.Crossplay, "Crossplay (PlayFab, join codes)");
@@ -60,10 +60,10 @@ internal sealed class SessionTab : ToolboxTab
         var online = ServerSettings.OnlinePlayers();
         GUILayout.Label($"Players online ({online.Count}): " + (online.Count == 0 ? "-" : string.Join(", ", online)));
         Ui.Row(("Copy mod + version list for guests", () => Ui.Copy(ServerSettings.ModList())));
-        GUILayout.Label("Guests do NOT need this mod, only the same Valheim version (and any mods that change the world). Cheats stay host-only.");
+        Ui.Hint("Guests do not need this mod, only the same Valheim version (and any mods that change the world). Cheats stay host-only.");
 
         Ui.Header("Console");
-        GUILayout.Label("Runs any Valheim console command (output appears in the F5 console).");
+        Ui.Hint("Runs any Valheim console command (the output shows in the F5 console).");
         GUILayout.BeginHorizontal();
         _command = GUILayout.TextField(_command);
         if (GUILayout.Button("Run", GUILayout.Width(70)) || EnterPressed())

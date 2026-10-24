@@ -1,0 +1,132 @@
+{
+  "name": "M-30 save the current game as a case, reset, apply it again",
+  "description": "Save as case writes the inventory (with crafters), the build around you (chests with contents) and wards; applying it brings them back.",
+  "steps": [
+    {
+      "do": "craft",
+      "prefab": "Hammer"
+    },
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 33
+    },
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 3,
+      "as": "box"
+    },
+    {
+      "do": "store",
+      "target": "box",
+      "prefab": "Wood",
+      "count": 10
+    },
+    {
+      "do": "spawn",
+      "prefab": "guard_stone",
+      "dz": 2,
+      "dx": -3,
+      "owner": "Amy",
+      "enabled": true,
+      "radius": 10,
+      "permitted": [
+        "Carol"
+      ]
+    },
+    {
+      "do": "hook",
+      "name": "testlab.saveCase",
+      "args": {
+        "name": "meta-roundtrip",
+        "radius": 12
+      },
+      "contains": "meta-roundtrip",
+      "label": "saved the case"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.caseText",
+      "args": {
+        "name": "meta-roundtrip"
+      },
+      "contains": "\"prefab\": \"piece_chest_wood\"",
+      "label": "the chest is in the saved build"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.caseText",
+      "args": {
+        "name": "meta-roundtrip"
+      },
+      "contains": "\"crafter\": \"me\"",
+      "label": "the crafted hammer keeps its crafter"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.caseText",
+      "args": {
+        "name": "meta-roundtrip"
+      },
+      "contains": "\"owner\": \"Amy\"",
+      "label": "the ward keeps its owner"
+    },
+    {
+      "do": "destroy",
+      "target": "box"
+    },
+    {
+      "do": "reset"
+    },
+    {
+      "do": "check",
+      "check": "noItem",
+      "prefab": "Wood",
+      "label": "after the reset the bag is empty"
+    },
+    {
+      "do": "case",
+      "name": "meta-roundtrip"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.0
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Wood",
+      "count": 23,
+      "label": "the wood is back"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Hammer",
+      "crafter": "me",
+      "label": "the hammer, still made by me"
+    },
+    {
+      "do": "check",
+      "check": "containerHas",
+      "target": "piece_chest_wood",
+      "prefab": "Wood",
+      "count": 10,
+      "label": "the chest is rebuilt with its 10 wood"
+    },
+    {
+      "do": "check",
+      "check": "owner",
+      "target": "guard_stone",
+      "expect": "Amy",
+      "label": "Amy owns the ward again"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -70,6 +70,47 @@ internal static class TestRunner
         // is this key held as the game sees it (Input.GetKey, which holdKey / pressKey drive)? key: a Unity KeyCode name
         TestHooks.Register("testlab.keyHeld", args => args.TryGetValue("key", out var k) && Enum.TryParse<KeyCode>(Convert.ToString(k), true, out var code) && Input.GetKey(code), "DrakesTestLab");
         TestHooks.Register("testlab.inventoryCount", _ => Player.m_localPlayer != null ? Player.m_localPlayer.GetInventory().NrOfItems() : -1, "DrakesTestLab");
+
+        // the lab's own features, for its meta suite: save the current game as a case (name, radius), the recorder, the toolbox
+        TestHooks.Register("testlab.saveCase", args =>
+        {
+            var name = args.TryGetValue("name", out var n) ? Convert.ToString(n) ?? "case" : "case";
+            var o = new Cases.CaptureOptions();
+            if (args.TryGetValue("radius", out var r) && float.TryParse(Convert.ToString(r, System.Globalization.CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var radius))
+                o.Radius = radius;
+            return Cases.CaseCapture.Save(Cases.CaseCapture.Capture(o, name, "saved by a test"), name);
+        }, "DrakesTestLab");
+        TestHooks.Register("testlab.caseText", args => System.IO.File.ReadAllText(System.IO.Path.Combine(Cases.CaseRunner.Folder, Convert.ToString(args["name"]) + ".json")), "DrakesTestLab");
+        TestHooks.Register("testlab.recordStart", args =>
+        {
+            Recorder.AllowDuringTests = true;
+            Recorder.Start(args.TryGetValue("setup", out var setup) && TestHooks.Truthy(setup));
+            return true;
+        }, "DrakesTestLab");
+        TestHooks.Register("testlab.recordStop", _ =>
+        {
+            Recorder.Stop();
+            Recorder.AllowDuringTests = false;
+            return Recorder.Steps.Count;
+        }, "DrakesTestLab");
+        TestHooks.Register("testlab.recordCheckInventory", _ =>
+        {
+            Recorder.CheckInventory();
+            return Recorder.Checks.Count;
+        }, "DrakesTestLab");
+        TestHooks.Register("testlab.recordedSteps", _ => string.Join(" | ", Recorder.Steps.ConvertAll(J.Describe)), "DrakesTestLab");
+        TestHooks.Register("testlab.recordSave", args =>
+            Recorder.Save(Convert.ToString(args["suite"]) ?? "Recorded", Convert.ToString(args["name"]) ?? "recorded", Recorder.BuildTest(Convert.ToString(args["name"]) ?? "recorded", "", true)), "DrakesTestLab");
+        TestHooks.Register("testlab.showTab", args =>
+        {
+            UI.Toolbox.ToolboxHost.ShowTab(Convert.ToString(args["tab"]) ?? "Tests");
+            return true;
+        }, "DrakesTestLab");
+        TestHooks.Register("testlab.closeToolbox", _ =>
+        {
+            UI.Toolbox.ToolboxHost.Set(false);
+            return true;
+        }, "DrakesTestLab");
     }
 
     /// <summary>Closing the game mid-run still writes the results so far; the tests it never reached are marked Skipped.</summary>
@@ -152,7 +193,8 @@ internal static class TestRunner
         CheckpointMessage = message;
         CheckpointAnswer = false;
         CheckpointPending = true;
-        ToolboxHost.ShowTab("Tests");
+        // the game stays in view: the question and Pass / Fail are on the lab bar (F7 / Shift+F7)
+        ToolboxHost.Set(false);
     }
 
     public static void AnswerCheckpoint(bool pass)
@@ -370,6 +412,8 @@ internal static class TestRunner
             yield return null;
         }
 
+        // settings a setup changes (case "configs") last only for this test, like setConfig
+        ModEnvironment.TestScope = true;
         if (suite.Setup != null)
             yield return CaseRunner.ApplyCase(suite.Setup, suite.Name + " setup", quick: true);
         if (test.Setup != null)

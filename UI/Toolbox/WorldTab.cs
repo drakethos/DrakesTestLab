@@ -13,6 +13,8 @@ internal sealed class WorldTab : ToolboxTab
 
     public override string Title => "World";
 
+    public override string Group => "Play";
+
     public static string Clock(float fraction)
     {
         var minutes = Mathf.RoundToInt(fraction * 24f * 60f) % (24 * 60);

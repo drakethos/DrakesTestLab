@@ -193,6 +193,12 @@
     <Compile Include="Bootstrap\StatSetter.cs" />
 
     <Compile Include="Cases\TestCase.cs" />
+    <Compile Include="Automation\Recorder.cs" />
+    <Compile Include="Patches\RecorderPatches.cs" />
+    <Compile Include="UI\Toolbox\RecordTab.cs" />
+    <Compile Include="UI\Toolbox\LabBar.cs" />
+    <Compile Include="Cases\CaseCapture.cs" />
+    <Compile Include="Cases\JsonWriter.cs" />
 
     <Compile Include="Cases\CaseRunner.cs" />
 

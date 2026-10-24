@@ -1,0 +1,177 @@
+{
+  "name": "M-33 record a player-style flow and save it as a test (replayed by the Recorded-Replay suite)",
+  "description": "The second half of the proof is running the saved Recorded-Replay suite: the recorded test must pass on its own.",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "dz": 3,
+      "dx": -3,
+      "as": "bench",
+      "label": "a workbench, so building at real cost works (part of the recorded setup)"
+    },
+    {
+      "do": "give",
+      "materialsFor": "piece_chest_wood"
+    },
+    {
+      "do": "give",
+      "materialsFor": "sign"
+    },
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 20
+    },
+    {
+      "do": "give",
+      "prefab": "Club"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStart",
+      "args": {
+        "setup": true
+      },
+      "expect": true,
+      "label": "record, starting from the game as it is now"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.3
+    },
+    {
+      "do": "screenshot",
+      "name": "lab-bar-recording"
+    },
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 2.5,
+      "free": false,
+      "as": "box"
+    },
+    {
+      "do": "interact",
+      "target": "box",
+      "asPlayer": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "store",
+      "target": "box",
+      "prefab": "Wood",
+      "count": 8
+    },
+    {
+      "do": "closeUi"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.3
+    },
+    {
+      "do": "place",
+      "prefab": "sign",
+      "dz": 2.5,
+      "dx": 2,
+      "free": false,
+      "as": "board"
+    },
+    {
+      "do": "interact",
+      "target": "board",
+      "asPlayer": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "type",
+      "field": "*",
+      "text": "Recorded!",
+      "submit": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.3
+    },
+    {
+      "do": "itemClick",
+      "prefab": "Club",
+      "button": "right"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.3
+    },
+    {
+      "do": "closeUi"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordCheckInventory",
+      "label": "add inventory checks"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStop"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=interact, target=chest1",
+      "label": "pressing E on the new chest"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=store, target=chest1, prefab=Wood, count=8",
+      "label": "moving wood into it"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=type, field=*, text=Recorded!, submit=true",
+      "label": "typing on the sign"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=itemClick, prefab=Club",
+      "label": "right-clicking the club"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=check, check=hasItem",
+      "label": "the inventory checks"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordedSteps",
+      "contains": "do=closeUi",
+      "label": "closing the chest window"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordSave",
+      "args": {
+        "suite": "Recorded-Replay",
+        "name": "flow"
+      },
+      "contains": "flow.json",
+      "label": "saved into the Recorded-Replay suite"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -698,6 +698,9 @@ internal static class ArenaBuilder
             }
 
             SetCreator(go.GetComponent<Piece>());
+            // so "Save as case" leaves the lab's own arena and house out of a saved build
+            if (go.GetComponent<ZNetView>() is { } view && view.IsValid())
+                view.GetZDO().Set(Cases.CaseCapture.ArenaPieceKey, 1);
             return go;
         }
         catch (Exception ex)

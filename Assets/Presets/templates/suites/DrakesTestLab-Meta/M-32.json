@@ -1,0 +1,76 @@
+{
+  "name": "M-32 the toolbox: new layout (screenshots)",
+  "description": "Proof of the 0.3 toolbox layout: sidebar groups, cards. The images are in the report.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Cases"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "screenshot",
+      "name": "toolbox-cases"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Record"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "screenshot",
+      "name": "toolbox-record"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Player"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "screenshot",
+      "name": "toolbox-player"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Rules"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "screenshot",
+      "name": "toolbox-rules"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.closeToolbox"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

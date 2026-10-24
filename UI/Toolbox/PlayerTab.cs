@@ -23,6 +23,8 @@ internal sealed class PlayerTab : ToolboxTab
 
     public override string Title => "Player";
 
+    public override string Group => "Play";
+
     public override void Tick()
     {
         if (!InfiniteStamina || Player.m_localPlayer == null || StaminaField == null)

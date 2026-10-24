@@ -13,6 +13,39 @@ public sealed class ItemSpec
     public int count = 1;
     public int quality = 1;
     public bool equip;
+    public string crafter = "";                 // "" = unowned (like loot); "me", Alice, any name or "Name:12345" = made by them
+    public List<DataSpec> data = new();         // custom item data mods store on the item (names, looks, ...)
+}
+
+[Serializable]
+public sealed class DataSpec
+{
+    public string key = "";
+    public string value = "";
+}
+
+/// <summary>A building piece placed relative to you (a saved build): in front (dz), to the right (dx), up (dy), turned by yaw.</summary>
+[Serializable]
+public sealed class PieceSpec
+{
+    public string prefab = "";
+    public float dx;
+    public float dy;
+    public float dz = 3f;
+    public float yaw;                           // degrees, relative to where you face
+    public string owner = "me";                 // who built it (same name format as wards)
+    public List<ItemSpec> items = new();        // a chest's contents
+    public string text = "";                    // a sign's text
+}
+
+/// <summary>One mod setting (a BepInEx config entry).</summary>
+[Serializable]
+public sealed class ConfigSpec
+{
+    public string guid = "";
+    public string section = "";
+    public string key = "";
+    public string value = "";
 }
 
 [Serializable]
@@ -127,6 +160,12 @@ public sealed class TestCase
     public List<ItemSpec> items = new();
     public List<SkillSpec> skills = new();
     public List<SpawnSpec> spawns = new();
+
+    // a saved build: pieces placed around you (chests with their contents, signs with their text)
+    public List<PieceSpec> pieces = new();
+
+    // mod settings to set (inside a test they are put back when the test ends)
+    public List<ConfigSpec> configs = new();
 
     // raw console commands, run last
     public List<string> commands = new();

@@ -19,6 +19,8 @@ internal sealed class SpawnTab : ToolboxTab
 
     public override string Title => "Spawn";
 
+    public override string Group => "Play";
+
     public void Select(string prefab) => _selected = prefab;
 
     public override void Draw()

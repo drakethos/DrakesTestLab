@@ -26,7 +26,7 @@ internal static class StepNames
     public static readonly string[] All =
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
-        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "use"
+        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use"
     };
 }
 
@@ -398,6 +398,9 @@ internal static class Steps
             case "store":
                 Store(step, ctx);
                 return null;
+            case "take":
+                Take(step, ctx);
+                return null;
             case "destroy":
             {
                 var go = Targets.Find(ctx, Need(step, "target")) ?? throw new StepFailed($"nothing named '{step.Str("target")}' to destroy");
@@ -452,6 +455,32 @@ internal static class Steps
         P.GetInventory().RemoveItem(item, count);
     }
 
+    /// <summary>Takes items out of a container into your inventory, as dragging them out does: target, prefab, count (default all).</summary>
+    private static void Take(Dictionary<string, object?> step, RunContext ctx)
+    {
+        var go = Targets.Find(ctx, Need(step, "target")) ?? throw new StepFailed($"nothing named '{step.Str("target")}' to take from");
+        var container = go.GetComponentInChildren<Container>() ?? go.GetComponentInParent<Container>() ?? throw new StepFailed($"'{step.Str("target")}' is not a container");
+        var prefab = Need(step, "prefab");
+        var inv = container.GetInventory();
+        var want = (int)step.Num("count", int.MaxValue);
+        var taken = 0;
+        foreach (var item in inv.GetAllItems().Where(i => i.m_dropPrefab != null && i.m_dropPrefab.name.Equals(prefab, StringComparison.OrdinalIgnoreCase)).ToList())
+        {
+            if (taken >= want)
+                break;
+            var n = Mathf.Min(item.m_stack, want - taken);
+            var moved = item.Clone();
+            moved.m_stack = n;
+            if (!P.GetInventory().AddItem(moved))
+                throw new StepFailed($"no room in your inventory for {n} {prefab}");
+            inv.RemoveItem(item, n);
+            taken += n;
+        }
+
+        if (taken == 0)
+            throw new StepFailed($"'{step.Str("target")}' has no {prefab}");
+    }
+
     private static IEnumerator Teleport(Dictionary<string, object?> step, RunContext ctx)
     {
         var p = P;
@@ -480,6 +509,13 @@ internal static class Steps
             {
                 body.position = pos;
                 body.velocity = Vector3.zero;
+            }
+
+            // "yaw": face this way (degrees), e.g. a recorded test standing where it was recorded
+            if (step.Has("yaw"))
+            {
+                p.transform.rotation = Quaternion.Euler(0f, step.Num("yaw"), 0f);
+                AccessTools.Field(typeof(Player), "m_lookYaw")?.SetValue(p, p.transform.rotation);
             }
 
             Physics.SyncTransforms();
@@ -597,6 +633,16 @@ internal static class Steps
         var go = Targets.Find(ctx, target) ?? throw new StepFailed($"nothing named '{target}' within reach");
         var interactable = go.GetComponentInChildren<Interactable>() ?? go.GetComponentInParent<Interactable>()
             ?? throw new StepFailed($"'{target}' cannot be interacted with");
+        // "asPlayer": press E through the player's own interact path (cooldowns and all), as a real key press does
+        var asPlayer = step.Bool("asPlayer") ? AccessTools.Method(typeof(Player), "Interact", new[] { typeof(GameObject), typeof(bool), typeof(bool) }) : null;
+        if (asPlayer != null)
+        {
+            var root = ((Component)interactable).gameObject;
+            ctx.LastResult = asPlayer.Invoke(P, new object[] { root, step.Bool("hold"), step.Bool("alt") });
+            ctx.Log($"  -> {ctx.LastResult} (as the player)");
+            return;
+        }
+
         // the game's answer (true = it did something) becomes lastResult, e.g. false when a lock or ward refused
         ctx.LastResult = interactable.Interact(P, step.Bool("hold"), step.Bool("alt"));
         ctx.Log($"  -> {ctx.LastResult}");

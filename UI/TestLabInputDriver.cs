@@ -28,8 +28,7 @@ internal sealed class TestLabInputDriver : MonoBehaviour
         {
             if (KeyPressed(TestLabConfig.Instance.StopTestsKey.Value))
                 Automation.TestRunner.Stop();
-            if (KeyPressed(TestLabConfig.Instance.NextStepKey.Value))
-                Automation.TestRunner.Next();
+            // next step / pass / fail are on the lab bar (UI/Toolbox/LabBar.cs)
         }
 
         var keyName = TestLabConfig.Instance.MenuKey.Value;

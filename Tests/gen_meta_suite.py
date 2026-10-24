@@ -296,6 +296,88 @@ T('M-29', 'wait until (a check that becomes true)', [
     {'do': 'wait', 'until': {'check': 'objectNear', 'target': 'Boar', 'radius': 12}, 'timeout': 5},
 ])
 
+# ---------------------------------------------------------------- 0.3: save as case, recorder, toolbox
+T('M-30', 'save the current game as a case, reset, apply it again', [
+    {'do': 'craft', 'prefab': 'Hammer'},
+    {'do': 'give', 'prefab': 'Wood', 'count': 33},
+    {'do': 'place', 'prefab': 'piece_chest_wood', 'dz': 3, 'as': 'box'},
+    {'do': 'store', 'target': 'box', 'prefab': 'Wood', 'count': 10},
+    {'do': 'spawn', 'prefab': 'guard_stone', 'dz': 2, 'dx': -3, 'owner': 'Amy', 'enabled': True, 'radius': 10, 'permitted': ['Carol']},
+    {'do': 'hook', 'name': 'testlab.saveCase', 'args': {'name': 'meta-roundtrip', 'radius': 12}, 'contains': 'meta-roundtrip', 'label': 'saved the case'},
+    {'do': 'hook', 'name': 'testlab.caseText', 'args': {'name': 'meta-roundtrip'}, 'contains': '"prefab": "piece_chest_wood"', 'label': 'the chest is in the saved build'},
+    {'do': 'hook', 'name': 'testlab.caseText', 'args': {'name': 'meta-roundtrip'}, 'contains': '"crafter": "me"', 'label': 'the crafted hammer keeps its crafter'},
+    {'do': 'hook', 'name': 'testlab.caseText', 'args': {'name': 'meta-roundtrip'}, 'contains': '"owner": "Amy"', 'label': 'the ward keeps its owner'},
+    {'do': 'destroy', 'target': 'box'},
+    {'do': 'reset'},
+    chk('noItem', 'after the reset the bag is empty', prefab='Wood'),
+    {'do': 'case', 'name': 'meta-roundtrip'},
+    wait(1.0),
+    chk('hasItem', 'the wood is back', prefab='Wood', count=23),
+    chk('hasItem', 'the hammer, still made by me', prefab='Hammer', crafter='me'),
+    chk('containerHas', 'the chest is rebuilt with its 10 wood', target='piece_chest_wood', prefab='Wood', count=10),
+    chk('owner', 'Amy owns the ward again', target='guard_stone', expect='Amy'),
+], desc='Save as case writes the inventory (with crafters), the build around you (chests with contents) and wards; applying it brings them back.')
+
+T('M-31', 'the recorder turns actions into steps', [
+    {'do': 'hook', 'name': 'testlab.recordStart', 'args': {'setup': False}, 'expect': True},
+    {'do': 'craft', 'prefab': 'Hammer'},
+    {'do': 'give', 'prefab': 'Stone', 'count': 5},
+    {'do': 'place', 'prefab': 'piece_chest_wood', 'dz': 3, 'as': 'box'},
+    {'do': 'playAs', 'who': 'Bob'},
+    {'do': 'playAs', 'who': 'me'},
+    {'do': 'console', 'command': 'setkey drake_meta_recorded'},
+    {'do': 'hook', 'name': 'testlab.recordStop', 'label': 'stop'},
+    chk('lastResult', 'at least six steps were recorded', min=6),
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=craft, prefab=Hammer', 'label': 'the craft'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=give, prefab=Stone, count=5', 'label': 'the give'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=place, prefab=piece_chest_wood', 'label': 'the place'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'as=chest1', 'label': 'the new chest got a tag'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=playAs, who=Bob', 'label': 'play as Bob'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=console, command=setkey drake_meta_recorded', 'label': 'the console command'},
+    {'do': 'hook', 'name': 'testlab.recordSave', 'args': {'suite': '_recorded-meta', 'name': 'recorded'}, 'contains': 'recorded.json', 'label': 'saved as a test'},
+])
+
+T('M-33', 'record a player-style flow and save it as a test (replayed by the Recorded-Replay suite)', [
+    {'do': 'place', 'prefab': 'piece_workbench', 'dz': 3, 'dx': -3, 'as': 'bench', 'label': 'a workbench, so building at real cost works (part of the recorded setup)'},
+    {'do': 'give', 'materialsFor': 'piece_chest_wood'},
+    {'do': 'give', 'materialsFor': 'sign'},
+    {'do': 'give', 'prefab': 'Wood', 'count': 20},
+    {'do': 'give', 'prefab': 'Club'},
+    {'do': 'hook', 'name': 'testlab.recordStart', 'args': {'setup': True}, 'expect': True, 'label': 'record, starting from the game as it is now'},
+    wait(0.3),
+    {'do': 'screenshot', 'name': 'lab-bar-recording'},
+    {'do': 'place', 'prefab': 'piece_chest_wood', 'dz': 2.5, 'free': False, 'as': 'box'},
+    {'do': 'interact', 'target': 'box', 'asPlayer': True}, wait(0.4),
+    {'do': 'store', 'target': 'box', 'prefab': 'Wood', 'count': 8},
+    {'do': 'closeUi'}, wait(0.3),
+    {'do': 'place', 'prefab': 'sign', 'dz': 2.5, 'dx': 2, 'free': False, 'as': 'board'},
+    {'do': 'interact', 'target': 'board', 'asPlayer': True}, wait(0.4),
+    {'do': 'type', 'field': '*', 'text': 'Recorded!', 'submit': True}, wait(0.3),
+    {'do': 'itemClick', 'prefab': 'Club', 'button': 'right'}, wait(0.3),
+    {'do': 'closeUi'},
+    {'do': 'hook', 'name': 'testlab.recordCheckInventory', 'label': 'add inventory checks'},
+    {'do': 'hook', 'name': 'testlab.recordStop'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=interact, target=chest1', 'label': 'pressing E on the new chest'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=store, target=chest1, prefab=Wood, count=8', 'label': 'moving wood into it'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=type, field=*, text=Recorded!, submit=true', 'label': 'typing on the sign'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=itemClick, prefab=Club', 'label': 'right-clicking the club'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=check, check=hasItem', 'label': 'the inventory checks'},
+    {'do': 'hook', 'name': 'testlab.recordedSteps', 'contains': 'do=closeUi', 'label': 'closing the chest window'},
+    {'do': 'hook', 'name': 'testlab.recordSave', 'args': {'suite': 'Recorded-Replay', 'name': 'flow'}, 'contains': 'flow.json', 'label': 'saved into the Recorded-Replay suite'},
+], desc='The second half of the proof is running the saved Recorded-Replay suite: the recorded test must pass on its own.')
+
+T('M-32', 'the toolbox: new layout (screenshots)', [
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Cases'}}, wait(0.6),
+    {'do': 'screenshot', 'name': 'toolbox-cases'},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Record'}}, wait(0.4),
+    {'do': 'screenshot', 'name': 'toolbox-record'},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Player'}}, wait(0.4),
+    {'do': 'screenshot', 'name': 'toolbox-player'},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Rules'}}, wait(0.4),
+    {'do': 'screenshot', 'name': 'toolbox-rules'},
+    {'do': 'hook', 'name': 'testlab.closeToolbox'},
+], desc='Proof of the 0.3 toolbox layout: sidebar groups, cards. The images are in the report.')
+
 # ---------------------------------------------------------------- negative tests: the runner must catch these
 T('N-01', 'a failing check fails the test', [
     chk('hasItem', 'a check that cannot pass', prefab='DragonEgg'),

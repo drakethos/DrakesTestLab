@@ -86,7 +86,11 @@ internal static class CaseRunner
     {
         var c = Load(name);
         if (c != null && ToolboxHost.Instance != null && !Running)
+        {
+            if (Automation.Recorder.Active)
+                Automation.Recorder.Add(new Dictionary<string, object?> { ["do"] = "case", ["name"] = name });
             ToolboxHost.Instance.StartCoroutine(Apply(c, name));
+        }
     }
 
     /// <summary>Applies the case named in the Case.OnLoad config entry (and builds the default arena when enabled).</summary>
@@ -156,6 +160,65 @@ internal static class CaseRunner
 
     /// <summary>Applies a case from code (the automation runner). quick: do not wait for the player to settle.</summary>
     public static IEnumerator ApplyCase(TestCase c, string label, bool quick) => Apply(c, label, quick);
+
+    /// <summary>Pieces cases placed; the test-state reset removes them so builds never stack up.</summary>
+    internal static readonly List<GameObject> PlacedPieces = new();
+
+    internal static void RemovePlacedPieces()
+    {
+        foreach (var go in PlacedPieces)
+        {
+            if (go != null && ZNetScene.instance != null)
+                ZNetScene.instance.Destroy(go);
+        }
+
+        PlacedPieces.Clear();
+    }
+
+    /// <summary>One piece of a saved build, relative to where the player stands and faces, owned as written, filled as written.</summary>
+    private static void PlacePiece(Player player, PieceSpec spec)
+    {
+        var prefab = ZNetScene.instance != null ? ZNetScene.instance.GetPrefab(spec.prefab) : null;
+        if (prefab == null)
+        {
+            TestLabPlugin.Log?.LogWarning($"Case piece '{spec.prefab}' is not a known prefab.");
+            return;
+        }
+
+        var facing = Quaternion.Euler(0f, player.transform.eulerAngles.y, 0f);
+        var pos = player.transform.position + facing * new Vector3(spec.dx, spec.dy, spec.dz);
+        var go = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.Euler(0f, player.transform.eulerAngles.y + spec.yaw, 0f));
+        PlacedPieces.Add(go);
+        if (go.GetComponent<Piece>() is { } piece)
+            WardTools.SetPieceOwner(piece, WardTools.Parse(spec.owner.Length == 0 ? "me" : spec.owner));
+
+        if (spec.items.Count > 0 && go.GetComponentInChildren<Container>() is { } container && container.GetInventory() is { } inv)
+        {
+            foreach (var item in spec.items)
+            {
+                var itemPrefab = ObjectDB.instance != null ? ObjectDB.instance.GetItemPrefab(item.prefab) : null;
+                if (itemPrefab == null || itemPrefab.GetComponent<ItemDrop>() is not { } drop)
+                    continue;
+                var data = drop.m_itemData.Clone();
+                data.m_dropPrefab = itemPrefab;
+                data.m_stack = Mathf.Max(1, item.count);
+                data.m_quality = Mathf.Max(1, item.quality);
+                data.m_durability = data.GetMaxDurability();
+                if (item.crafter.Length > 0)
+                {
+                    var maker = WardTools.Parse(item.crafter);
+                    data.m_crafterID = maker.Id;
+                    data.m_crafterName = maker.Name;
+                }
+                foreach (var d in item.data)
+                    data.m_customData[d.key] = d.value;
+                inv.AddItem(data);
+            }
+        }
+
+        if (spec.text.Length > 0 && go.GetComponentInChildren<Sign>() is { } sign)
+            sign.SetText(spec.text);
+    }
 
     private static IEnumerator Apply(TestCase c, string label, bool quick = false)
     {
@@ -253,8 +316,25 @@ internal static class CaseRunner
         }
         else if (c.teleportX > -9000f && c.teleportZ > -9000f)
         {
-            GameRefs.Teleport(c.teleportX, c.teleportZ);
-            yield return new WaitForSeconds(2f);
+            var target = new Vector3(c.teleportX, player.transform.position.y, c.teleportZ);
+            var flat = target - player.transform.position;
+            flat.y = 0f;
+            if (flat.magnitude < 120f)
+            {
+                // a short move (a recorded start spot near you): instant, on the floor there, no loading screen
+                Automation.UiSteps.MoveTo(player, target);
+                yield return null;
+            }
+            else
+            {
+                // far away: the game's teleport, and wait until it has really landed before anything else runs
+                GameRefs.Teleport(c.teleportX, c.teleportZ);
+                var until = Time.realtimeSinceStartup + 40f;
+                yield return new WaitForSeconds(0.5f);
+                while (player != null && player.IsTeleporting() && Time.realtimeSinceStartup < until)
+                    yield return null;
+                yield return new WaitForSeconds(0.5f);
+            }
         }
 
         switch (c.buildRule.ToLowerInvariant())
@@ -326,7 +406,20 @@ internal static class CaseRunner
         var givenSummary = new List<string>();
         foreach (var item in c.items)
         {
-            var given = ItemGiver.Give(item.prefab, Mathf.Max(1, item.count), Mathf.Max(1, item.quality), item.equip);
+            var maker = item.crafter.Length > 0 ? WardTools.Parse(item.crafter) : null;
+            var before = new HashSet<ItemDrop.ItemData>(player.GetInventory().GetAllItems());
+            var given = ItemGiver.Give(item.prefab, Mathf.Max(1, item.count), Mathf.Max(1, item.quality), item.equip, maker?.Id ?? 0L, maker?.Name ?? "");
+            if (item.data.Count > 0)
+            {
+                // custom data mods keep on the item (names, looks): on the stacks this item just made
+                foreach (var made in player.GetInventory().GetAllItems())
+                {
+                    if (before.Contains(made))
+                        continue;
+                    foreach (var d in item.data)
+                        made.m_customData[d.key] = d.value;
+                }
+            }
             givenSummary.Add($"{item.prefab} x{given}");
         }
 
@@ -359,6 +452,18 @@ internal static class CaseRunner
             foreach (var who in w.permitted)
                 permitted.Add(WardTools.Parse(who));
             WardTools.Spawn(origin, WardTools.Parse(w.owner), w.enabled, permitted, w.radius);
+        }
+
+        // a saved build
+        foreach (var piece in c.pieces)
+            PlacePiece(player, piece);
+
+        // mod settings (inside a test they are put back when the test ends)
+        foreach (var setting in c.configs)
+        {
+            var error = Automation.ModEnvironment.Set(setting.guid, setting.section, setting.key, setting.value);
+            if (error.Length > 0)
+                TestLabPlugin.Log?.LogWarning($"Case setting: {error}");
         }
 
         // spawns

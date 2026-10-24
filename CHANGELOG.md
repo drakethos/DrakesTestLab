@@ -1,5 +1,13 @@
 # DrakesTestLab
 
+## Unreleased (0.3)
+
+- **Record tests:** F9 > Tests > Record turns what you do into test steps (crafting, building, pressing E, inventory clicks, dropping, chest moves, typing, console, menu clicks, setting changes, play-as) and saves them as a test, starting from a saved setup of the game as it was. Add checks while you play: what you look at (F7), your inventory (Shift+F7), screenshots (Ctrl+F7), pause (Alt+F7).
+- **Save as case:** F9 > Cases saves the current game as a case: dials, modes, who you play as, inventory (with crafter and item data), skills, wards, the buildings around you (chests with contents, signs with text) and the mod settings you changed. New case fields `pieces` and `configs`; items gain `crafter` and `data`.
+- **New toolbox layout:** tabs grouped down the side (Play, Scenario, Tests, Tools), cards instead of long pages, status chips (REC, Testing, Playing as), clearer checkboxes, a resizable window. Lab is now Rules.
+- **Lab bar:** while recording, at a manual check or in step mode, a small bar at the top of the screen has the buttons and keys; the big window can stay closed. Checkpoints no longer open the toolbox.
+- New steps and options: `take`, `teleport` `yaw`, `interact` `asPlayer`. Settings a test's setup changes now last only for that test. Cases move you to a near spot instantly and wait for a far teleport to land.
+
 ## 0.2.2
 
 - `click` also works on UI Toolkit elements that are neither buttons nor toggles (DrakeModsLibs switches, cards): it sends a real click to the matching text.

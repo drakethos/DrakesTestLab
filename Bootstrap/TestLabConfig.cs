@@ -28,6 +28,12 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> PickerKey { get; private set; } = null!;
     public ConfigEntry<string> NextStepKey { get; private set; } = null!;
     public ConfigEntry<string> StopTestsKey { get; private set; } = null!;
+    public ConfigEntry<string> RecorderCheckKey { get; private set; } = null!;
+    public ConfigEntry<string> RecorderInventoryKey { get; private set; } = null!;
+    public ConfigEntry<string> RecorderScreenshotKey { get; private set; } = null!;
+    public ConfigEntry<string> RecorderPauseKey { get; private set; } = null!;
+    public ConfigEntry<string> ManualPassKey { get; private set; } = null!;
+    public ConfigEntry<string> ManualFailKey { get; private set; } = null!;
     public ConfigEntry<bool> OpenToFriends { get; private set; } = null!;
     public ConfigEntry<bool> PublicListing { get; private set; } = null!;
     public ConfigEntry<bool> Crossplay { get; private set; } = null!;
@@ -118,6 +124,12 @@ internal sealed class TestLabConfig
         c.PickerKey = config.Bind("Automation", "PickerKey", "F8", "With the UI picker on, this key copies the name of the game button or window under the mouse.");
         c.NextStepKey = config.Bind("Automation", "NextStepKey", "F7", "In step mode, run the next test step.");
         c.StopTestsKey = config.Bind("Automation", "StopTestsKey", "F6", "Stop the running tests.");
+        c.RecorderCheckKey = config.Bind("Automation", "RecorderCheckKey", "F7", "While recording a test: add checks for what the crosshair is on (hover text, who built it, what a chest holds). Keys can have modifiers: Shift+F7, Ctrl+F7, Alt+F7.");
+        c.RecorderInventoryKey = config.Bind("Automation", "RecorderInventoryKey", "Shift+F7", "While recording: add checks for everything you carry.");
+        c.RecorderScreenshotKey = config.Bind("Automation", "RecorderScreenshotKey", "Ctrl+F7", "While recording: add a screenshot step.");
+        c.RecorderPauseKey = config.Bind("Automation", "RecorderPauseKey", "Alt+F7", "While recording: pause / resume (nothing is recorded while paused).");
+        c.ManualPassKey = config.Bind("Automation", "ManualPassKey", "F7", "At a manual check (checkpoint): it passed.");
+        c.ManualFailKey = config.Bind("Automation", "ManualFailKey", "Shift+F7", "At a manual check (checkpoint): it failed.");
         c.OpenToFriends = config.Bind("Server", "OpenToFriends", false,
             "Share the test world: friends can join through Steam (Friends list > Join game) while you play. Off = single player. Applied when the world starts (use Reset to apply). The server terms must have been accepted once in the normal Start Game screen.");
         c.PublicListing = config.Bind("Server", "PublicListing", false,

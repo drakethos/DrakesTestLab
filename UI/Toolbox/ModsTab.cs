@@ -36,7 +36,7 @@ internal sealed class ModsTab : ToolboxTab
 
             GUILayout.BeginHorizontal();
             GUILayout.Label($"<b>{m.Name}</b>  {m.Version}", GUILayout.Width(260));
-            GUILayout.Label($"<color=#999999>{m.GUID}</color>");
+            GUILayout.Label(m.GUID, Ui.HintStyle);
             if (GUILayout.Button("Copy GUID", GUILayout.Width(90)))
                 Ui.Copy(m.GUID);
             GUILayout.EndHorizontal();

@@ -38,16 +38,19 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 |---|---|
 | **World** | time-of-day slider and freeze, weather, random events, world keys, map, game speed |
 | **Player** | god / ghost / fly / no build cost, infinite stamina, kits, skills, teleport |
-| **Lab** | station level, cost multiplier, carry weight, vitals, speed and jump, discovery, arena, no-build zones, fall damage, fire fuel, bosses |
-| **Cases** | JSON test cases (below) |
+| **Rules** | station level, cost multiplier, carry weight, vitals, speed and jump, discovery, arena, no-build zones, fall damage, fire fuel, bosses |
+| **Cases** | JSON test cases (below), and **save the current setup as a case** |
 | **Wards** | the ward test bench and play-as |
+| **Tests / Record** | run test suites; **record** a test by playing it (below) |
 | **Spawn** | creatures, items and pieces by search; give to inventory; kill / tame / clear |
 | **Inspect** | what you are looking at (prefab, components, health, ZDO), copy prefab name, destroy it |
 | **Mods** | every loaded plugin with version and GUID, reload all mod configs |
 | **Log** | the BepInEx log live, filtered by mod, errors first, click a line to copy it |
 | **Session** | reset world and character, quit, console, startup options |
 
-![Lab tab: station level, cost, carry weight, vitals, discovery, arena](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-lab.png)
+![Cases tab: save the current setup as a case, apply cases](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-cases.png)
+
+![Rules tab: station level, cost, carry weight, vitals, noise](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-rules.png)
 
 ![World tab: time of day, weather](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-world.png)
 
@@ -91,6 +94,12 @@ Eight example cases ship with the mod and are copied into that folder on first r
 ## Automated tests
 
 Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report and failure screenshots are written to `config/DrakesTestLab/results/`.
+
+**Record a test instead of writing it:** F9 > Tests > Record, play the scenario, add checks with F7 / Shift+F7 on the lab bar, stop and save. Crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks and setting changes all become steps, and the test starts from a saved setup of the game as it was. See [Recording tests](https://github.com/drakethos/DrakesTestLab/wiki/Recording-Tests).
+
+![Recording: the lab bar](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/lab-bar.png)
+
+![Record tab: recorded steps, save into a suite](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-record.png)
 
 Mods can expose **test hooks** with no dependency on DrakesTestLab: put your own `[TestHook("name")]` attribute on a static method and tests can call it. Full reference: [Automation on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Automation).
 

@@ -17,6 +17,15 @@ internal static class ItemGiver
             return 0;
         }
 
+        if (Automation.Recorder.Active)
+        {
+            var step = new System.Collections.Generic.Dictionary<string, object?> { ["do"] = "give", ["prefab"] = prefabName, ["count"] = count };
+            if (quality > 1) step["quality"] = quality;
+            if (equip) step["equip"] = true;
+            if (crafterName.Length > 0) step["crafter"] = Cases.CaseCapture.NameOf(crafterId, crafterName);
+            Automation.Recorder.Add(step);
+        }
+
         var inventory = player.GetInventory();
         var maxStack = Mathf.Max(1, drop.m_itemData.m_shared.m_maxStackSize);
         var given = 0;

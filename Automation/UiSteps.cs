@@ -401,7 +401,7 @@ internal static class UiSteps
     }
 
     /// <summary>Puts the player on whatever floor is under that spot (terrain, a stone or wood floor), not at the old height.</summary>
-    private static void MoveTo(Player p, Vector3 spot)
+    internal static void MoveTo(Player p, Vector3 spot)
     {
         spot.y = p.transform.position.y;
         var floorMask = LayerMask.GetMask("Default", "static_solid", "terrain", "piece", "Default_small");

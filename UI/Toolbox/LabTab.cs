@@ -16,7 +16,9 @@ internal sealed class LabTab : ToolboxTab
     private string _fireMessage = "";
     private string _bossMessage = "";
 
-    public override string Title => "Lab";
+    public override string Title => "Rules";
+
+    public override string Group => "Scenario";
 
     public override void Tick()
     {
@@ -110,7 +112,7 @@ internal sealed class LabTab : ToolboxTab
             ("Flatten here only", () => Run(ArenaBuilder.BuildAt(Player.m_localPlayer.transform.position, false, false, _arenaRadius))),
             ("Go to arena", GoToArena));
 
-        GUILayout.Label("Arena-only building rule (separate from the vanilla zones above):");
+        Ui.Hint("Arena-only building rule (separate from the vanilla zones above):");
         GUILayout.BeginHorizontal();
         BuildRuleButton("Anywhere", BuildRule.Off);
         BuildRuleButton("Only inside arena", BuildRule.OnlyInsideArena);

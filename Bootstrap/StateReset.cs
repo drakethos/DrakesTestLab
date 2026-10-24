@@ -16,6 +16,11 @@ internal static class StateReset
         if (player == null)
             return;
 
+        // while recording a test this is one "reset" step, not the dozens of commands it runs
+        if (Automation.Recorder.Active)
+            Automation.Recorder.Add(new System.Collections.Generic.Dictionary<string, object?> { ["do"] = "reset" });
+        using var quiet = Automation.Recorder.Quiet();
+
         // rules and switches kept in memory
         TestRules.ResetRules();
         FireTools.InfiniteFuel = false;
@@ -25,6 +30,9 @@ internal static class StateReset
 
         // who you are
         WardTools.RestoreOriginal();
+
+        // pieces a case built (a saved build)
+        Cases.CaseRunner.RemovePlacedPieces();
 
         // player modes (these are toggles in game)
         Off(player.InGodMode(), "god");

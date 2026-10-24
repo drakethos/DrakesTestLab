@@ -14,6 +14,8 @@ internal sealed class WardsTab : ToolboxTab
 
     public override string Title => "Wards";
 
+    public override string Group => "Scenario";
+
     public override void Draw()
     {
         var p = Player.m_localPlayer;
@@ -37,7 +39,7 @@ internal sealed class WardsTab : ToolboxTab
         if (GUILayout.Button("Play as this name"))
             WardTools.PlayAs(WardTools.Parse(_playAsName), false);
         GUILayout.EndHorizontal();
-        GUILayout.Label("Stand in a ward as its owner, as a permitted player, or as a stranger without a second game running.");
+        Ui.Hint("Stand in a ward as its owner, a permitted player or a stranger, without a second game running.");
 
         Ui.Header("Test ward");
         _radius = Ui.Slider("New ward radius", _radius, 3f, 40f, "0");
