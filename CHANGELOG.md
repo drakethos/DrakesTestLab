@@ -1,6 +1,6 @@
 # DrakesTestLab
 
-## Unreleased
+## 0.2.2
 
 - `click` also works on UI Toolkit elements that are neither buttons nor toggles (DrakeModsLibs switches, cards): it sends a real click to the matching text.
 
