@@ -1,15 +1,17 @@
 # DrakesTestLab
 
-## Unreleased (0.3)
+## 0.3.0
 
-- **Virtual players:** a second client in the test world without a second game. `peerJoin` connects Bjornita (test player 2, the new `[Automation] Player2`) or anyone through the game's own peer code, with a character she owns. `peerRpc` sends RPCs as her client (forged player ids and sender ids too), `peerReceived` checks what the server sent her, `zdoOwner` / `peerOwn` / `peerSet` / `peerMove` / `peerLeave` cover ownership, object data and leaving. Her client answers RPCs for objects she owns with the same mod code (proxy), so owner round trips complete. F9 > Wards > Player 2 connects her by hand.
-- **Bjornita** (id 100005, female) joins the test roster: play-as, wards, cases and the Wards tab.
-- `-Suites` / `-testlab-run` also take single tests: `"Suite/TestPrefix"` (start of the test name or file name), for quick checks.
+Record tests by playing them, save the game as a case, a cleaner lab window, and a second player without a second game.
+
 - **Record tests:** F9 > Tests > Record turns what you do into test steps (crafting, building, pressing E, inventory clicks, dropping, chest moves, typing, console, menu clicks, setting changes, play-as) and saves them as a test, starting from a saved setup of the game as it was. Add checks while you play: what you look at (F7), your inventory (Shift+F7), screenshots (Ctrl+F7), pause (Alt+F7).
 - **Save as case:** F9 > Cases saves the current game as a case: dials, modes, who you play as, inventory (with crafter and item data), skills, wards, the buildings around you (chests with contents, signs with text) and the mod settings you changed. New case fields `pieces` and `configs`; items gain `crafter` and `data`.
 - **New toolbox layout:** tabs grouped down the side (Play, Scenario, Tests, Tools), cards instead of long pages, status chips (REC, Testing, Playing as), clearer checkboxes, a resizable window. Lab is now Rules.
 - **Lab bar:** while recording, at a manual check or in step mode, a small bar at the top of the screen has the buttons and keys; the big window can stay closed. With the window open (F9) the bar moves to the bottom and its buttons can be clicked (Pause, Stop & save). Checkpoints no longer open the toolbox.
 - **Window:** an Opacity slider in the header (`[Dev] UiOpacity`) to see the game through it; scrolling the window no longer zooms the camera.
+- **Virtual players:** a second client in the test world without a second game. `peerJoin` connects Bjornita (test player 2, the new `[Automation] Player2`) or anyone through the game's own peer code, with a character she owns. `peerRpc` sends RPCs as her client (forged player ids and sender ids too), `peerReceived` checks what the server sent her, `zdoOwner` / `peerOwn` / `peerSet` / `peerMove` / `peerLeave` cover ownership, object data and leaving. Her client answers RPCs for objects she owns with the same mod code (proxy), so owner round trips complete. F9 > Wards > Player 2 connects her by hand.
+- **Bjornita** (id 100005, female) joins the test roster: play-as, wards, cases and the Wards tab.
+- `-Suites` / `-testlab-run` also take single tests: `"Suite/TestPrefix"` (start of the test name or file name), for quick checks.
 - New steps and options: `take`, `teleport` `yaw`, `interact` `asPlayer`. Settings a test's setup changes now last only for that test. Cases move you to a near spot instantly and wait for a far teleport to land.
 
 ## 0.2.2
