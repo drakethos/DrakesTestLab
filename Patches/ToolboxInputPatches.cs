@@ -48,3 +48,18 @@ internal static class GameCamera_UpdateMouseCapture_Patch
         Cursor.visible = true;
     }
 }
+
+/// <summary>Scrolling the lab window must not zoom the camera: the game's scroll wheel reads 0 while the window is open.</summary>
+[HarmonyPatch]
+internal static class ZInput_ScrollWheel_Patch
+{
+    private static MethodBase? TargetMethod() => AccessTools.Method(typeof(ZInput), "GetMouseScrollWheel");
+
+    private static bool Prepare() => TargetMethod() != null;
+
+    private static void Postfix(ref float __result)
+    {
+        if (ToolboxHost.IsOpen)
+            __result = 0f;
+    }
+}

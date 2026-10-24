@@ -64,6 +64,32 @@
     },
     {
       "do": "hook",
+      "name": "testlab.recordStart",
+      "args": {
+        "setup": false
+      }
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Record"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "screenshot",
+      "name": "bar-with-lab-open"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStop"
+    },
+    {
+      "do": "hook",
       "name": "testlab.closeToolbox"
     }
   ],

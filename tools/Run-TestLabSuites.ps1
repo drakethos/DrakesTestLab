@@ -16,6 +16,7 @@
 .EXAMPLE
   .\Run-TestLabSuites.ps1                                   # every suite, Gale profile drakeTest
   .\Run-TestLabSuites.ps1 -Suites "DrakesRenameIt,LockSmith"
+  .\Run-TestLabSuites.ps1 -Suites "LockSmith/L-02,LockSmith-Net/N-04"   # single tests (start of name): quick checks
   .\Run-TestLabSuites.ps1 -ProfilePath "$env:APPDATA\r2modmanPlus-local\Valheim\profiles\drakeTest"
   .\Run-TestLabSuites.ps1 -Stay                             # leave the game open afterwards
   .\Run-TestLabSuites.ps1 -Suites DrakesRenameIt-Manual -Attended -TimeoutSec 3600   # you answer Pass / Fail
@@ -33,10 +34,32 @@ param(
     [string]$Screenshots = '',
     [switch]$Stay,
     [switch]$Attended,
-    [switch]$NoKillOnTimeout
+    [switch]$NoKillOnTimeout,
+    # Valheim launch queue: -NoQueue skips it, -Priority goes next (only when the user says skip the line)
+    [switch]$NoQueue,
+    [switch]$Priority,
+    [string]$QueueName = ''
 )
 
 $ErrorActionPreference = 'Stop'
+
+# One Valheim at a time (DrakesWorkshop/scripts/Valheim-Queue.ps1): wait in the shared first-come-first-served queue and
+# hold the place for this whole run (builds and launches included). -Priority = goes next, only when the user says so.
+# Nested runs see VALHEIM_QUEUE_HELD and do not queue again; without the queue script (outside the dev tree) it just runs.
+$valheimQueue = Join-Path $PSScriptRoot '..\..\scripts\Valheim-Queue.ps1'
+if (-not $NoQueue -and -not $env:VALHEIM_QUEUE_HELD -and (Test-Path -LiteralPath $valheimQueue)) {
+    $env:VALHEIM_QUEUE_HELD = '1'
+    $passOn = foreach ($p in $PSBoundParameters.GetEnumerator()) {
+        if ($p.Key -in 'NoQueue', 'Priority', 'QueueName') { continue }
+        if ($p.Value -is [System.Management.Automation.SwitchParameter]) { if ($p.Value.IsPresent) { "-$($p.Key)" } }
+        elseif ($p.Value -is [array]) { "-$($p.Key) @($(($p.Value | ForEach-Object { "'$(([string]$_) -replace "'", "''")'" }) -join ','))" }
+        else { "-$($p.Key) '$(([string]$p.Value) -replace "'", "''")'" }
+    }
+    $who = if ($QueueName) { $QueueName } else { "TestLab run $($PSBoundParameters['Suites'])$($PSBoundParameters['Mods'])$($PSBoundParameters['Passes'])".Trim() }
+    try { & $valheimQueue run -Name $who -Priority:$Priority -Command "& '$PSCommandPath' $($passOn -join ' ')" }
+    finally { $queueCode = $LASTEXITCODE; Remove-Item Env:VALHEIM_QUEUE_HELD -ErrorAction SilentlyContinue }
+    exit $queueCode
+}
 
 if ($ProfilePath -eq '') {
     $ProfilePath = Join-Path $env:APPDATA "com.kesomannen.gale\valheim\profiles\$Profile"

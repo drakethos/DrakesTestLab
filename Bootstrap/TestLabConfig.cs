@@ -24,6 +24,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<float> StepDelay { get; private set; } = null!;
     public ConfigEntry<string> Screenshots { get; private set; } = null!;
     public ConfigEntry<int> KeepRuns { get; private set; } = null!;
+    public ConfigEntry<string> Player2 { get; private set; } = null!;
     public ConfigEntry<float> TestTimeout { get; private set; } = null!;
     public ConfigEntry<string> PickerKey { get; private set; } = null!;
     public ConfigEntry<string> NextStepKey { get; private set; } = null!;
@@ -63,6 +64,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> OverlayKey { get; private set; } = null!;
     public ConfigEntry<bool> ShowOverlay { get; private set; } = null!;
     public ConfigEntry<float> UiScale { get; private set; } = null!;
+    public ConfigEntry<float> UiOpacity { get; private set; } = null!;
     public ConfigEntry<string> TemplateWorldFile { get; private set; } = null!;
     public ConfigEntry<string> TemplateCharacterFile { get; private set; } = null!;
     public ConfigEntry<string> PersistentWorldName { get; private set; } = null!;
@@ -120,6 +122,8 @@ internal sealed class TestLabConfig
                 new AcceptableValueList<string>("Off", "Failures", "Always")));
         c.KeepRuns = config.Bind("Automation", "KeepRuns", 5,
             "How many runs' screenshot folders (results/run-<date>) to keep; older ones are deleted when a run starts. 0 = keep all.");
+        c.Player2 = config.Bind("Automation", "Player2", "Bjornita",
+            "Test player 2: the virtual player a peerJoin step without a name connects, and the one the Wards tab connects. A known test player (Bjornita, Alice, Amy, Bob, Carol) or any name.");
         c.TestTimeout = config.Bind("Automation", "TestTimeout", 120f, "Seconds a single test may take before it fails (a test can set its own \"timeout\").");
         c.PickerKey = config.Bind("Automation", "PickerKey", "F8", "With the UI picker on, this key copies the name of the game button or window under the mouse.");
         c.NextStepKey = config.Bind("Automation", "NextStepKey", "F7", "In step mode, run the next test step.");
@@ -175,6 +179,7 @@ internal sealed class TestLabConfig
         c.OverlayKey = config.Bind("Dev", "OverlayKey", "F10", "Key to toggle the compact info overlay (Unity KeyCode name).");
         c.ShowOverlay = config.Bind("Dev", "ShowOverlay", false, "Show the compact info overlay (FPS, position, biome, time).");
         c.UiScale = config.Bind("Dev", "UiScale", 1f, new ConfigDescription("Toolbox UI scale.", new AcceptableValueRange<float>(0.6f, 2.5f)));
+        c.UiOpacity = config.Bind("Dev", "UiOpacity", 1f, new ConfigDescription("How solid the lab window's panels are (lower = see the game through it). Text stays readable. Also a slider in the window header.", new AcceptableValueRange<float>(0.3f, 1f)));
         c.TemplateWorldFile = config.Bind("Save", "TemplateWorldFile", PresetDeployer.DefaultTemplateWorldFile,
             "Template world name in Assets/Presets/templates/: a Valheim 1.0 world folder (preferred) or a legacy .fwl/.db pair. Empty = TestLab.");
         c.TemplateCharacterFile = config.Bind("Save", "TemplateCharacterFile", PresetDeployer.DefaultTemplateCharacterFile,

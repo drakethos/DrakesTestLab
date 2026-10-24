@@ -19,7 +19,7 @@ Please:
 1. List every behaviour and config setting you will cover, and which ones need a person (manual).
 2. Write `suite.json` with a configOverrides baseline for every setting the tests use.
 3. Write the C# test hooks file (my own `TestHookAttribute`, no DrakesTestLab reference) calling my real code paths. Tell me which of my methods each hook calls; ask if you cannot see one.
-4. Write one JSON test per case. Craft owned items with the `craft` step, use `playAs` for other players, `setConfig` for per-test settings, and put steps several tests repeat into a function (`_functions/`, called by name, with its own asserts).
+4. Write one JSON test per case. Craft owned items with the `craft` step, use `playAs` for other players, `setConfig` for per-test settings, and put steps several tests repeat into a function (`_functions/`, called by name, with its own asserts). For multiplayer behaviour use a virtual second client (`peerJoin`, default Bjornita) with `peerRpc` / `peerReceived` / `zdoOwner`.
 5. Write a `<MOD>-Manual` suite with checkpoint steps for what needs eyes or real input.
 6. Give me a coverage table: requirement -> Auto / Manual / Gap.
 

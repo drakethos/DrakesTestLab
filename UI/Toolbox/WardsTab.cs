@@ -33,6 +33,7 @@ internal sealed class WardsTab : ToolboxTab
             ("Amy (girl)", () => WardTools.PlayAs(WardTools.Amy, _applyLook)),
             ("Bob", () => WardTools.PlayAs(WardTools.Bob, _applyLook)),
             ("Carol (girl)", () => WardTools.PlayAs(WardTools.Carol, _applyLook)),
+            ("Bjornita (girl)", () => WardTools.PlayAs(WardTools.Bjornita, _applyLook)),
             ("Back to me", WardTools.RestoreOriginal));
         GUILayout.BeginHorizontal();
         _playAsName = GUILayout.TextField(_playAsName, GUILayout.Width(160));
@@ -40,6 +41,18 @@ internal sealed class WardsTab : ToolboxTab
             WardTools.PlayAs(WardTools.Parse(_playAsName), false);
         GUILayout.EndHorizontal();
         Ui.Hint("Stand in a ward as its owner, a permitted player or a stranger, without a second game running.");
+
+        Ui.Header("Player 2 (a second client in this world)");
+        var player2 = TestLabConfig.Instance.Player2.Value;
+        var connected = DrakesTestLab.Automation.VirtualPeers.Find(player2);
+        GUILayout.Label(connected != null
+            ? $"<b>{connected.Name}</b> is connected (peer {connected.Uid}), {Vector3.Distance(connected.Position, p.transform.position):0} m away."
+            : $"<b>{player2}</b> is not connected.");
+        Ui.Row(
+            ($"Connect {player2} here", () => DrakesTestLab.Automation.VirtualPeers.Join(player2, p.transform.position + p.transform.right * 3f, true, 0f, 0f, false)),
+            ($"Bring {player2} to me", () => { if (DrakesTestLab.Automation.VirtualPeers.Find(player2) is { } vp) DrakesTestLab.Automation.VirtualPeers.Move(vp, p.transform.position + p.transform.right * 3f); }),
+            ($"Disconnect {player2}", () => { if (DrakesTestLab.Automation.VirtualPeers.Find(player2) is { } vp) DrakesTestLab.Automation.VirtualPeers.Leave(vp); }));
+        Ui.Hint("She joins through the game's own connection code, owns her character and answers what is sent to her like a second client. [Automation] Player2 picks who.");
 
         Ui.Header("Test ward");
         _radius = Ui.Slider("New ward radius", _radius, 3f, 40f, "0");
@@ -70,7 +83,8 @@ internal sealed class WardsTab : ToolboxTab
             ("Owner = Alice", () => WardTools.SetOwner(ward, WardTools.Alice)),
             ("Owner = Amy", () => WardTools.SetOwner(ward, WardTools.Amy)),
             ("Owner = Bob", () => WardTools.SetOwner(ward, WardTools.Bob)),
-            ("Owner = Carol", () => WardTools.SetOwner(ward, WardTools.Carol)));
+            ("Owner = Carol", () => WardTools.SetOwner(ward, WardTools.Carol)),
+            ("Owner = Bjornita", () => WardTools.SetOwner(ward, WardTools.Bjornita)));
         GUILayout.BeginHorizontal();
         _custom = GUILayout.TextField(_custom, GUILayout.Width(160));
         if (GUILayout.Button("Owner = this name"))
@@ -88,11 +102,13 @@ internal sealed class WardsTab : ToolboxTab
             ("Add Amy", () => WardTools.AddPermitted(ward, WardTools.Amy)),
             ("Add Bob", () => WardTools.AddPermitted(ward, WardTools.Bob)),
             ("Add Carol", () => WardTools.AddPermitted(ward, WardTools.Carol)),
+            ("Add Bjornita", () => WardTools.AddPermitted(ward, WardTools.Bjornita)),
             ("Add this name", () => WardTools.AddPermitted(ward, WardTools.Parse(_custom))));
         Ui.Row(
             ("Remove Alice", () => WardTools.RemovePermitted(ward, WardTools.Alice)),
             ("Remove Bob", () => WardTools.RemovePermitted(ward, WardTools.Bob)),
-            ("Remove Carol", () => WardTools.RemovePermitted(ward, WardTools.Carol)));
+            ("Remove Carol", () => WardTools.RemovePermitted(ward, WardTools.Carol)),
+            ("Remove Bjornita", () => WardTools.RemovePermitted(ward, WardTools.Bjornita)));
 
         Ui.Header("Ready-made scenarios (on this ward)");
         Ui.Row(

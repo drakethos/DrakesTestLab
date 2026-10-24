@@ -58,13 +58,12 @@ internal static class LabBar
 {
     private static readonly List<(string label, string key, Action action, bool danger)> Buttons = new();
 
-    public static bool Visible => !ToolboxHost.IsOpen && (Recorder.Recording || TestRunner.CheckpointPending || (TestRunner.Running && TestRunner.WaitingForNext));
+    /// <summary>Shown while recording, at a manual check or in step mode, with the lab window open or closed (open = its buttons can be clicked).</summary>
+    public static bool Visible => Recorder.Recording || TestRunner.CheckpointPending || (TestRunner.Running && TestRunner.WaitingForNext);
 
     /// <summary>Every frame: the bar's keys (the lab window being closed, as the bar only shows then).</summary>
     public static void Tick()
     {
-        if (ToolboxHost.IsOpen)
-            return;
         var cfg = TestLabConfig.Instance;
 
         if (TestRunner.CheckpointPending)
@@ -86,6 +85,24 @@ internal static class LabBar
         else if (KeyCombo.Parse(cfg.RecorderInventoryKey.Value).Pressed()) Recorder.CheckInventory();
         else if (KeyCombo.Parse(cfg.RecorderScreenshotKey.Value).Pressed()) { Recorder.Screenshot(); Recorder.LastMessage = "Screenshot step added."; }
         else if (KeyCombo.Parse(cfg.RecorderPauseKey.Value).Pressed()) Recorder.TogglePause();
+    }
+
+    private const int BarWindowId = 0x7E59;
+
+    private static void Content(string title, string detail)
+    {
+        GUI.backgroundColor = new Color(1f, 1f, 1f, Mathf.Clamp(TestLabConfig.Instance.UiOpacity.Value, 0.3f, 1f));
+        GUILayout.Label(title);
+        GUILayout.Label(detail, Ui.HintStyle);
+        GUILayout.BeginHorizontal();
+        // the buttons are clickable whenever the cursor is free (lab window or inventory open); the keys always work
+        foreach (var (label, key, action, danger) in Buttons)
+        {
+            var text = key.Length > 0 ? $"{label}  <color={Ui.Html(Ui.Muted)}>{key}</color>" : label;
+            if (danger ? GUILayout.Button(text, Ui.Danger_) : GUILayout.Button(text))
+                action();
+        }
+        GUILayout.EndHorizontal();
     }
 
     public static void Draw(float scale)
@@ -119,23 +136,27 @@ internal static class LabBar
             Buttons.Add(("Check my inventory", cfg.RecorderInventoryKey.Value, Recorder.CheckInventory, false));
             Buttons.Add(("Screenshot", cfg.RecorderScreenshotKey.Value, Recorder.Screenshot, false));
             Buttons.Add((Recorder.Paused ? "Resume" : "Pause", cfg.RecorderPauseKey.Value, Recorder.TogglePause, false));
-            Buttons.Add(("Stop & save", cfg.MenuKey.Value, () => { Recorder.Stop(); ToolboxHost.ShowTab("Record"); }, true));
+            Buttons.Add(("Stop & save", "", () => { Recorder.Stop(); ToolboxHost.ShowTab("Record"); }, true));
         }
 
         const float width = 760f, height = 92f;
-        var rect = new Rect(Screen.width / scale / 2f - width / 2f, 14f, width, height);
-        GUILayout.BeginArea(rect, Ui.CardStyle);
-        GUILayout.Label(title);
-        GUILayout.Label(detail, Ui.HintStyle);
-        GUILayout.BeginHorizontal();
-        // the buttons are clickable whenever the cursor is free (inventory open); the keys always work
-        foreach (var (label, key, action, danger) in Buttons)
+        // at the top over the game; at the bottom while the lab window is open, so it never covers the window's header
+        var top = ToolboxHost.IsOpen ? Screen.height / scale - height - 14f : 14f;
+        var rect = new Rect(Screen.width / scale / 2f - width / 2f, top, width, height);
+        if (ToolboxHost.IsOpen)
         {
-            var text = $"{label}  <color={Ui.Html(Ui.Muted)}>{key}</color>";
-            if (danger ? GUILayout.Button(text, Ui.Danger_) : GUILayout.Button(text))
-                action();
+            // Unity draws windows above plain GUI: with the lab window open the bar is a small window of its own, kept in front
+            GUI.Window(BarWindowId, rect, _ => Content(title, detail), GUIContent.none, Ui.CardStyle);
+            GUI.BringWindowToFront(BarWindowId);
         }
-        GUILayout.EndHorizontal();
-        GUILayout.EndArea();
+        else
+        {
+            var oldBg = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(1f, 1f, 1f, Mathf.Clamp(cfg.UiOpacity.Value, 0.3f, 1f));
+            GUILayout.BeginArea(rect, Ui.CardStyle);
+            Content(title, detail);
+            GUILayout.EndArea();
+            GUI.backgroundColor = oldBg;
+        }
     }
 }

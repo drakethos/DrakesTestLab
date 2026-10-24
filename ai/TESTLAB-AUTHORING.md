@@ -154,7 +154,8 @@ owner check, `as(who, steps)`.
 | `craft` | `prefab`, `count`, `by` (craft as Alice/Bob/...), `free` (default true; false = needs materials), `station` (tag of a placed station to craft at; needed for real-cost station recipes; roof/fire waived) | Crafts through the game's crafting code: the item gets a **real crafter/owner** |
 | `give` | `prefab`, `count`, `quality`, `equip`, `crafter`; or `materialsFor` (+ `count`, `quality`) | Adds items. Without `crafter` they are unowned (like loot). `materialsFor` gives an item recipe's or a building piece's cost (pair with `craft` `"free": false`) |
 | `spawn` | `prefab`, `dx`/`dz` or `x`/`z`, `owner`, `as` (tag), `count`, `level`, `yaw`, `keep`; wards: `enabled`, `permitted`, `radius` | Places pieces (with owner), creatures, wards |
-| `playAs` | `who`: `me`, `Alice`, `Amy`, `Bob`, `Carol`, any name, `Name:12345` | Become another player (player id + name change; ownership and wards follow) |
+| `playAs` | `who`: `me`, `Alice`, `Amy`, `Bob`, `Carol`, `Bjornita`, any name, `Name:12345` | Become another player (player id + name change; ownership and wards follow) |
+| `peerJoin`, `peerRpc`, `peerOwn`, `peerSet`, `peerMove`, `peerClear`, `peerLeave` | see [Virtual players](#virtual-players-a-second-client) | A second client (Bjornita) next to you |
 | `setConfig` | `values`: `{ "Section/Key": value }` (guid defaults to the suite's first required mod) or `guid`,`section`,`key`,`value` | Changes config **for this test only** |
 | `case` | `name` | Applies a case file from `cases/` (reuse complex starting states) |
 | `use` | `block`, `args` (or the args straight on the step) | Runs a block's or function's steps in place ([Blocks](#blocks-reusable-steps)); a function can also be called by its own name |
@@ -175,8 +176,46 @@ owner check, `as(who, steps)`.
 `hasItem` (prefab, count, quality, data, crafter: `me`/`Alice`/`none`), `noItem`, `equipped`, `globalKey`, `objectNear`, `owner` (piece creator), `zdo`,
 `uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
 `hoverText`, `containerHas`, `logContains`, `noErrors` (`source`), `config`, `skill`, `stat`, `position`, `guardianPower`,
-`wardAccess`, `lastResult`, `hook`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,
+`wardAccess`, `lastResult`, `hook`, `peerReceived`, `peerConnected`, `zdoOwner`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,
 `notContains`, `min`, `max`.
+
+## Virtual players (a second client)
+
+For multiplayer behaviour, a **virtual player** connects to the test world like a second client: by default **Bjornita**
+(test player 2, id 100005), or any name. She joins through the game's own peer code, has a character (a remote-player ZDO
+she owns), owns objects, sends RPCs the server handles exactly like a client's, and records what the server sends her.
+With **proxy** (default on) her client answers RPCs routed to her for objects she owns by running the same mod code, so
+owner round trips complete.
+
+```json
+{ "do": "peerJoin" },                                                     // Bjornita, 3 m to your right ("name": "Bob" for another)
+{ "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "chest" },
+{ "do": "peerRpc", "target": "chest", "method": "RPC_RequestOpen", "args": [ "@Bjornita" ], "types": [ "long" ] },
+{ "do": "check", "check": "peerReceived", "method": "RPC_OpenResponse", "types": [ "bool" ], "args": [ true ] },
+{ "do": "check", "check": "zdoOwner", "target": "chest", "expect": "Bjornita" },
+{ "do": "peerRpc", "target": "chest", "method": "MyMod_Toggle", "args": [ 1, "@me" ], "types": [ "int", "long" ], "sender": "host" }  // a modified client lying twice
+```
+
+| Step | Fields | Does |
+|---|---|---|
+| `peerJoin` | `name` (default `[Automation] Player2` = Bjornita), `dx`/`dz`, `as`, `puppet` (default true), `proxy` (default true), `latency`, `drop` | Connects her |
+| `peerRpc` | `peer`, `method`, `args` + `types` (int, uint, long, float, double, bool, string, byte, zdoid); `target` (object: sent to its owner) or `to` (server / everybody / a player); `sender` (forge: host, a player, a number); `wait` | An RPC from her client. `"@Name"` = that player's id |
+| `peerOwn` | `peer` (`me` = back), `target` | She owns the object, as if her client claimed it |
+| `peerSet` | `peer`, `target`, `key`, `value`, `type`, `keepOwner` | Her client writes a ZDO value (mods that write straight onto objects) |
+| `peerMove`, `peerClear`, `peerLeave` | position or `to` / - / `name` or `"*"` | Move her; forget her inbox; disconnect her (as a real client leaves) |
+
+Checks: `peerReceived` (`method`, `target`, `args` + `types` with `"*"`, `count` at least / `max`; `"max": 0` = must not
+arrive), `peerConnected`, `zdoOwner` (`me`, a virtual player, `none`: which client owns it, not who built it).
+
+Good network tests:
+- the owner refuses a stranger's request;
+- forged player ids and forged sender ids are caught (`"sender": "host"`);
+- a request sent while someone else's client owns the object reaches *them*, and what they answer;
+- ownership after she leaves;
+- lag/loss (`latency`, `drop`) against retry logic.
+
+Limits: one copy of each mod, its config and state is shared with your game (no separate client state), and timing is
+simulated. Keep a real two-player check for releases.
 
 ## Test hooks (the mod side)
 
@@ -235,6 +274,7 @@ Unattended (Windows, Steam running, game closed):
 
 ```powershell
 .\tools\Run-TestLabSuites.ps1 -Suites "MyMod" -Screenshots Always
+.\tools\Run-TestLabSuites.ps1 -Suites "MyMod/TC-201,MyMod-Net/N-02"   # single tests (start of name): for quick checks
 ```
 
 Exit code: 0 all passed, 1 a test failed, 2 could not start, 3 timed out / no results. Or start the game with
@@ -245,7 +285,8 @@ Results: `BepInEx/config/DrakesTestLab/results/latest.html` (report with screens
 ## Things that trip people up
 
 - In single player the host is an admin. If the mod lets admins bypass rules, turn that off in the baseline or every denial test passes for the wrong reason.
-- `playAs` changes who you are for ownership and wards, but there is still only one game client: a second real player's view, server sync and network timing need a manual test.
+- `playAs` changes who **you** are. For a second player **at the same time** use a virtual player (`peerJoin`). Neither replaces a real second game: her own client state, real sync and timing still need a manual test.
+- After a small change run only the affected tests (`-Suites "Suite/Test"`); keep whole-suite runs for regression passes. On a shared PC, runs wait in the DrakeMods launch queue (`Valheim-Queue.ps1`).
 - `give` without `crafter` = unowned item. Use `craft` when ownership matters.
 - Settings the mod only reads at startup or registration (recipes, prefab sizes) may not change live; check them, and mark live-toggle behaviour as manual if needed.
 - Copy the suite folder **with** its `_blocks/` / `_functions/` / `_shared/` subfolders (and any `suites/_Shared/` it includes) into the profile. `_lib/` ships with DrakesTestLab.

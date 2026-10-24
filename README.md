@@ -48,17 +48,19 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 | **Log** | the BepInEx log live, filtered by mod, errors first, click a line to copy it |
 | **Session** | reset world and character, quit, console, startup options |
 
-![Cases tab: save the current setup as a case, apply cases](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-cases.png)
+![Cases tab: save the current setup as a case, apply cases](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-cases.png)
 
-![Rules tab: station level, cost, carry weight, vitals, noise](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-rules.png)
+![Rules tab: station level, cost, carry weight, vitals, noise](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-rules.png)
 
-![World tab: time of day, weather](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-world.png)
+![World tab: time of day, weather](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-world.png)
 
-![Spawn tab: search creatures, items and pieces](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-spawn.png)
+![Spawn tab: search creatures, items and pieces](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-spawn.png)
 
-![Wards tab: play as Alice, Bob or Carol, spawn and configure test wards](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/ward-bench.png)
+![Wards tab: play as Alice, Bob, Carol or Bjornita, a second client, test wards](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-wards.png)
 
-![Inspect tab: what you are looking at](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-inspect.png)
+![Inspect tab: what you are looking at](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-inspect.png)
+
+![See the game through the window: the Opacity slider](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/opacity-60.png)
 
 **F10** toggles a small overlay with FPS, position, biome, time and health. Hotkeys and UI scale are in the config.
 
@@ -85,7 +87,7 @@ A test case is a small JSON file that sets the game up exactly how you want it: 
 }
 ```
 
-![Cases tab: apply a test case or auto-load one](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/cases-tab.png)
+![Cases tab: apply a test case or auto-load one](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-cases.png)
 
 Eight example cases ship with the mod and are copied into that folder on first run, with a field reference (`README.md`). The complete format is on the wiki: [Test cases](https://github.com/drakethos/DrakesTestLab/wiki/Test-Cases). Every field is optional, so a case only changes what it names.
 
@@ -97,9 +99,9 @@ Suites of tests per mod run from **F9 > Tests**, step by step while you watch, o
 
 **Record a test instead of writing it:** F9 > Tests > Record, play the scenario, add checks with F7 / Shift+F7 on the lab bar, stop and save. Crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks and setting changes all become steps, and the test starts from a saved setup of the game as it was. See [Recording tests](https://github.com/drakethos/DrakesTestLab/wiki/Recording-Tests).
 
-![Recording: the lab bar](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/lab-bar.png)
+![Recording: the lab bar](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/lab-bar-recording.png)
 
-![Record tab: recorded steps, save into a suite](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/toolbox-record.png)
+![Record tab: recorded steps, save into a suite](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-record.png)
 
 Mods can expose **test hooks** with no dependency on DrakesTestLab: put your own `[TestHook("name")]` attribute on a static method and tests can call it. Full reference: [Automation on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Automation).
 

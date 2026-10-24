@@ -14,7 +14,8 @@ internal static class Asserts
     public static readonly string[] Names =
     {
         "hasItem", "noItem", "equipped", "globalKey", "objectNear", "owner", "zdo", "uiVisible", "uiText", "logContains",
-        "noErrors", "config", "skill", "stat", "position", "guardianPower", "wardAccess", "lastResult", "hook", "message", "unlockShown", "hoverText", "containerHas", "uiEnabled", "hovering", "crosshair"
+        "noErrors", "config", "skill", "stat", "position", "guardianPower", "wardAccess", "lastResult", "hook", "message", "unlockShown", "hoverText", "containerHas", "uiEnabled", "hovering", "crosshair",
+        "peerReceived", "peerConnected", "zdoOwner"
     };
 
     public static AssertResult Evaluate(Dictionary<string, object?> a, RunContext ctx)
@@ -263,6 +264,8 @@ internal static class Asserts
                 return (ok, $"hook returned '{text}'");
             }
             default:
+                if (PeerSteps.HandlesCheck(kind))
+                    return PeerSteps.Check(kind, a, ctx);
                 throw new InvalidOperationException($"unknown check '{kind}' (known: {string.Join(", ", Names)})");
         }
     }

@@ -242,6 +242,10 @@
 
     <Compile Include="Automation\Steps.cs" />
 
+    <Compile Include="Automation\VirtualPeers.cs" />
+
+    <Compile Include="Automation\PeerSteps.cs" />
+
     <Compile Include="Automation\Asserts.cs" />
 
     <Compile Include="Automation\TestRunner.cs" />

@@ -114,7 +114,11 @@ internal sealed class ToolboxHost : MonoBehaviour
         {
             _window.width = Mathf.Clamp(_window.width, 560f, Screen.width / s - 10f);
             _window.height = Mathf.Clamp(_window.height, 360f, Screen.height / s - 10f);
+            // the panels fade with the opacity setting; text is drawn with GUI.contentColor, so it stays solid
+            var oldBg = GUI.backgroundColor;
+            GUI.backgroundColor = new Color(1f, 1f, 1f, Mathf.Clamp(cfg.UiOpacity.Value, 0.3f, 1f));
             _window = GUI.Window(WindowId, _window, DrawWindow, GUIContent.none);
+            GUI.backgroundColor = oldBg;
         }
 
         GUI.matrix = oldMatrix;
@@ -123,6 +127,8 @@ internal sealed class ToolboxHost : MonoBehaviour
 
     private void DrawWindow(int id)
     {
+        // the window's contents are drawn here, later than the GUI.Window call: fade the panels, cards and buttons too
+        GUI.backgroundColor = new Color(1f, 1f, 1f, Mathf.Clamp(TestLabConfig.Instance.UiOpacity.Value, 0.3f, 1f));
         const float headerH = 40f, sideW = 150f, footerH = 22f;
 
         // header: title, status chips, close
@@ -138,6 +144,12 @@ internal sealed class ToolboxHost : MonoBehaviour
             GUILayout.Space(4f);
         }
         GUILayout.FlexibleSpace();
+        var cfg = TestLabConfig.Instance;
+        GUILayout.Label("Opacity", Ui.HintStyle, GUILayout.ExpandWidth(false));
+        var opacity = GUILayout.HorizontalSlider(cfg.UiOpacity.Value, 0.3f, 1f, GUILayout.Width(90f));
+        if (Mathf.Abs(opacity - cfg.UiOpacity.Value) > 0.005f)
+            cfg.UiOpacity.Value = opacity;
+        GUILayout.Space(8f);
         if (GUILayout.Button("Close", GUILayout.Width(60f)))
             Set(false);
         GUILayout.EndHorizontal();

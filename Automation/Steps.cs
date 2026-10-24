@@ -26,7 +26,8 @@ internal static class StepNames
     public static readonly string[] All =
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
-        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use"
+        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
+        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear"
     };
 }
 
@@ -411,6 +412,8 @@ internal static class Steps
                 // blocks are replaced by their steps when the suite loads (SuiteLoader / BlockExpander)
                 throw new StepFailed($"block '{step.Str("block")}' was not expanded; reload the suites");
             default:
+                if (PeerSteps.Handles(action))
+                    return PeerSteps.Execute(action, step, ctx);
                 throw new StepFailed($"unknown step '{action}' (known: {string.Join(", ", Names)})");
         }
     }

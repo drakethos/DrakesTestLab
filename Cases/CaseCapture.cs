@@ -296,14 +296,14 @@ internal static class CaseCapture
         return (local.x, local.y, local.z, yaw);
     }
 
-    /// <summary>A player id as a case name: "me", Alice / Bob / Carol / Amy, or "Name:12345".</summary>
+    /// <summary>A player id as a case name: "me", a known test player (Alice, Amy, Bob, Carol, Bjornita), or "Name:12345".</summary>
     public static string NameOf(long id, string name)
     {
         if (WardTools.Original != null && WardTools.Original.Id == id)
             return "me";
         if (!WardTools.IsSwitched && Player.m_localPlayer != null && Player.m_localPlayer.GetPlayerID() == id)
             return "me";
-        foreach (var known in new[] { WardTools.Alice, WardTools.Amy, WardTools.Bob, WardTools.Carol })
+        foreach (var known in WardTools.Known)
         {
             if (known.Id == id)
                 return known.Name;

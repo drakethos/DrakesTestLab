@@ -1,0 +1,47 @@
+// Virtual player: Bjornita (test player 2) connects to the test world like a second client, opens chests through the real RPCs,
+// receives what the server sends her, forges a claim, and leaves. Uses vanilla chests only.
+{
+  "name": "11-virtual-player",
+  "description": "A virtual second player: join, routed RPCs both ways, ownership handover, a forged player id, disconnect cleanup.",
+  "steps": [
+    { "do": "peerJoin", "name": "Bjornita", "dx": 3, "dz": 2, "as": "bjornita" },
+    { "do": "check", "check": "peerConnected", "peer": "Bjornita", "label": "Bjornita is connected" },
+
+    // Bjornita opens my chest: the owner (this game) grants it and hands her the chest, like a real client opening it
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "chest" },
+    { "do": "peerRpc", "peer": "Bjornita", "target": "chest", "method": "RPC_RequestOpen", "args": [ "@Bjornita" ], "types": [ "long" ] },
+    { "do": "check", "check": "peerReceived", "peer": "Bjornita", "method": "RPC_OpenResponse", "types": [ "bool" ], "args": [ true ], "label": "server granted Bjornita the chest" },
+    { "do": "check", "check": "zdoOwner", "target": "chest", "expect": "Bjornita", "label": "Bjornita owns the chest now" },
+
+    // now I am the remote one: pressing E sends my request to Bjornita's client, which answers like a real client:
+    // the chest opens for me and she hands it over
+    { "do": "peerClear", "peer": "Bjornita" },
+    { "do": "closeUi" },
+    { "do": "face", "target": "chest" },
+    { "do": "interact", "target": "chest" },
+    { "do": "wait", "seconds": 0.5 },
+    { "do": "check", "check": "peerReceived", "peer": "Bjornita", "method": "RPC_RequestOpen", "types": [ "long" ], "args": [ "@me" ], "label": "my open request went to Bjornita" },
+    { "do": "check", "check": "uiVisible", "name": "InventoryGui", "expect": true, "label": "her client let me in: the chest opened" },
+    { "do": "check", "check": "zdoOwner", "target": "chest", "expect": "me", "label": "and handed the chest to me" },
+    { "do": "closeUi" },
+    { "do": "peerOwn", "peer": "Bjornita", "target": "chest" },
+
+    // a private chest I built: Bjornita is refused, but a forged claim to be me is believed (vanilla trusts the player id)
+    { "do": "spawn", "prefab": "piece_chest_private", "dz": 3, "dx": -2, "owner": "me", "as": "private" },
+    { "do": "peerClear", "peer": "Bjornita" },
+    { "do": "peerRpc", "peer": "Bjornita", "target": "private", "method": "RPC_RequestOpen", "args": [ "@Bjornita" ], "types": [ "long" ] },
+    { "do": "check", "check": "peerReceived", "peer": "Bjornita", "method": "RPC_OpenResponse", "types": [ "bool" ], "args": [ false ], "label": "Bjornita is refused my private chest" },
+    { "do": "check", "check": "zdoOwner", "target": "private", "expect": "me", "label": "and it stays mine" },
+    { "do": "peerClear", "peer": "Bjornita" },
+    { "do": "peerRpc", "peer": "Bjornita", "target": "private", "method": "RPC_RequestOpen", "args": [ "@me" ], "types": [ "long" ] },
+    { "do": "check", "check": "peerReceived", "peer": "Bjornita", "method": "RPC_OpenResponse", "types": [ "bool" ], "args": [ true ], "label": "forged claim: vanilla opens it for Bjornita" },
+
+    // she walks off and disconnects: the game takes her chest back (abandoned owner)
+    { "do": "peerMove", "peer": "Bjornita", "dx": 6, "dz": 6 },
+    { "do": "peerLeave", "name": "Bjornita" },
+    { "do": "check", "check": "peerConnected", "peer": "Bjornita", "expect": false, "label": "Bjornita left" },
+    { "do": "wait", "seconds": 2.5 },
+    { "do": "check", "check": "zdoOwner", "target": "chest", "expect": "me", "label": "her chest came back to me after she left" }
+  ],
+  "asserts": [ { "check": "noErrors" } ]
+}

@@ -247,28 +247,53 @@ internal static class TestRunner
 
         _ranOnLaunch = true;
         Reload();
-        List<SuiteDef> chosen;
+        // "all", or suites and single tests: "SuiteA,SuiteB/N-01,SuiteB/N-03" (a test matches by the start of its name or file name)
+        var plan = new List<(SuiteDef, List<TestDef>)>();
         if (what.Equals("all", StringComparison.OrdinalIgnoreCase))
         {
-            chosen = Suites;
+            plan = Plan(Suites, null);
         }
         else
         {
-            var names = new HashSet<string>(what.Split(',').Select(n => n.Trim()).Where(n => n.Length > 0), StringComparer.OrdinalIgnoreCase);
-            chosen = Suites.FindAll(s => names.Contains(s.Name.Trim()) || names.Contains(Path.GetFileName(s.Folder)));
-            // a suite that was asked for but is not there must not pass silently
-            foreach (var name in names)
+            var wanted = new Dictionary<SuiteDef, List<string>?>();
+            foreach (var entry in what.Split(',').Select(n => n.Trim()).Where(n => n.Length > 0))
             {
-                if (!chosen.Exists(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase) || Path.GetFileName(s.Folder).Equals(name, StringComparison.OrdinalIgnoreCase)))
-                    _missing.Add(name);
+                var slash = entry.IndexOf('/');
+                var suiteName = slash > 0 ? entry.Substring(0, slash) : entry;
+                var suite = Suites.Find(s => s.Name.Equals(suiteName, StringComparison.OrdinalIgnoreCase) || Path.GetFileName(s.Folder).Equals(suiteName, StringComparison.OrdinalIgnoreCase));
+                // a suite or test that was asked for but is not there must not pass silently
+                if (suite == null)
+                {
+                    _missing.Add(entry);
+                    continue;
+                }
+
+                if (slash <= 0)
+                {
+                    wanted[suite] = null; // the whole suite
+                    continue;
+                }
+
+                var prefix = entry.Substring(slash + 1);
+                if (!suite.Tests.Exists(t => TestMatches(t, prefix)))
+                    _missing.Add(entry);
+                else if (!wanted.TryGetValue(suite, out var list) || list != null)
+                    (wanted[suite] = list ?? new List<string>()).Add(prefix);
             }
+
+            foreach (var kv in wanted)
+                plan.Add((kv.Key, kv.Value == null ? new List<TestDef>(kv.Key.Tests) : kv.Key.Tests.FindAll(t => kv.Value.Exists(p => TestMatches(t, p)))));
         }
 
-        TestLabPlugin.Log?.LogInfo($"Automation: running {chosen.Count} suite(s) on launch ({what}).");
+        TestLabPlugin.Log?.LogInfo($"Automation: running {plan.Sum(p => p.Item2.Count)} test(s) from {plan.Count} suite(s) on launch ({what}).");
         // -testlab-attended: a person is at the keyboard (manual suites): checkpoints ask, manual-only tests run, the game stays open
         var attended = CommandLine.Has("-testlab-attended");
-        Start(Plan(chosen, null), unattended: !attended);
+        Start(plan, unattended: !attended);
     }
+
+    private static bool TestMatches(TestDef t, string prefix) =>
+        t.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+        || Path.GetFileNameWithoutExtension(t.File).StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
 
     private static List<(SuiteDef, List<TestDef>)> Plan(List<SuiteDef> suites, Func<TestDef, bool>? filter)
     {
@@ -523,6 +548,7 @@ internal static class TestRunner
                 ZNetScene.instance.Destroy(go);
         }
 
+        VirtualPeers.LeaveAll();
         ModEnvironment.TestScope = false;
         ModEnvironment.RestoreTest();
         HeldKeys.ReleaseAll();

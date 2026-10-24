@@ -48,6 +48,15 @@ internal static class WardTools
         Name = "Carol", Id = 100003, Model = 1, Hair = "Hair9", Beard = "", HairColor = new Vector3(0.9f, 0.8f, 0.4f), SkinColor = new Vector3(0.6f, 0.45f, 0.35f)
     };
 
+    /// <summary>Test player 2 for general testing: the default virtual player (peerJoin) and a ward / play-as regular.</summary>
+    public static readonly Identity Bjornita = new()
+    {
+        Name = "Bjornita", Id = 100005, Model = 1, Hair = "Hair10", Beard = "", HairColor = new Vector3(0.95f, 0.85f, 0.55f), SkinColor = new Vector3(0.95f, 0.82f, 0.72f)
+    };
+
+    /// <summary>The named test players, with fixed ids: Alice, Amy, Bob, Carol, Bjornita.</summary>
+    public static readonly Identity[] Known = { Alice, Amy, Bob, Carol, Bjornita };
+
     private static Identity? _original;
     private static Identity? _currentOverride;
 
@@ -182,7 +191,7 @@ internal static class WardTools
         };
     }
 
-    /// <summary>"me", a known name (Alice/Bob/Carol), "Name" (stable fake id) or "Name:12345".</summary>
+    /// <summary>"me", a known name (Alice/Amy/Bob/Carol/Bjornita), "Name" (stable fake id) or "Name:12345".</summary>
     public static Identity Parse(string spec)
     {
         var s = (spec ?? "").Trim();
@@ -193,7 +202,7 @@ internal static class WardTools
         if (colon > 0 && long.TryParse(s.Substring(colon + 1), out var id))
             return new Identity { Name = s.Substring(0, colon), Id = id };
 
-        foreach (var known in new[] { Alice, Amy, Bob, Carol })
+        foreach (var known in Known)
         {
             if (known.Name.Equals(s, StringComparison.OrdinalIgnoreCase))
                 return known;

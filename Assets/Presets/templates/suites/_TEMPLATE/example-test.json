@@ -52,7 +52,18 @@
     { "do": "invoke", "method": "MyNamespace.MyApi.GetCount", "args": [ "Wood" ] },   // result -> lastResult check
     { "do": "checkpoint", "message": "Does the sign show Hello?" },                   // asks the tester Pass / Fail
     { "do": "screenshot", "name": "after-click" },
-    { "do": "log", "message": "anything for the report" }
+    { "do": "log", "message": "anything for the report" },
+
+    // ---- a second player at the same time: virtual player (Bjornita unless "name"), a client connected to this world
+    { "do": "peerJoin", "dx": 3 },                                                     // "name": "Bob"; "proxy": false = she never answers; "latency": 0.2, "drop": 0.1
+    { "do": "peerRpc", "target": "chest", "method": "RPC_RequestOpen", "args": [ "@Bjornita" ], "types": [ "long" ] },  // sent to the chest's owner
+    { "do": "check", "check": "peerReceived", "method": "RPC_OpenResponse", "types": [ "bool" ], "args": [ true ] },   // what the server sent her
+    { "do": "check", "check": "zdoOwner", "target": "chest", "expect": "Bjornita" },     // which client owns it now
+    { "do": "peerRpc", "target": "chest", "method": "RPC_RequestOpen", "args": [ "@me" ], "types": [ "long" ], "sender": "host" },  // a modified client lying
+    { "do": "peerOwn", "peer": "me", "target": "chest" },                              // give it back (or to her: "peer": "Bjornita")
+    { "do": "peerSet", "target": "chest", "key": "MyMod_Name", "value": "Hers" },        // her client writes on the object
+    { "do": "peerClear" },
+    { "do": "peerLeave" }                                                              // disconnect like a real client
   ],
 
   "asserts": [
@@ -73,6 +84,7 @@
     { "check": "position", "x": 0, "z": 0, "radius": 5 },                    // or target
     { "check": "guardianPower", "expect": "GP_Eikthyr" },
     { "check": "wardAccess", "expect": false },
+    { "check": "peerConnected", "peer": "Bjornita", "expect": false },
     { "check": "lastResult", "expect": 10 }                                  // expect, contains, min, max
   ]
 }

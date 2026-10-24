@@ -47,8 +47,10 @@ internal sealed class RecordTab : ToolboxTab
         }
         else
         {
-            Ui.State($"Recording: {Recorder.Steps.Count} steps so far.", true);
+            Ui.State(Recorder.Paused ? $"Paused: {Recorder.Steps.Count} steps so far (nothing is recorded until you resume)." : $"Recording: {Recorder.Steps.Count} steps so far.", !Recorder.Paused);
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button(Recorder.Paused ? "Resume" : "Pause", GUILayout.Width(100)))
+                Recorder.TogglePause();
             if (Ui.DangerButton("Stop", GUILayout.Width(100)))
                 Recorder.Stop();
             if (GUILayout.Button("Back to the game", GUILayout.Width(150)))

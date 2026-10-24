@@ -1,0 +1,294 @@
+{
+  "name": "M-34 UI tour: every tab, opacity, the lab bar (screenshots for the docs)",
+  "description": "Pictures of the whole lab for the README and the wiki. setConfig puts the opacity back after the test.",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Dev/UiOpacity": "1"
+      }
+    },
+    {
+      "do": "give",
+      "prefab": "Hammer"
+    },
+    {
+      "do": "give",
+      "prefab": "SwordBronze"
+    },
+    {
+      "do": "give",
+      "prefab": "Wood",
+      "count": 30
+    },
+    {
+      "do": "place",
+      "prefab": "piece_chest_wood",
+      "dz": 3,
+      "as": "box"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "World"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-world"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Player"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-player"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Spawn"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-spawn"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Rules"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-rules"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Cases"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-cases"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Wards"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-wards"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Tests"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-tests"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Record"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-record"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Inspect"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-inspect"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Mods"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-mods"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Log"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-log"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Session"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "tab-session"
+    },
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Dev/UiOpacity": "0.6"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "World"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "opacity-60"
+    },
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Dev/UiOpacity": "1"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "testlab.closeToolbox"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStart",
+      "args": {
+        "setup": false
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "lookAt",
+      "target": "box",
+      "distance": 2
+    },
+    {
+      "do": "screenshot",
+      "name": "lab-bar-recording"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.showTab",
+      "args": {
+        "tab": "Record"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "lab-bar-with-window"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.recordStop"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.closeToolbox"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}
