@@ -78,6 +78,9 @@ internal static class TestRunner
             var o = new Cases.CaptureOptions();
             if (args.TryGetValue("radius", out var r) && float.TryParse(Convert.ToString(r, System.Globalization.CultureInfo.InvariantCulture), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var radius))
                 o.Radius = radius;
+            // "ui": true saves through the Cases tab, so it shows the name and its "Saved ..." message
+            if (args.TryGetValue("ui", out var ui) && TestHooks.Truthy(ui) && UI.Toolbox.CasesTab.Current is { } tab)
+                return tab.SaveNamed(name, args.TryGetValue("description", out var d) ? Convert.ToString(d) ?? "" : "");
             return Cases.CaseCapture.Save(Cases.CaseCapture.Capture(o, name, "saved by a test"), name);
         }, "DrakesTestLab");
         TestHooks.Register("testlab.caseText", args => System.IO.File.ReadAllText(System.IO.Path.Combine(Cases.CaseRunner.Folder, Convert.ToString(args["name"]) + ".json")), "DrakesTestLab");
@@ -104,6 +107,15 @@ internal static class TestRunner
         TestHooks.Register("testlab.showTab", args =>
         {
             UI.Toolbox.ToolboxHost.ShowTab(Convert.ToString(args["tab"]) ?? "Tests");
+            return true;
+        }, "DrakesTestLab");
+        // pictures of the manual-check bar (normally only in attended runs): show it with a question, or clear it (clear: true)
+        TestHooks.Register("testlab.showCheckpoint", args =>
+        {
+            if (args.TryGetValue("clear", out var clear) && TestHooks.Truthy(clear))
+                AnswerCheckpoint(true);
+            else
+                AskCheckpoint(Convert.ToString(args.TryGetValue("message", out var m) ? m : "Does it look right?") ?? "");
             return true;
         }, "DrakesTestLab");
         TestHooks.Register("testlab.closeToolbox", _ =>
@@ -574,6 +586,9 @@ internal static class TestRunner
             _current = null;
         WriteResults(complete: false);
     }
+
+    /// <summary>A "clean" screenshot step hides the Testing banner until this frame (the picture is taken at the end of a frame).</summary>
+    public static int CleanShotUntilFrame = -1;
 
     public static void Screenshot(RunContext ctx, string name)
     {

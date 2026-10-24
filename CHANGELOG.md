@@ -1,5 +1,10 @@
 # DrakesTestLab
 
+## 0.3.1
+
+- New screenshots of the 0.3 features in the README, the Hexium page and the wiki: a recording in progress, the recorded steps, a saved case, Player 2 in the world, the manual-check bar.
+- `screenshot` step: `"clean": true` leaves the lab's Testing banner out of the picture. Meta test M-35 takes the feature pictures.
+
 ## 0.3.0
 
 Record tests by playing them, save the game as a case, a cleaner lab window, and a second player without a second game.

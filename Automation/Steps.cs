@@ -356,7 +356,12 @@ internal static class Steps
             }
             case "checkpoint": return Checkpoint(step, ctx);
             case "check": return CheckNow(step, ctx);
-            case "screenshot": TestRunner.Screenshot(ctx, step.Str("name", "shot")); return null;
+            case "screenshot":
+                // "clean": true leaves the lab's own "Testing ..." banner out of this picture (for docs)
+                if (step.Bool("clean"))
+                    TestRunner.CleanShotUntilFrame = Time.frameCount + 2;
+                TestRunner.Screenshot(ctx, step.Str("name", "shot"));
+                return null;
             case "log": ctx.Log("  " + step.Str("message")); return null;
             case "case": return ApplyCase(step);
             case "setconfig":

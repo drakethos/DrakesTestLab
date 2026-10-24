@@ -424,6 +424,48 @@ T('M-34', 'UI tour: every tab, opacity, the lab bar (screenshots for the docs)',
     {'do': 'hook', 'name': 'testlab.closeToolbox'},
 ], desc='Pictures of the whole lab for the README and the wiki. setConfig puts the opacity back after the test.')
 
+T('M-35', 'feature showcase: a real recording, a saved case, Player 2, the manual-check bar (screenshots)', [
+    {'do': 'setConfig', 'guid': 'com.drakemods.testlab', 'values': {'Dev/UiOpacity': '1'}},
+    {'do': 'place', 'prefab': 'piece_workbench', 'dz': 3, 'dx': -3, 'as': 'bench'},
+    {'do': 'give', 'materialsFor': 'piece_chest_wood'}, {'do': 'give', 'materialsFor': 'sign'},
+    {'do': 'give', 'prefab': 'Wood', 'count': 20}, {'do': 'give', 'prefab': 'SwordBronze', 'quality': 2},
+    # a real recording, shown in the Record tab
+    {'do': 'hook', 'name': 'testlab.recordStart', 'args': {'setup': True}},
+    {'do': 'place', 'prefab': 'piece_chest_wood', 'dz': 2.5, 'free': False, 'as': 'box'},
+    {'do': 'interact', 'target': 'box', 'asPlayer': True}, wait(0.4),
+    {'do': 'store', 'target': 'box', 'prefab': 'Wood', 'count': 8},
+    {'do': 'closeUi'}, wait(0.3),
+    {'do': 'place', 'prefab': 'sign', 'dz': 2.5, 'dx': 2, 'free': False, 'as': 'board'},
+    {'do': 'interact', 'target': 'board', 'asPlayer': True}, wait(0.4),
+    {'do': 'type', 'field': '*', 'text': 'Open for testing', 'submit': True}, wait(0.3),
+    {'do': 'lookAt', 'target': 'box', 'distance': 2},
+    {'do': 'hook', 'name': 'testlab.recordCheckInventory'},
+    wait(0.3),
+    {'do': 'screenshot', 'name': 'feature-recording-in-game', 'clean': True},
+    {'do': 'hook', 'name': 'testlab.recordStop'},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Record'}}, wait(0.5),
+    {'do': 'screenshot', 'name': 'feature-recorded-steps'},
+    # the same setup saved as a case, in the Cases tab
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Cases'}}, wait(0.3),
+    {'do': 'hook', 'name': 'testlab.saveCase', 'args': {'name': 'my-shop-setup', 'description': 'A chest of wood, a sign and a workbench', 'ui': True}, 'contains': 'Saved', 'label': 'saved through the Cases tab'}, wait(0.5),
+    {'do': 'screenshot', 'name': 'feature-saved-case'},
+    # Player 2: Bjornita joins as a second client and stands beside me
+    {'do': 'hook', 'name': 'testlab.closeToolbox'},
+    {'do': 'peerJoin', 'name': 'Bjornita', 'dx': 2.5, 'dz': 3.5, 'as': 'bjornita'}, wait(2.0),
+    chk('peerConnected', 'Bjornita is connected', peer='Bjornita'),
+    {'do': 'face', 'target': 'box'}, wait(0.6),
+    {'do': 'screenshot', 'name': 'feature-player2-in-world', 'clean': True},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Wards'}}, wait(0.5),
+    {'do': 'screenshot', 'name': 'feature-player2-wards-tab'},
+    {'do': 'hook', 'name': 'testlab.closeToolbox'},
+    {'do': 'peerLeave', 'name': 'Bjornita'},
+    # the manual-check bar
+    {'do': 'face', 'target': 'board'},
+    {'do': 'hook', 'name': 'testlab.showCheckpoint', 'args': {'message': 'Does the sign say "Open for testing"?'}}, wait(0.5),
+    {'do': 'screenshot', 'name': 'feature-manual-check-bar'},
+    {'do': 'hook', 'name': 'testlab.showCheckpoint', 'args': {'clear': True}},
+], desc='Pictures of the 0.3 features in use, for the README and the wiki.')
+
 # ---------------------------------------------------------------- negative tests: the runner must catch these
 T('N-01', 'a failing check fails the test', [
     chk('hasItem', 'a check that cannot pass', prefab='DragonEgg'),

@@ -169,7 +169,7 @@ owner check, `as(who, steps)`.
 | `relog` | `timeout` | Persistence: log out and load the same world and character back (no restart); tags re-found |
 | `store` / `take` | `target`, `prefab`, `count`, `index`/`match` | Put an inventory stack into a chest / take items out of one |
 | `clearInventory`, `closeUi`, `destroy`, `reset` | | Housekeeping |
-| `screenshot`, `log`, `checkpoint` | `name` / `message` / `message` | Proof and notes; checkpoint asks a person |
+| `screenshot`, `log`, `checkpoint` | `name` (+ `clean`: no Testing banner) / `message` / `message` | Proof and notes; checkpoint asks a person |
 
 ### Checks
 

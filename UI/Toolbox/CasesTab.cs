@@ -7,6 +7,20 @@ namespace DrakesTestLab.UI.Toolbox;
 
 internal sealed class CasesTab : ToolboxTab
 {
+    /// <summary>The tab, for the lab's own tests (saving through it shows its message).</summary>
+    public static CasesTab? Current { get; private set; }
+
+    public CasesTab() => Current = this;
+
+    /// <summary>Save as the button does, with this name (the tab then shows the name and the "Saved ..." message).</summary>
+    public string SaveNamed(string name, string description = "")
+    {
+        _saveName = name;
+        _saveDescription = description;
+        SaveCase();
+        return _saveMessage;
+    }
+
     private List<string> _cases = new();
     private bool _loaded;
     private readonly Dictionary<string, string> _descriptions = new();

@@ -13,6 +13,28 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.3
+
+**Record a test by playing it.** Press Record, play the scenario, and every action becomes a test step: crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks, setting changes. A small bar at the top of the screen adds checks while you play (F7: what you look at, Shift+F7: your inventory), pauses and stops.
+
+![Recording: the lab bar over the game, 12 steps and 3 checks so far](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-recording-in-game.png)
+
+![The recorded steps, ready to save as a test](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-recorded-steps.png)
+
+**Save the game as a case.** Set the dials, fill your bag, build what you need, then save it all (with the chests' contents, signs, wards and the mod settings you changed) as a case you can apply again or use as a test's setup.
+
+![Save the current setup as a case: 3 item stacks, 3 pieces and 13 mod settings saved](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-saved-case.png)
+
+**A second player without a second game.** Bjornita joins the test world as a real second client: she owns her character, and what you send her is answered by the same mod code a real client runs. Multiplayer access rules get tested in one game.
+
+![Bjornita, the virtual second player, standing in the test world](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-player2-in-world.png)
+
+**A cleaner lab window.** Tabs grouped down the side, cards instead of long pages, an Opacity slider to see the game through it, and manual checks answered on the bar (Pass F7 / Fail Shift+F7) without opening the window.
+
+![A manual check on the lab bar: Pass or Fail without opening the window](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-manual-check-bar.png)
+
+---
+
 ## What it can do
 
 - **Instant start:** straight into the world, no menu, no intro cinematic.
@@ -22,7 +44,8 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 - **Rules you can bend:** carry weight, health / stamina / eitr, run speed, jump height, fall damage (never hurt by a height you can jump), the vanilla "mystical force" no-build zones (keep, shrink, grow or remove them), recipe and piece cost.
 - **Discovery:** unlock every item, recipe and station, or only up to a chosen biome, or forget everything again.
 - **Bosses:** mark bosses defeated with their world key, guardian power and trophy, or hook the trophy into the nearest boss stone.
-- **Ward test bench:** spawn a ward and set its owner, on/off and permitted players, or **play as** Alice, Bob or Carol (or any name) to see exactly what a stranger, an owner and a permitted player can do. Ready-made scenarios: stranger's ward, I'm permitted, ward off, overlapping wards.
+- **Ward test bench:** spawn a ward and set its owner, on/off and permitted players, or **play as** Alice, Bob, Carol or Bjornita (or any name) to see exactly what a stranger, an owner and a permitted player can do. Ready-made scenarios: stranger's ward, I'm permitted, ward off, overlapping wards.
+- **Player 2:** connect Bjornita as a virtual second client (Wards tab or the `peerJoin` step) to test what happens between two players.
 - **Share the world:** because the game logs straight in, the open / public / password choices come from the config (`[Server]`) and the Session tab, so friends can join the test world through Steam.
 - **Fires:** one button refuels every fire and fuel-driven cooking station, or keeps them topped up.
 
@@ -99,9 +122,7 @@ Suites of tests per mod run from **F9 > Tests**, step by step while you watch, o
 
 **Record a test instead of writing it:** F9 > Tests > Record, play the scenario, add checks with F7 / Shift+F7 on the lab bar, stop and save. Crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks and setting changes all become steps, and the test starts from a saved setup of the game as it was. See [Recording tests](https://github.com/drakethos/DrakesTestLab/wiki/Recording-Tests).
 
-![Recording: the lab bar](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/lab-bar-recording.png)
-
-![Record tab: recorded steps, save into a suite](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/tab-record.png)
+![Record tab: recorded steps, save into a suite](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-recorded-steps.png)
 
 Mods can expose **test hooks** with no dependency on DrakesTestLab: put your own `[TestHook("name")]` attribute on a static method and tests can call it. Full reference: [Automation on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Automation).
 

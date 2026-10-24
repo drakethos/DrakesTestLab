@@ -95,7 +95,7 @@ internal sealed class ToolboxHost : MonoBehaviour
         if (CraftHelper.ShouldShow())
             CraftHelper.Draw(s);
 
-        if (Automation.TestRunner.Running && !IsOpen && !LabBar.Visible)
+        if (Automation.TestRunner.Running && !IsOpen && !LabBar.Visible && Time.frameCount > Automation.TestRunner.CleanShotUntilFrame)
         {
             var keys = $"{cfg.StopTestsKey.Value} stop" + (Automation.TestRunner.StepMode ? $" / {cfg.NextStepKey.Value} next step" : "");
             GUI.Box(new Rect(Screen.width / s / 2f - 330f, 30f, 660f, 44f), GUIContent.none);
