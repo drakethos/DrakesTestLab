@@ -83,7 +83,7 @@ internal static class CraftHelper
     {
         foreach (var req in requirements)
         {
-            if (req.m_resItem == null)
+            if (req.m_resItem == null || ItemGiver.IsUpgraderResource(req))
                 continue;
 
             var amount = req.GetAmount(quality);

@@ -4,6 +4,15 @@ namespace DrakesTestLab.Util;
 
 internal static class ItemGiver
 {
+    /// <summary>
+    /// Valheim 1.0 recipes list the "upgrader" item (an idol) as a requirement that only the Upgrader station uses.
+    /// A normal craft or upgrade never asks for it, so materials given for a recipe must leave it out.
+    /// (A reflection read: the reference assemblies this builds against predate the field.)
+    /// </summary>
+    public static bool IsUpgraderResource(Piece.Requirement req) =>
+        typeof(Piece.Requirement).GetField("m_upgraderResource")?.GetValue(req) is true;
+
+
     /// <summary>Adds items straight to the local player's inventory (stacks split by max stack size); overflow is dropped.</summary>
     /// <param name="crafterId">With <paramref name="crafterName"/>: the item counts as crafted by that player (0 = unowned, like loot).</param>
     public static int Give(string prefabName, int count, int quality = 1, bool equip = false, long crafterId = 0L, string crafterName = "")

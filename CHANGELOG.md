@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- "Give materials for this" and the `give materialsFor` step no longer hand out the upgrader idol that 1.0 recipes list as a requirement; a normal craft or upgrade never asks for it.
 - Player tab: a **Durability** section. Every carried item that wears out is listed with its percentage and Set / Break / Fix buttons, plus a percentage slider and Set all / Break all / Fix all.
 
 ## 0.3.1

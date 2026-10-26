@@ -182,7 +182,7 @@ internal static class Steps
 
         foreach (var req in requirements)
         {
-            if (req.m_resItem == null)
+            if (req.m_resItem == null || ItemGiver.IsUpgraderResource(req))
                 continue;
             var amount = req.GetAmount(quality) * times;
             if (amount > 0 && ItemGiver.Give(req.m_resItem.gameObject.name, amount) == 0)
