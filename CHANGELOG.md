@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## Unreleased
+
+- Player tab: a **Durability** section. Every carried item that wears out is listed with its percentage and Set / Break / Fix buttons, plus a percentage slider and Set all / Break all / Fix all.
+
 ## 0.3.1
 
 - New screenshots of the 0.3 features in the README, the Hexium page and the wiki: a recording in progress, the recorded steps, a saved case, Player 2 in the world, the manual-check bar.

@@ -18,6 +18,7 @@ internal sealed class PlayerTab : ToolboxTab
     private string _gotoX = "0";
     private string _gotoZ = "0";
     private Vector3? _savedPos;
+    private float _durabilityPercent = 50f;
 
     public static bool InfiniteStamina { get; set; }
 
@@ -73,6 +74,8 @@ internal sealed class PlayerTab : ToolboxTab
             ("Clear inventory", () => p.GetInventory().RemoveAll()));
         Ui.Row(("Reset character data", () => GameRefs.RunConsoleCommand("resetcharacter")));
 
+        DrawDurability(p);
+
         Ui.Header("Skills");
         Ui.Grid(_skills, 4, n => _skill = n, _skill);
         _skillAmount = Ui.Slider("Raise by", _skillAmount, 1f, 100f, "0");
@@ -106,6 +109,43 @@ internal sealed class PlayerTab : ToolboxTab
                     p.TeleportTo(pos, p.transform.rotation, false);
             }));
     }
+
+    /// <summary>Break, set or restore the durability of any carried item, as a percentage of its maximum.</summary>
+    private void DrawDurability(Player p)
+    {
+        Ui.Header("Durability");
+        _durabilityPercent = Ui.Slider("Set to", _durabilityPercent, 0f, 100f, "0");
+        var items = new List<ItemDrop.ItemData>();
+        foreach (var item in p.GetInventory().GetAllItems())
+        {
+            if (item.m_shared.m_useDurability && item.GetMaxDurability() > 0f)
+                items.Add(item);
+        }
+
+        if (items.Count == 0)
+        {
+            GUILayout.Label("No carried item uses durability.");
+            return;
+        }
+
+        Ui.Row(
+            ("Set all", () => items.ForEach(i => SetDurability(i, _durabilityPercent))),
+            ("Break all", () => items.ForEach(i => SetDurability(i, 0f))),
+            ("Fix all", () => items.ForEach(i => SetDurability(i, 100f))));
+        foreach (var item in items)
+        {
+            GUILayout.BeginHorizontal();
+            var name = Localization.instance.Localize(item.m_shared.m_name);
+            GUILayout.Label($"{name} q{item.m_quality}  {Mathf.RoundToInt(item.GetDurabilityPercentage() * 100f)}%");
+            if (GUILayout.Button("Set", GUILayout.Width(44))) SetDurability(item, _durabilityPercent);
+            if (GUILayout.Button("Break", GUILayout.Width(54))) SetDurability(item, 0f);
+            if (GUILayout.Button("Fix", GUILayout.Width(40))) SetDurability(item, 100f);
+            GUILayout.EndHorizontal();
+        }
+    }
+
+    private static void SetDurability(ItemDrop.ItemData item, float percent) =>
+        item.m_durability = item.GetMaxDurability() * Mathf.Clamp(percent, 0f, 100f) / 100f;
 
     private static void Toggle(string label, bool current, string command)
     {
