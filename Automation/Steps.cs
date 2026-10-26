@@ -621,18 +621,48 @@ internal static class Steps
                 go = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.Euler(0f, step.Num("yaw"), 0f));
                 var piece = go.GetComponent<Piece>();
                 if (piece != null)
+                {
                     WardTools.SetPieceOwner(piece, WardTools.Parse(owner.Length == 0 ? "me" : owner));
+                    // A piece's origin is not always its bottom (a target or a table can have it in the middle), so a piece at
+                    // ground height can be half buried. Stand it on the ground like the build tool does ("sink": true keeps the origin on the ground).
+                    if (!step.Bool("sink"))
+                        RestOnGround(go);
+                }
+
                 var character = go.GetComponent<Character>();
                 if (character != null && step.Num("level", 1) > 1)
                     character.SetLevel((int)step.Num("level", 1));
             }
 
+            if (step.Has("dy"))
+                go.transform.position += Vector3.up * step.Num("dy");
             if (!step.Bool("keep"))
                 ctx.Spawned.Add(go);
             var tag = step.First("as", "tag");
             if (tag.Length > 0)
                 ctx.Tags[count == 1 ? tag : $"{tag}{i + 1}"] = go;
         }
+    }
+
+    /// <summary>Lifts a spawned piece until its lowest solid part rests on the ground (only when it is clearly sunk into it).</summary>
+    private static void RestOnGround(GameObject go)
+    {
+        if (ZoneSystem.instance == null)
+            return;
+        // A new object's colliders report stale bounds (near the world origin) until physics has seen its transform.
+        Physics.SyncTransforms();
+        var lowest = float.MaxValue;
+        foreach (var collider in go.GetComponentsInChildren<Collider>())
+        {
+            if (collider.enabled && !collider.isTrigger)
+                lowest = Mathf.Min(lowest, collider.bounds.min.y);
+        }
+
+        if (lowest == float.MaxValue)
+            return;
+        var ground = ZoneSystem.instance.GetGroundHeight(go.transform.position);
+        if (lowest < ground - 0.05f)
+            go.transform.position += Vector3.up * (ground - lowest + 0.02f);
     }
 
     private static void Interact(Dictionary<string, object?> step, RunContext ctx)

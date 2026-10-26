@@ -14,7 +14,7 @@
     { "do": "face", "target": "chest" },                    // or x/z, dx/dz
 
     // ---- world and player
-    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "Amy", "as": "chest" },  // count, level, yaw, keep, enabled/permitted/radius for wards
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "Amy", "as": "chest" },  // count, level, yaw, keep, enabled/permitted/radius for wards; pieces stand on the ground by default ("sink": true = origin on the ground, "dy" = extra lift)
     { "do": "give", "prefab": "Wood", "count": 10 },        // quality, equip
     { "do": "clearInventory" },
     { "do": "playAs", "who": "Bob" },                       // Alice, Amy, Bob, Carol, any name, Name:12345, me
