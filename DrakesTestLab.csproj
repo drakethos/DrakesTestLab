@@ -373,9 +373,9 @@
 
     <MakeDir Directories="$(ThunderstoreFolder)" />
 
-    <MakeDir Directories="$(ThunderstoreFolder)\Assets\Presets\templates" />
+    <MakeDir Directories="$(ThunderstoreFolder)\plugins\Assets\Presets\templates" />
 
-    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ThunderstoreFolder)" />
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(ThunderstoreFolder)\plugins" />
 
     <Copy SourceFiles="$(TargetDir)README.md" DestinationFiles="$(ThunderstoreFolder)\README.md" />
 
@@ -386,7 +386,7 @@
     <ItemGroup Condition="Exists('$(TargetDir)Assets\Presets\templates')">
       <_TestLabTemplateFiles Include="$(TargetDir)Assets\Presets\templates\**\*" />
     </ItemGroup>
-    <Copy SourceFiles="@(_TestLabTemplateFiles)" DestinationFolder="$(ThunderstoreFolder)\Assets\Presets\templates\%(RecursiveDir)" SkipUnchangedFiles="true" Condition="'@(_TestLabTemplateFiles)' != ''" />
+    <Copy SourceFiles="@(_TestLabTemplateFiles)" DestinationFolder="$(ThunderstoreFolder)\plugins\Assets\Presets\templates\%(RecursiveDir)" SkipUnchangedFiles="true" Condition="'@(_TestLabTemplateFiles)' != ''" />
 
     <Exec Command="powershell -Command Compress-Archive -Path '$(ThunderstoreFolder)\*' -DestinationPath '$(ZipOutput)' -Force" Condition="'$(CI_SKIP_POST_BUILD)' == ''" />
 
