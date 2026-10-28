@@ -1,5 +1,10 @@
 # DrakesTestLab
 
+## 0.3.2
+
+- **Fixed:** the shipped test world went missing when the mod was installed through Gale (or r2modman). Mod managers flatten every file that is not under a `plugins/` folder, so `Assets/Presets/templates/...` arrived as loose files and the mod reported "The shipped test world is missing". The package now keeps the DLL and `Assets/` under `plugins/`, which installs to the same `plugins/DrakeMods-DrakesTestLab/Assets/...` path as before.
+- The release build now simulates Gale's install rules and fails if the world would not land with its folders intact.
+
 ## 0.3.1
 
 - New screenshots of the 0.3 features in the README, the Hexium page and the wiki: a recording in progress, the recorded steps, a saved case, Player 2 in the world, the manual-check bar.
