@@ -2,8 +2,8 @@
     "name": "DrakesTestLabServer",
     "version_number": "0.1.0",
     "author": "DrakeMods",
-    "description": "SERVER ONLY. Dedicated-server half of DrakesTestLab: gives the server a fresh, ready-made lab world on every start so mods can be tested against a real server. Does nothing on a client.",
-    "website_url": "",
+    "description": "SERVER ONLY. Server half of DrakesTestLab: a fresh lab world on every start, plus Player 1 / Player 2 roles and a command relay so mods can be tested with two real players. Install on the dedicated server, not on clients.",
+    "website_url": "https://github.com/drakethos/DrakesTestLab",
     "dependencies": [
         "denikson-BepInExPack_Valheim-5.4.2351"
     ]

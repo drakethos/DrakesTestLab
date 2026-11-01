@@ -206,4 +206,4 @@ jobs:
             --repository "https://valheim.hexium.gg" \
             --namespace "DrakeMods" \
             --communities "valheim" \
-            --categories "Server-side,Valheim 1.0"
+            --categories "Server-only,Tools,Valheim 1.0"

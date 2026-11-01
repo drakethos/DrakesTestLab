@@ -1,5 +1,19 @@
 # DrakesTestLab
 
+## 0.4.0
+
+Server mode and a real Player 2. The lab can now test against a dedicated server with two real players. The server half is a separate package, **DrakesTestLabServer** (server only), released on its own `server-v...` tags.
+
+- **Server connect mode.** `[Bootstrap] Target = Server` joins the dedicated test server instead of building a local world. The server owns the world. Set the server's public `IP:port` in `[Connect] Address` and its password in `[Connect] Password`.
+- **Joins through PlayFab on every platform.** The game's own join-by-IP picks Steam on a Steam client, which a crossplay (PlayFab-only) server never answers (error 5003). The lab looks the server up on PlayFab by its public IP and joins it the way the game's `-joincode` option does. A Game Pass / Xbox client only speaks PlayFab, so the server runs with crossplay on.
+- **A failed connect fails cleanly.** If the server cannot be reached the lab writes a failed result (`ServerConnect/Connect`, assert "connected to the test server"), shows the reason, and closes the game (`[Connect] QuitOnFailure`, default on; off brings the main menu back). An unattended `-testlab-run` exits with code 1.
+- **Player 1 and Player 2.** `[Connect] Role` is `Player1` (default, runs the test cases) or `Player2` (runs no tests, only does what Player 1 sends). The server gives each role to one client.
+- **`"on": "player2"`.** Any step in a test case can be marked `"on": "player2"` to run on the real second client, through the server. A tagged object named in such a step is sent as its prefab plus Player 1's position, so Player 2 finds the same object. New `ping` step: checks Player 2 is connected and names it.
+- **`zdoOwner` check:** `"expect": "other"` passes when the owner is some player who is not Player 1 (a real Player 2 has the same character name as Player 1).
+- **New suite `DrakesTestLab-Player2`:** Player 2 answers a ping, runs steps on its own character, opens Player 1's chest (the chest opens and changes owner) and is refused a private chest.
+- Needs the same game version and the same mods on the server and on both clients; the server refuses a client without them ("incompatible version" in the game).
+- Design and test order: `docs/MULTIPLAYER.md`.
+
 ## 0.3.2
 
 - **Fixed:** the shipped test world went missing when the mod was installed through Gale (or r2modman). Mod managers flatten every file that is not under a `plugins/` folder, so `Assets/Presets/templates/...` arrived as loose files and the mod reported "The shipped test world is missing". The package now keeps the DLL and `Assets/` under `plugins/`, which installs to the same `plugins/DrakeMods-DrakesTestLab/Assets/...` path as before.

@@ -13,6 +13,18 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.4: a dedicated server and a real Player 2
+
+Test your mod on a real dedicated server with two real players.
+
+- **DrakesTestLabServer** (separate package, **server only**) gives the server a fresh lab world on every start and hands out the roles. Install it on the dedicated server, never on a client.
+- **Server connect mode.** In the lab config set `[Bootstrap] Target = Server`, `[Connect] Address = <server public IP>:<port>` and `[Connect] Password`. The lab skips the local world and joins the server. If it cannot connect it writes a failed result and closes the game.
+- **Player 1 runs the tests, Player 2 follows.** Start one client with `[Connect] Role = Player2` (it runs no tests) and the other as `Player1`. In a test case, mark any step `"on": "player2"` to run it on the second client, for example `{ "do": "interact", "on": "player2", "target": "chest" }`. `ping` checks Player 2 is there. The `DrakesTestLab-Player2` suite shows it: Player 2 opens Player 1's chest and is refused a private one.
+- **Same mods everywhere.** The server and both clients need the same game version and the same mods, or the game reports "incompatible version".
+- **Crossplay server.** The server runs with crossplay (PlayFab) on, because a Game Pass / Xbox client only speaks PlayFab. Use the server's **public** IP and port.
+
+Details and the design: [docs/MULTIPLAYER.md](https://github.com/drakethos/DrakesTestLab/blob/main/docs/MULTIPLAYER.md) and the server package's README ([server/README.md](https://github.com/drakethos/DrakesTestLab/blob/main/server/README.md)).
+
 ## New in 0.3
 
 **Record a test by playing it.** Press Record, play the scenario, and every action becomes a test step: crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks, setting changes. A small bar at the top of the screen adds checks while you play (F7: what you look at, Shift+F7: your inventory), pauses and stops.
@@ -139,6 +151,7 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 - **Arena:** `Spawn` (level and clear around spawn, keep the standing stones) or `FindFlat`, radius, keep-radius, house offset, build the house on or off
 - **Rules:** no-build zones (`Vanilla` / `Off` / `Scaled`), fall damage, auto-safe falls
 - **Dev:** toolbox and overlay hotkeys, UI scale
+- **Server connect mode** (`[Bootstrap] Target = Server`, `[Connect]`): `Address` (the server's public `IP:port`), `Password`, `Role` (`Player1` / `Player2`), `TimeoutSeconds`, `Character`, `QuitOnFailure`, `QuitDelaySeconds`
 
 ---
 
