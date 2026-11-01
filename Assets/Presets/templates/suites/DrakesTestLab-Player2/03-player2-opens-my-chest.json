@@ -1,0 +1,19 @@
+// The real-second-player version of the virtual player's chest scenario (SelfTest 11-virtual-player): Player 1 builds a
+// wooden chest it owns, Player 2 walks up and opens it, the server hands the chest to Player 2.
+{
+  "name": "03-player2-opens-my-chest",
+  "description": "Player 2 opens Player 1's chest through the real RPCs: the chest opens for Player 2 and its owner changes to Player 2.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "chest" },
+    // let the new chest reach Player 2's game, then send it there and have it press E
+    { "do": "wait", "seconds": 2 },
+    { "do": "teleport", "on": "player2", "to": "chest", "distance": 2 },
+    { "do": "wait", "seconds": 1 },
+    { "do": "interact", "on": "player2", "target": "chest" },
+    { "do": "wait", "seconds": 1.5 },
+    { "do": "check", "on": "player2", "check": "uiVisible", "name": "InventoryGui", "expect": true, "label": "the chest opened for Player 2" },
+    { "do": "check", "check": "zdoOwner", "target": "chest", "expect": "other", "label": "Player 1's chest now belongs to Player 2" },
+    { "do": "closeUi", "on": "player2" }
+  ]
+}

@@ -1,0 +1,17 @@
+// The private-chest half of SelfTest 11-virtual-player with the real second player: a private chest Player 1 built
+// refuses Player 2 and stays Player 1's.
+{
+  "name": "04-player2-refused-private-chest",
+  "description": "Player 2 is refused Player 1's private chest: it does not open for Player 2 and the owner stays Player 1.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "spawn", "prefab": "piece_chest_private", "dz": 3, "dx": -3, "owner": "me", "as": "private" },
+    { "do": "wait", "seconds": 2 },
+    { "do": "teleport", "on": "player2", "to": "private", "distance": 2 },
+    { "do": "wait", "seconds": 1 },
+    { "do": "interact", "on": "player2", "target": "private" },
+    { "do": "wait", "seconds": 1.5 },
+    { "do": "check", "on": "player2", "check": "uiVisible", "name": "InventoryGui", "expect": false, "label": "Player 2 is refused: the chest does not open" },
+    { "do": "check", "check": "zdoOwner", "target": "private", "expect": "me", "label": "and the chest stays Player 1's" }
+  ]
+}

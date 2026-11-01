@@ -101,6 +101,20 @@ internal static class RemotePeers
 
         var remote = new Dictionary<string, object?>(step);
         remote.Remove("on");
+
+        // Player 2 has none of my tags: name the object by prefab and say where I have it ("around"), so its nearest
+        // object of that prefab to that spot is the same one
+        foreach (var key in new[] { "target", "to" })
+        {
+            if (remote.TryGetValue(key, out var value) && value is string tag
+                && ctx.Tags.TryGetValue(tag, out var tagged) && tagged != null)
+            {
+                var at = tagged.transform.position;
+                remote[key] = Utils.GetPrefabName(tagged);
+                remote["around"] = new List<object?> { at.x, at.y, at.z };
+            }
+        }
+
         var json = JsonWriter.Write(remote);
         var stepTimeout = Mathf.Max(1f, step.Num("timeout", 30f));
         var connectDeadline = Time.realtimeSinceStartup + step.Num("connectTimeout", 30f);
@@ -178,6 +192,11 @@ internal static class RemotePeers
             Deadline = Time.realtimeSinceStartup + Mathf.Max(1f, step.Num("timeout", 30f)) + 60f,
             Unattended = true
         };
+
+        if (step.TryGetValue("around", out var around) && around is List<object?> xyz && xyz.Count == 3)
+            ctx.AroundHint = new Vector3(Convert.ToSingle(xyz[0], System.Globalization.CultureInfo.InvariantCulture),
+                Convert.ToSingle(xyz[1], System.Globalization.CultureInfo.InvariantCulture),
+                Convert.ToSingle(xyz[2], System.Globalization.CultureInfo.InvariantCulture));
 
         try
         {

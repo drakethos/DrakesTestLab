@@ -195,6 +195,9 @@ internal static class PeerSteps
                 var zdo = Zdo(ctx, a.Str("target"));
                 var owner = zdo.GetOwner();
                 var want = a.Str("expect", "me");
+                // "other": some player who is not me (a real Player 2 has the same character name as I do)
+                if (want.Equals("other", StringComparison.OrdinalIgnoreCase))
+                    return (owner != 0L && owner != PeerUid("me"), $"owner is {Describe(owner)}, expected another player");
                 var wantUid = want.Equals("none", StringComparison.OrdinalIgnoreCase) ? 0L : PeerUid(want);
                 return (owner == wantUid, $"owner is {Describe(owner)}, expected {want}");
             }
