@@ -242,6 +242,18 @@ internal static class RemotePeers
             yield return routine.Current;
         }
 
+        // A check, or a hook with "expect", records a soft assert in this context. Here nothing else ever reads it, so a
+        // failed one would be reported back as "ok": it fails the command instead and Player 1's step shows the reason.
+        if (ok)
+        {
+            var failed = ctx.Result.Asserts.Find(a => !a.Passed);
+            if (failed != null)
+            {
+                ok = false;
+                detail = failed.Description + " -> " + failed.Detail;
+            }
+        }
+
         if (ok && detail.Length == 0 && ctx.LastResult != null)
             detail = ctx.LastResult.ToString() ?? "";
         Reply(id, ok, detail);
