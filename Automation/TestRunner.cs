@@ -249,11 +249,32 @@ internal static class TestRunner
         _runStamp = DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
         WriteResults(complete: true);
         Status = "Failed: " + reason;
-        BootNotice.Show("DrakesTestLab could not connect to the test server.\n" + reason, sticky: true);
-
+        var cfg = TestLabConfig.Instance;
         var unattended = CommandLine.Value("-testlab-run") != null || CommandLine.Has("-testlab-quit");
-        if (unattended && !CommandLine.Has("-testlab-stay"))
-            Application.Quit(1);
+        var quit = !CommandLine.Has("-testlab-stay") && (unattended || cfg.ConnectQuitOnFailure.Value);
+        var delay = unattended ? 1f : Mathf.Max(1f, cfg.ConnectQuitDelay.Value);
+
+        BootNotice.Show(
+            "DrakesTestLab could not connect to the test server.\n" + reason +
+            (quit ? $"\nThe game closes in {delay:0} seconds (the result is saved)." : ""),
+            sticky: true);
+
+        // the menu was hidden for the connect: bring it back so there is always a way out
+        if (FejdStartup.instance != null)
+        {
+            try { MenuSuppressor.Restore(FejdStartup.instance); }
+            catch (Exception ex) { TestLabPlugin.Log?.LogWarning($"Could not restore the main menu: {ex.Message}"); }
+        }
+
+        if (quit && ToolboxHost.Instance != null)
+            ToolboxHost.Instance.StartCoroutine(QuitAfter(delay));
+    }
+
+    private static IEnumerator QuitAfter(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        TestLabPlugin.Log?.LogInfo("ServerConnect: closing the game after the failed connect.");
+        Application.Quit(1);
     }
 
     /// <summary>[Automation] RunOnLaunch: once per game start, after the world and arena are ready.</summary>

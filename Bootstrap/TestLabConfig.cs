@@ -26,6 +26,8 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> ConnectPassword { get; private set; } = null!;
     public ConfigEntry<float> ConnectTimeout { get; private set; } = null!;
     public ConfigEntry<string> ConnectCharacter { get; private set; } = null!;
+    public ConfigEntry<bool> ConnectQuitOnFailure { get; private set; } = null!;
+    public ConfigEntry<float> ConnectQuitDelay { get; private set; } = null!;
 
     public ConfigEntry<bool> BootstrapEnabled { get; private set; } = null!;
     public ConfigEntry<bool> SkipIntro { get; private set; } = null!;
@@ -126,6 +128,10 @@ internal sealed class TestLabConfig
         c.ConnectTimeout = config.Bind("Connect", "TimeoutSeconds", 90f, "Server connect mode: seconds to wait for the connection and the spawn before the connect check fails.");
         c.ConnectCharacter = config.Bind("Connect", "Character", PresetDeployer.DefaultEphemeralCharacterName,
             "Server connect mode: the fresh character file used on the server (recreated on every launch so each run starts with a clean character).");
+        c.ConnectQuitOnFailure = config.Bind("Connect", "QuitOnFailure", true,
+            "Server connect mode: when the server cannot be reached, write the failed result and close the game. False = bring the main menu back and stay there (you can quit from it).");
+        c.ConnectQuitDelay = config.Bind("Connect", "QuitDelaySeconds", 10f,
+            "Server connect mode: seconds the failure notice stays up before the game closes (an unattended -testlab-run closes after 1 second).");
         c.SkipIntro = config.Bind("Bootstrap", "SkipIntro", true, "Try to skip intro logos when bootstrapping.");
         c.FailOpenToMenu = config.Bind("Bootstrap", "FailOpenToMenu", true, "If fast boot fails, leave the main menu available.");
 
