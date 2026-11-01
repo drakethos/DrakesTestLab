@@ -128,15 +128,19 @@ jobs:
           PKG_DIR="DrakeMods-DrakesTestLab-${VERSION}"
           ZIP_NAME="DrakeMods-DrakesTestLab-${VERSION}.zip"
 
-          mkdir -p "$PKG_DIR"
-          cp bin/Release/DrakesTestLab.dll "$PKG_DIR/"
+          # Gale (and r2modman) only keep folder structure for files under plugins/ (or patchers/, monomod/, core/,
+          # config/). Anything else outside those folders is flattened into one folder, so Assets/Presets/... would
+          # arrive as loose files and the shipped test world would be missing. Everything the mod needs at runtime
+          # therefore lives under plugins/. Only manifest.json, icon.png, README.md and CHANGELOG.md sit at the root.
+          mkdir -p "$PKG_DIR/plugins"
+          cp bin/Release/DrakesTestLab.dll "$PKG_DIR/plugins/"
           cp README.md                      "$PKG_DIR/"
           cp icon.png                       "$PKG_DIR/"
           cp CHANGELOG.md                   "$PKG_DIR/"
           # world + character templates the mod deploys on every launch (the world folder carries its own _manifest.txt)
-          mkdir -p "$PKG_DIR/Assets/Presets/templates"
-          cp -r Assets/Presets/templates/. "$PKG_DIR/Assets/Presets/templates/"
-          test -f "$PKG_DIR/Assets/Presets/templates/TestLab/_manifest.txt" || { echo "::error::world template missing from package" >&2; exit 1; }
+          mkdir -p "$PKG_DIR/plugins/Assets/Presets/templates"
+          cp -r Assets/Presets/templates/. "$PKG_DIR/plugins/Assets/Presets/templates/"
+          test -f "$PKG_DIR/plugins/Assets/Presets/templates/TestLab/_manifest.txt" || { echo "::error::world template missing from package" >&2; exit 1; }
 
           dotnet msbuild DrakesTestLab.csproj \
             /p:Version="$VERSION" \
@@ -145,6 +149,9 @@ jobs:
             /v:minimal
 
           cd "$PKG_DIR" && zip -r "../$ZIP_NAME" . && cd ..
+
+          # Guard: simulate Gale's install rules and fail the release if the world would not land intact.
+          python3 .github/scripts/check-gale-layout.py "$ZIP_NAME" "DrakeMods-DrakesTestLab"
 
           # Guard: exactly one icon.png at the zip root, 256x256 (store listing icon).
           ICON_PATHS=$(zipinfo -1 "$ZIP_NAME" | grep -E '(^|/)icon\.png$' || true)

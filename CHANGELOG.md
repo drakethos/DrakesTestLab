@@ -6,6 +6,11 @@
 - "Give materials for this" and the `give materialsFor` step no longer hand out the upgrader idol that 1.0 recipes list as a requirement; a normal craft or upgrade never asks for it.
 - Player tab: a **Durability** section. Every carried item that wears out is listed with its percentage and Set / Break / Fix buttons, plus a percentage slider and Set all / Break all / Fix all.
 
+## 0.3.2
+
+- **Fixed:** the shipped test world went missing when the mod was installed through Gale (or r2modman). Mod managers flatten every file that is not under a `plugins/` folder, so `Assets/Presets/templates/...` arrived as loose files and the mod reported "The shipped test world is missing". The package now keeps the DLL and `Assets/` under `plugins/`, which installs to the same `plugins/DrakeMods-DrakesTestLab/Assets/...` path as before.
+- The release build now simulates Gale's install rules and fails if the world would not land with its folders intact.
+
 ## 0.3.1
 
 - New screenshots of the 0.3 features in the README, the Hexium page and the wiki: a recording in progress, the recorded steps, a saved case, Player 2 in the world, the manual-check bar.

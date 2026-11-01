@@ -4,7 +4,7 @@
     <ThunderstoreAuthor>DrakeMods</ThunderstoreAuthor>
     <RootNamespace>DrakesTestLab</RootNamespace>
     <AssemblyName>DrakesTestLab</AssemblyName>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
     <BepInPluginName>DrakesTestLab</BepInPluginName>
     <BepInGuid>com.drakemods.testlab</BepInGuid>
     <ModInfoClass>TestLabPlugin</ModInfoClass>
