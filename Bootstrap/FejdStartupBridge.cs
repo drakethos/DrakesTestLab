@@ -173,6 +173,61 @@ internal static class FejdStartupBridge
         }
     }
 
+    static readonly FieldInfo? JoinServerField = AccessTools.Field(typeof(FejdStartup), "m_joinServer");
+    static readonly MethodInfo? ServerPasswordSetter = AccessTools.PropertySetter(typeof(FejdStartup), "ServerPassword");
+
+    /// <summary>Server connect mode: pick the character, then join the dedicated server the way the Join IP screen does.
+    /// False when the menu is not ready yet (the caller retries next frame).</summary>
+    public static bool TryJoinServer(FejdStartup fejd, string characterSaveName, string address, string password)
+    {
+        try
+        {
+            if (fejd == null || !IsObjectDbReady() || !CharacterExists(characterSaveName))
+                return false;
+
+            RefreshSaveLists(fejd);
+            var profile = FindProfile(_profiles, characterSaveName);
+            if (profile == null || JoinServerField == null)
+                return false;
+
+            MenuSuppressor.Suppress(fejd);
+            ProfilesField?.SetValue(fejd, _profiles);
+            var profileIndex = _profiles.IndexOf(profile);
+            if (profileIndex >= 0)
+                ProfileIndexField?.SetValue(fejd, profileIndex);
+
+            InvokeFejd(fejd, SetSelectedProfile, profile.GetFilename());
+            if (!InvokeFejd(fejd, OnCharacterStart))
+                return false;
+
+            MenuSuppressor.Suppress(fejd);
+
+            // The game answers the server's password request with FejdStartup.ServerPassword (as for -password on the command line).
+            ServerPasswordSetter?.Invoke(null, new object?[] { string.IsNullOrEmpty(password) ? null : password });
+            // Built by reflection: the join data types changed shape between game versions, and the release build compiles
+            // against older game DLLs than the game it runs in.
+            var dedicatedType = AccessTools.TypeByName("ServerJoinDataDedicated");
+            var joinType = AccessTools.TypeByName("ServerJoinData");
+            if (dedicatedType == null || joinType == null)
+                return false;
+            var dedicated = Activator.CreateInstance(dedicatedType, address);
+            JoinServerField.SetValue(fejd, Activator.CreateInstance(joinType, dedicated));
+            StartingWorldField?.SetValue(fejd, false);
+            fejd.JoinServer();
+
+            TestLabPlugin.Log?.LogInfo($"ServerConnect: joining {address} as {profile.GetName()}<{profile.GetFilename()}>.");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            TestLabPlugin.Log?.LogError($"ServerConnect: joining failed: {ex}");
+            return false;
+        }
+    }
+
+    private static bool CharacterExists(string characterSaveName) =>
+        ValheimPaths.CharacterExists(characterSaveName) && DeployedSaveValidator.IsCharacterLoadable(characterSaveName);
+
     /// <summary>Re-reads world and character lists. Throttled unless <paramref name="force"/>.</summary>
     public static void RefreshSaveLists(FejdStartup fejd, bool force = false)
     {

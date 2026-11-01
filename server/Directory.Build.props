@@ -1,0 +1,5 @@
+<Project>
+  <!-- Stops the client lab's repo-root Directory.Build.props (client build rules, version, references) applying to the server mod. -->
+  <!-- Per-machine paths (BepInExPath, CorlibPath) come from the client lab's environment.props; CI passes them as /p: instead. -->
+  <Import Project="$(MSBuildThisFileDirectory)..\environment.props" Condition="Exists('$(MSBuildThisFileDirectory)..\environment.props')" />
+</Project>

@@ -420,3 +420,6 @@ FodyWeavers.xsd
 # different per computer
 environment.props
 _backups/
+
+# Server mod build output
+server/dist/

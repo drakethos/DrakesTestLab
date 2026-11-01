@@ -237,6 +237,25 @@ internal static class TestRunner
         Start(plan, false);
     }
 
+    /// <summary>Server connect mode could not reach the server: record it as a failed test with a failed assert, write the
+    /// results, and (for an unattended run) quit with a failure exit code instead of waiting at a menu.</summary>
+    public static void ReportConnectFailure(string reason)
+    {
+        TestLabPlugin.Log?.LogError("ServerConnect failed: " + reason);
+        var result = new TestResult { Suite = "ServerConnect", Test = "Connect", Status = TestStatus.Failed, Reason = reason };
+        result.Asserts.Add(new AssertResult { Description = "connected to the test server", Passed = false, Detail = reason });
+        LastRun = new List<TestResult> { result };
+        _planned = new List<(string, string)> { (result.Suite, result.Test) };
+        _runStamp = DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
+        WriteResults(complete: true);
+        Status = "Failed: " + reason;
+        BootNotice.Show("DrakesTestLab could not connect to the test server.\n" + reason, sticky: true);
+
+        var unattended = CommandLine.Value("-testlab-run") != null || CommandLine.Has("-testlab-quit");
+        if (unattended && !CommandLine.Has("-testlab-stay"))
+            Application.Quit(1);
+    }
+
     /// <summary>[Automation] RunOnLaunch: once per game start, after the world and arena are ready.</summary>
     public static void MaybeRunOnLaunch()
     {

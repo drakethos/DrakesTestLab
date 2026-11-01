@@ -8,9 +8,24 @@ internal enum ArenaMode
     FindFlat
 }
 
+internal enum BootTarget
+{
+    /// <summary>The classic lab: a throw-away local world and character.</summary>
+    LocalWorld,
+
+    /// <summary>Server connect mode: join the dedicated server (DrakesTestLabServer) instead of making a local world.</summary>
+    Server
+}
+
 internal sealed class TestLabConfig
 {
     public static TestLabConfig Instance { get; private set; } = null!;
+
+    public ConfigEntry<BootTarget> Target { get; private set; } = null!;
+    public ConfigEntry<string> ConnectAddress { get; private set; } = null!;
+    public ConfigEntry<string> ConnectPassword { get; private set; } = null!;
+    public ConfigEntry<float> ConnectTimeout { get; private set; } = null!;
+    public ConfigEntry<string> ConnectCharacter { get; private set; } = null!;
 
     public ConfigEntry<bool> BootstrapEnabled { get; private set; } = null!;
     public ConfigEntry<bool> SkipIntro { get; private set; } = null!;
@@ -103,6 +118,14 @@ internal sealed class TestLabConfig
         var c = Instance;
 
         c.BootstrapEnabled = config.Bind("Bootstrap", "Enabled", true, "Auto-skip menu and load test world/character.");
+        c.Target = config.Bind("Bootstrap", "Target", BootTarget.LocalWorld,
+            "LocalWorld = the classic throw-away local test world. Server = server connect mode: join the dedicated test server (see the [Connect] section) and run tests against it. If the server cannot be reached the run fails with a failed assert.");
+        c.ConnectAddress = config.Bind("Connect", "Address", "127.0.0.1:2456",
+            "Server connect mode: the server's address as host:port. A server on the crossplay (PlayFab) backend is found through its public IP, which the server prints at start (\"serverIP used to register the server\").");
+        c.ConnectPassword = config.Bind("Connect", "Password", "", "Server connect mode: the server's password (empty = none).");
+        c.ConnectTimeout = config.Bind("Connect", "TimeoutSeconds", 90f, "Server connect mode: seconds to wait for the connection and the spawn before the connect check fails.");
+        c.ConnectCharacter = config.Bind("Connect", "Character", PresetDeployer.DefaultEphemeralCharacterName,
+            "Server connect mode: the fresh character file used on the server (recreated on every launch so each run starts with a clean character).");
         c.SkipIntro = config.Bind("Bootstrap", "SkipIntro", true, "Try to skip intro logos when bootstrapping.");
         c.FailOpenToMenu = config.Bind("Bootstrap", "FailOpenToMenu", true, "If fast boot fails, leave the main menu available.");
 

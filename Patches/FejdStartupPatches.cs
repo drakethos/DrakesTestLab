@@ -11,6 +11,13 @@ internal static class FejdStartup_Awake_Patch
         if (!TestLabConfig.Instance.BootstrapEnabled.Value)
             return;
 
+        // Server connect mode joins the dedicated server instead of building a local world.
+        if (ServerConnect.Active)
+        {
+            ServerConnect.Begin(__instance);
+            return;
+        }
+
         var target = SaveModeResolver.Resolve();
         PresetDeployer.DeployBeforeLoad(target);
         FejdStartupBridge.RefreshSaveLists(__instance, force: true);

@@ -105,6 +105,13 @@ internal static class CaseRunner
 
         PieceDump.RunIfFlagged();
 
+        // Server connect mode: the server owns the world, so never level, build or bake here; just run the tests.
+        if (ServerConnect.Active)
+        {
+            Automation.TestRunner.MaybeRunOnLaunch();
+            return;
+        }
+
         if (TemplateBaker.Pending)
         {
             var target = SaveModeResolver.Resolve();

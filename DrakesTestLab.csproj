@@ -225,6 +225,7 @@
     <Compile Include="Bootstrap\StateReset.cs" />
 
     <Compile Include="Bootstrap\ServerSettings.cs" />
+    <Compile Include="Bootstrap\ServerConnect.cs" />
 
     <Compile Include="Patches\ToolboxInputPatches.cs" />
 

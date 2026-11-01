@@ -1,0 +1,10 @@
+{
+    "name": "DrakesTestLabServer",
+    "version_number": "0.1.0",
+    "author": "DrakeMods",
+    "description": "SERVER ONLY. Dedicated-server half of DrakesTestLab: gives the server a fresh, ready-made lab world on every start so mods can be tested against a real server. Does nothing on a client.",
+    "website_url": "",
+    "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2351"
+    ]
+}
