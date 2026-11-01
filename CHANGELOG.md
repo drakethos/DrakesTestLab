@@ -1,5 +1,11 @@
 # DrakesTestLab
 
+## 0.4.1
+
+- **Fixed: a failed check on Player 2 was reported as a pass.** A `check` step, or a `hook` step with `expect`, records a soft assertion. On Player 2 each command runs in its own context that nothing read, so a failed check there came back to Player 1 as "ok". A failed check on Player 2 now fails the command, and Player 1's step shows the reason. If you wrote tests with `"on": "player2"` on 0.4.0, run them again: checks that ran on Player 2 may have passed when they should not have.
+- The `DrakesTestLab-Player2` suite now requires 0.4.1.
+- Verified with two real clients on a dedicated server (a Game Pass client as Player 1 and a Steam client as Player 2): the lab's own Player 2 suite, LockSmith (a stranger is refused a private chest and gets in once it is public) and DrakesServerTeams (two real players join different teams and each reads the other's team) all pass.
+
 ## 0.4.0
 
 Server mode and a real Player 2. The lab can now test against a dedicated server with two real players. The server half is a separate package, **DrakesTestLabServer** (server only), released on its own `server-v...` tags.
