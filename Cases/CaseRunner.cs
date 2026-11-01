@@ -108,7 +108,9 @@ internal static class CaseRunner
         // Server connect mode: the server owns the world, so never level, build or bake here; just run the tests.
         if (ServerConnect.Active)
         {
-            Automation.TestRunner.MaybeRunOnLaunch();
+            // Player 2 runs no tests of its own: it waits for Player 1's commands
+            if (!ServerConnect.IsPlayer2)
+                Automation.TestRunner.MaybeRunOnLaunch();
             return;
         }
 

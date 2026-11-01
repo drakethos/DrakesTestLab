@@ -14,6 +14,10 @@ internal static class ServerConnect
 {
     public static bool Active => TestLabConfig.Instance != null && TestLabConfig.Instance.Target.Value == BootTarget.Server;
 
+    /// <summary>[Connect] Role = Player2: this client runs no tests and only does what Player 1 sends.</summary>
+    public static bool IsPlayer2 =>
+        TestLabConfig.Instance != null && TestLabConfig.Instance.ConnectRole.Value.Trim().Equals(RemotePeers.Player2, System.StringComparison.OrdinalIgnoreCase);
+
     /// <summary>True once this client is in the server's world.</summary>
     public static bool Connected { get; private set; }
 
@@ -70,6 +74,20 @@ internal static class ServerConnect
             {
                 Connected = true;
                 TestLabPlugin.Log?.LogInfo($"ServerConnect: connected to {address} and spawned.");
+
+                // ask the server for this client's role: it hands Player1 and Player2 to one client each
+                var wanted = IsPlayer2 ? RemotePeers.Player2 : RemotePeers.Player1;
+                RemotePeers.Hello(wanted);
+                var helloDeadline = Time.realtimeSinceStartup + 10f;
+                while (!RemotePeers.Answered && Time.realtimeSinceStartup < helloDeadline)
+                    yield return null;
+
+                if (!RemotePeers.Answered)
+                    TestLabPlugin.Log?.LogWarning("ServerConnect: the server did not answer the role request (is DrakesTestLabServer on the server?). Steps with \"on\": \"player2\" will fail.");
+                else if (RemotePeers.Role.Length == 0)
+                    TestRunner.ReportConnectFailure($"The server refused the role {wanted}: {RemotePeers.RoleMessage}.");
+                else
+                    TestLabPlugin.Log?.LogInfo($"ServerConnect: role {RemotePeers.Role}.");
                 yield break;
             }
 

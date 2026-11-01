@@ -27,7 +27,7 @@ internal static class StepNames
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
         "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
-        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear"
+        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping"
     };
 }
 
@@ -270,9 +270,15 @@ internal static class Steps
 
     public static IEnumerator? Execute(Dictionary<string, object?> step, RunContext ctx)
     {
+        // "on": "player2" sends the step to the real second client through the server (server connect mode)
+        if (RemotePeers.IsRemote(step))
+            return RemotePeers.RunRemote(step, ctx);
+
         var action = step.First("do", "action", "step").Trim();
         switch (action.ToLowerInvariant())
         {
+            // run here it does nothing; with "on": "player2" it checks that Player 2 is connected and names it
+            case "ping": ctx.Log("ping"); return null;
             case "teleport": return Teleport(step, ctx);
             case "face": Face(step, ctx); return null;
             case "wait": return Wait(step, ctx);

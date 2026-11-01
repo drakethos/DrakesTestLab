@@ -177,6 +177,8 @@
     <Compile Include="Commands\TestLabConsole.cs" />
 
     <Compile Include="Patches\CreatureHostilityPatches.cs" />
+    <Compile Include="Patches\RemotePatches.cs" />
+    <Compile Include="Automation\RemotePeers.cs" />
 
     <Compile Include="Patches\FejdStartupPatches.cs" />
 

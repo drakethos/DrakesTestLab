@@ -1,5 +1,6 @@
 using BepInEx;
 using BepInEx.Logging;
+using HarmonyLib;
 using UnityEngine;
 
 namespace DrakesTestLabServer;
@@ -34,5 +35,8 @@ public class LabServerPlugin : BaseUnityPlugin
 
         // Awake runs before the server loads its world, so the lab world can be put in place first.
         LabWorld.Prepare(Info.Location);
+
+        // Player 1 / Player 2 roles and the command relay between them (see Roles.cs).
+        new Harmony(GUID).PatchAll(typeof(LabServerPlugin).Assembly);
     }
 }

@@ -29,6 +29,11 @@
       <HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <!-- game types for the role relay (ZNet, ZRoutedRpc); the original, not a publicized copy, is enough: they are public -->
+    <Reference Include="assembly_valheim">
+      <HintPath>$(CorlibPath)\assembly_valheim.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine" Condition="Exists('$(CorlibPath)\UnityEngine.dll')">
       <HintPath>$(CorlibPath)\UnityEngine.dll</HintPath>
       <Private>False</Private>
