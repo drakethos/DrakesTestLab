@@ -1,7 +1,14 @@
 # Server mode and Player 2 (design)
 
-Status: the server mod and Player 1's server connect mode are built and tested. **Player 2 is a design, not code.** This
-document is the spec for building and testing it.
+Status: the server mod, Player 1's server connect mode and the real Player 2 are built and tested. On one dedicated
+server (Docker, crossplay) with a Game Pass client as Player 1 and a Steam client as Player 2, `DrakesTestLab-Player2`
+passes 4 of 4: Player 2 answers a ping, runs `give` and `check` steps on its own character, opens Player 1's chest (the
+chest opens and its owner changes) and is refused a private chest. Not yet ported from `11-virtual-player`: the forged
+player-id claim and the disconnect cleanup. LockSmith and DrakesServerTeams are not tested yet.
+
+How it is used: a step in a test case with `"on": "player2"` runs on the second client. A tagged object named in such a
+step (`"target": "chest"`) is sent as its prefab plus Player 1's position, so Player 2 finds the same object. Player 2
+runs with `[Connect] Role = Player2` and runs no tests of its own.
 
 ## The pieces
 
@@ -46,11 +53,13 @@ at a time and waits for the answer. A test case stays a single JSON file with on
 
 ## Order of work
 
-1. `DTL_Hello` / `DTL_Role` and a role table in the server mod. Test: Player 1 connects and logs "you are Player1".
-2. Remote transport for the peer steps, with a fake Player 2 in the same game for a unit check.
-3. `[Connect] Role` and the passive Player 2 client.
-4. Make `11-virtual-player` run for real against the server with a second client and pass.
-5. A skipped-with-reason result when a test needs Player 2 and none is connected.
+1. Done: `DTL_Hello` / `DTL_Role` and a role table in the server mod.
+2. Done: remote transport (`"on": "player2"`, `DTL_Cmd` / `DTL_Run` / `DTL_ResultUp` / `DTL_Result`).
+3. Done: `[Connect] Role` and the passive Player 2 client.
+4. Partly done: the chest scenarios of `11-virtual-player` run for real (tests 03 and 04). Still open: the forged-claim and
+   disconnect-cleanup parts.
+5. Open: a skipped-with-reason result when a test needs Player 2 and none is connected (today the step fails with
+   "no Player 2 connected" after `connectTimeout`).
 
 ## What to test with it, in order
 
