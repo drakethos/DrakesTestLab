@@ -185,6 +185,11 @@ internal static class FejdStartupBridge
             if (fejd == null || !IsObjectDbReady() || !CharacterExists(characterSaveName))
                 return false;
 
+            // the PlayFab lookup needs the PlayFab login, which finishes shortly after start
+            var viaPlayFab = PlayFabJoin.Available;
+            if (viaPlayFab && !PlayFabJoin.LoggedIn)
+                return false;
+
             RefreshSaveLists(fejd);
             var profile = FindProfile(_profiles, characterSaveName);
             if (profile == null || JoinServerField == null)
@@ -204,8 +209,18 @@ internal static class FejdStartupBridge
 
             // The game answers the server's password request with FejdStartup.ServerPassword (as for -password on the command line).
             ServerPasswordSetter?.Invoke(null, new object?[] { string.IsNullOrEmpty(password) ? null : password });
-            // Built by reflection: the join data types changed shape between game versions, and the release build compiles
-            // against older game DLLs than the game it runs in.
+            // Look the server up on PlayFab and join it from there (the same on Steam and Xbox). The game's own join-by-IP
+            // would pick Steam on a Steam client, which a crossplay server never answers.
+            if (viaPlayFab)
+            {
+                StartingWorldField?.SetValue(fejd, false);
+                PlayFabJoin.Begin(fejd, address);
+                TestLabPlugin.Log?.LogInfo($"ServerConnect: joining {address} as {profile.GetName()}<{profile.GetFilename()}> through PlayFab.");
+                return true;
+            }
+
+            // Fallback for a game version without the PlayFab types. Built by reflection: the join data types changed shape
+            // between game versions, and the release build compiles against older game DLLs than the game it runs in.
             var dedicatedType = AccessTools.TypeByName("ServerJoinDataDedicated");
             var joinType = AccessTools.TypeByName("ServerJoinData");
             if (dedicatedType == null || joinType == null)

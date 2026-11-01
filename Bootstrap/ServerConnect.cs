@@ -91,6 +91,12 @@ internal static class ServerConnect
                 yield break;
             }
 
+            if (PlayFabJoin.Failure.Length > 0)
+            {
+                TestRunner.ReportConnectFailure(PlayFabJoin.Failure);
+                yield break;
+            }
+
             var status = ZNet.GetConnectionStatus();
             if (status >= ZNet.ConnectionStatus.ErrorVersion)
             {
