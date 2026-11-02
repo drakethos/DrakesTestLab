@@ -1,5 +1,11 @@
 # DrakesTestLab
 
+## 0.4.3
+
+- **`face` and `lookAt` can tilt the view.** New optional fields: `up` / `down` / `dy` (metres above or below the aim point), `left` / `right` (metres sideways), `pitch` (degrees, + looks up), `yawOffset` (degrees, + turns right) and, with `x`/`z`, an absolute `y` aim height. The view tilts like the mouse, third-person camera included (before, `face` only turned the player and always levelled the view). `lookAt` with a tilt holds the view a few frames instead of waiting for the crosshair to hover the target, so `{ "do": "lookAt", "target": "tree", "up": 1.5 }` aims 1.5 m up the trunk.
+- A plain `face` (target, `x`/`z`, `dx`/`dz`, no tilt field) behaves exactly as before: existing tests are unchanged.
+- New hook `testlab.cameraPitch` (`pitch`, `tolerance`): reads the real camera's angle, to prove a tilt. New meta test M-36; the Meta suite now requires 0.4.3.
+
 ## 0.4.2
 
 Server control, server queries and three-way asserts. Everything here needs DrakesTestLabServer 0.1.1 with `[Control] Enabled = true` in its config.

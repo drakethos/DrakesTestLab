@@ -59,6 +59,7 @@ Details and the design: [docs/MULTIPLAYER.md](https://github.com/drakethos/Drake
 - **Ward test bench:** spawn a ward and set its owner, on/off and permitted players, or **play as** Alice, Bob, Carol or Bjornita (or any name) to see exactly what a stranger, an owner and a permitted player can do. Ready-made scenarios: stranger's ward, I'm permitted, ward off, overlapping wards.
 - **Player 2:** connect Bjornita as a virtual second client (Wards tab or the `peerJoin` step) to test what happens between two players.
 - **Share the world:** because the game logs straight in, the open / public / password choices come from the config (`[Server]`) and the Session tab, so friends can join the test world through Steam.
+- **Camera aim:** the `face` and `lookAt` steps tilt the view like the mouse (`up`, `down`, `left`, `right`, `pitch`, `yawOffset`), third-person camera included, so a test can look 1.5 m up a trunk or straight down at the floor. Plain `face` stays level.
 - **Fires:** one button refuels every fire and fuel-driven cooking station, or keeps them topped up.
 
 ![Cauldron and mead ketill standing over lit fire pits, cooking spit alongside](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/fire-stations.jpg)

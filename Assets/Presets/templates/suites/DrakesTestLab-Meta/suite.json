@@ -4,7 +4,7 @@
   "requireMods": [
     {
       "guid": "com.drakemods.testlab",
-      "minVersion": "0.2.0"
+      "minVersion": "0.4.2"
     }
   ],
   "configOverrides": [
