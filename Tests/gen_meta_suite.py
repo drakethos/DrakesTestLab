@@ -33,7 +33,7 @@ def wait(s=0.3):
 suite = {
     'name': 'DrakesTestLab-Meta',
     'description': "Tests the tester: every step and check against plain Valheim, and negative tests proving broken tests are caught.",
-    'requireMods': [{'guid': GUID, 'minVersion': '0.4.3'}],
+    'requireMods': [{'guid': GUID, 'minVersion': '0.4.4'}],
     'configOverrides': [{'guid': GUID, 'section': 'Rules', 'key': 'FallDamageMultiplier', 'value': '0.25'}],
     'include': '_lib/valheim.json',
     'setup': {'timeOfDay': 0.5, 'freezeTime': 1, 'god': 1, 'noBuild': 'off', 'hideUnlockPopups': 1},

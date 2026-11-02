@@ -274,6 +274,7 @@
     <Compile Include="UI\TestLabInputDriver.cs" />
 
     <Compile Include="UI\Toolbox\Ui.cs" />
+    <Compile Include="Bootstrap\TestLabTabs.cs" />
 
     <Compile Include="UI\Toolbox\ToolboxTab.cs" />
 

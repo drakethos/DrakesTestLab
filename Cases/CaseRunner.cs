@@ -463,6 +463,20 @@ internal static class CaseRunner
             WardTools.Spawn(origin, WardTools.Parse(w.owner), w.enabled, permitted, w.radius);
         }
 
+        // virtual second players, and wait for their characters so the commands below can name them
+        foreach (var peer in c.peers)
+        {
+            var peerName = peer.name.Length > 0 ? peer.name : TestLabConfig.Instance.Player2.Value;
+            if (Automation.VirtualPeers.Find(peerName) != null)
+                continue;
+            var at = player.transform.position + player.transform.right * peer.dx + player.transform.forward * peer.dz;
+            var vp = Automation.VirtualPeers.Join(peerName, at, true, 0f, 0f, false, peer.proxy);
+            var until = Time.realtimeSinceStartup + 5f;
+            while (vp.PuppetZdo != null && vp.Puppet == null && Time.realtimeSinceStartup < until)
+                yield return null;
+            yield return null;
+        }
+
         // a saved build
         foreach (var piece in c.pieces)
             PlacePiece(player, piece);

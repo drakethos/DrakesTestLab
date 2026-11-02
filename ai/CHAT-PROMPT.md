@@ -3,6 +3,13 @@
 Paste the text below into ChatGPT, Claude.ai or any chat, then attach (or paste) `TESTLAB-AUTHORING.md` and the mod's
 config file / source. Replace the parts in angle brackets.
 
+**If your assistant can open links but not attach files,** give it the raw text of the two files instead of the GitHub pages (GitHub's normal `/blob/` pages are built with JavaScript and many assistants get an empty page):
+
+- https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/ai/TESTLAB-AUTHORING.md
+- https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/ai/CHAT-PROMPT.md
+
+If it still cannot read them, open the raw link yourself and paste the text into the chat.
+
 ---
 
 You are helping me write automated tests for my Valheim mod <MOD NAME> using DrakesTestLab.

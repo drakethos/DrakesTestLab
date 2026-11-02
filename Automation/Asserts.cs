@@ -364,6 +364,10 @@ internal static class Asserts
         if (a.Has("contains"))
             return actual.IndexOf(a.Str("contains"), StringComparison.OrdinalIgnoreCase) >= 0;
 
+        // "regex": the whole answer is tested against a pattern, for readings like "40x34/12" where a range is part of the claim
+        if (a.Has("regex"))
+            return System.Text.RegularExpressions.Regex.IsMatch(actual, a.Str("regex"));
+
         if (a.Has("min") || a.Has("max"))
             return float.TryParse(actual, NumberStyles.Float, CultureInfo.InvariantCulture, out var n) && InRange(n, a);
 

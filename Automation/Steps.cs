@@ -353,7 +353,7 @@ internal static class Steps
                 return null;
             }
             case "interact": Interact(step, ctx); return null;
-            case "click": Ok(UiDriver.Click(step.First("button", "target", "name"))); return null;
+            case "click": Ok(UiDriver.Click(step.First("button", "target", "name"), (int)step.Num("nth", 0))); return null;
             case "toggle": Ok(UiDriver.SetToggle(step.First("toggle", "target", "name"), step.Bool("value", true))); return null;
             case "type":
                 Ok(UiDriver.Type(step.First("field", "target", "name"), step.Str("text")));
@@ -383,7 +383,7 @@ internal static class Steps
                 }
 
                 // "expect" / "contains" / "notContains" on the step: also record the answer as a check (like a check step)
-                if (step.Has("expect") || step.Has("contains") || step.Has("notContains"))
+                if (step.Has("expect") || step.Has("contains") || step.Has("notContains") || step.Has("regex"))
                 {
                     var text = Convert.ToString(ctx.LastResult, CultureInfo.InvariantCulture) ?? "null";
                     var r = new AssertResult

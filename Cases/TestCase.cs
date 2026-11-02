@@ -77,6 +77,16 @@ public sealed class WardSpec
     public float radius = -1f;                  // -1 = the ward's own radius
 }
 
+/// <summary>A virtual second player that joins the world when the case is applied (see Automation/VirtualPeers).</summary>
+[Serializable]
+public sealed class PeerSpec
+{
+    public string name = "";                    // "" = the [Automation] Player2 setting (Bjornita); Alice, Amy, Bob, Carol or any name
+    public float dx = 3f;                       // metres to your right
+    public float dz;                            // metres in front of you
+    public bool proxy = true;                   // answer RPCs like a real second client
+}
+
 [Serializable]
 public sealed class TestCase
 {
@@ -141,6 +151,9 @@ public sealed class TestCase
 
     // ward test bench: wards spawned relative to the player
     public List<WardSpec> wards = new();
+
+    // virtual second players that join the world (the case's commands run after they have arrived)
+    public List<PeerSpec> peers = new();
 
     // crafting
     public int stationLevel = -1;        // 0 = vanilla, >0 = every station is this level and ignores roof/fire

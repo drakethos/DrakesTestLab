@@ -1,5 +1,12 @@
 # DrakesTestLab
 
+## 0.4.4
+
+- **`click` on UI Toolkit windows:** `"nth"` picks one of several elements with the same label (the up arrow on every row of a list); text is matched without rich text tags (a button drawn as a colored square plus a name is found by the name); and a disabled button now fails the step instead of being clicked, as a player could not click it.
+- **`regex` compare field:** `hook` steps and checks can test the whole answer against a pattern, for readings like `40x34/12` where a range is part of the claim.
+- **Cases can bring virtual second players:** a case's `peers` list (`name`, `dx`, `dz`, `proxy`) joins them when the case is applied, and the case's commands run after they have arrived.
+- **Other mods can add a toolbox tab:** `DrakesTestLab.TestLabTabs.Register(title, group, draw)`, called by reflection, so a mod needs no reference to the lab.
+
 ## 0.4.3
 
 - **`face` and `lookAt` can tilt the view.** New optional fields: `up` / `down` / `dy` (metres above or below the aim point), `left` / `right` (metres sideways), `pitch` (degrees, + looks up), `yawOffset` (degrees, + turns right) and, with `x`/`z`, an absolute `y` aim height. The view tilts like the mouse, third-person camera included (before, `face` only turned the player and always levelled the view). `lookAt` with a tilt holds the view a few frames instead of waiting for the crosshair to hover the target, so `{ "do": "lookAt", "target": "tree", "up": 1.5 }` aims 1.5 m up the trunk.

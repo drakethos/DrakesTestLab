@@ -69,8 +69,12 @@ internal static class UiDriver
         return sb.ToString().Trim();
     }
 
-    public static string Click(string query)
+    /// <param name="nth">Which match when several share the label (0 = first). Counted among UI Toolkit elements.</param>
+    public static string Click(string query, int nth = 0)
     {
+        if (nth > 0)
+            return UitkDriver.Click(query, nth) ? "" : UitkDriver.LastProblem ?? $"no visible element number {nth} matching '{query}' (UI Toolkit)";
+
         var button = Find<Button>(query);
         if (button != null)
         {
@@ -89,6 +93,8 @@ internal static class UiDriver
 
         if (UitkDriver.Click(query))
             return "";
+        if (UitkDriver.LastProblem != null)
+            return UitkDriver.LastProblem;
 
         return $"no visible button or toggle matching '{query}' (Unity UI or UI Toolkit)";
     }
