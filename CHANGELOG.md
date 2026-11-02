@@ -1,11 +1,12 @@
 # DrakesTestLab
 
-## 0.4.5 (unreleased)
+## 0.4.5
 
 - **`uiHover` and `uiRelease` steps.** Rest the game's own virtual mouse (written into Unity's Input System: no operating-system mouse moves, nobody has to be at the PC) on a piece of UI, so tooltips and hover states open exactly as for a player. Pick the target by `icon` (an item prefab: the slot that draws its icon), `text`, `name`, or `x`/`y` (`fx`/`fy` as fractions of the screen). `until` waits for a text and tries every matching slot in turn (the hotbar and the inventory can draw the same icon); `nth`, `where`, `wait` and `hold` tune it. The step log says what the pointer is over.
 - **`screenText` check.** Reads every text the UI shows right now (TextMeshPro, Text and UI Toolkit, rich text removed) and tests it with `contains`, `notContains` or `regex`; `under` limits it to objects whose path contains that text. With `uiHover` it reads any mod's tooltip, including UIs that draw their own (SeneaL UI).
 - **Remote steps rewrite tags inside a hook's `args`.** A step tagged `"on": "player2"` now also turns `args.target` / `args.to` into prefab plus position, so a hook that takes its object from `args` finds it on Player 2.
 - New meta tests M-37 (hover + read a tooltip) and N-13 (a hover with nothing to hover fails).
+- **Fixed: `relog` lost its tagged objects.** After a relog the lab looked for each tagged object the moment the player was in, before the world had loaded it, so a saved chest was reported gone (Meta test M-28 failed on 0.4.3 and 0.4.4). It now looks for up to 8 s, and a miss logs where the object stood and how far the nearest one is.
 
 ## 0.4.4
 
