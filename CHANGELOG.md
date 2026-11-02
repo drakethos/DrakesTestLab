@@ -6,6 +6,7 @@
 - **`regex` compare field:** `hook` steps and checks can test the whole answer against a pattern, for readings like `40x34/12` where a range is part of the claim.
 - **Cases can bring virtual second players:** a case's `peers` list (`name`, `dx`, `dz`, `proxy`) joins them when the case is applied, and the case's commands run after they have arrived.
 - **Other mods can add a toolbox tab:** `DrakesTestLab.TestLabTabs.Register(title, group, draw)`, called by reflection, so a mod needs no reference to the lab.
+- **Docs:** `ai/CHAT-PROMPT.md` now gives raw.githubusercontent.com links to the authoring guide, for assistants that can open links but not GitHub's `/blob/` pages or attachments.
 
 ## 0.4.3
 
