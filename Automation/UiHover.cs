@@ -36,17 +36,39 @@ internal static class UiHover
     {
         try
         {
-            var mouse = MouseType?.GetProperty("current", BindingFlags.Public | BindingFlags.Static)?.GetValue(null);
-            if (mouse == null || InputStateType == null)
+            if (MouseType == null || InputStateType == null)
+            {
+                LastError = $"the Input System types are missing (Mouse: {MouseType != null}, InputState: {InputStateType != null})";
                 return false;
-            var control = mouse.GetType().GetProperty("position")?.GetValue(mouse);
+            }
+
+            var mouse = MouseType.GetProperty("current", BindingFlags.Public | BindingFlags.Static)?.GetValue(null);
+            if (mouse == null)
+            {
+                LastError = "Mouse.current is null (no mouse device registered)";
+                return false;
+            }
+
+            // the position control: a property on older versions, found through the Pointer base type on others
+            var control = AccessTools.Property(MouseType, "position")?.GetValue(mouse)
+                          ?? AccessTools.Property(MouseType.BaseType, "position")?.GetValue(mouse);
             if (control == null)
+            {
+                LastError = "the mouse has no 'position' control";
                 return false;
+            }
+
             var change = InputStateType.GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .FirstOrDefault(m => m.Name == "Change" && m.IsGenericMethodDefinition && m.GetParameters().Length == 4
-                                     && m.GetParameters()[0].ParameterType.IsGenericType);
+                                     && m.GetParameters()[1].ParameterType.IsGenericParameter);
             if (change == null)
+            {
+                LastError = "InputState.Change<T>(control, value, ...) was not found: " +
+                            string.Join("; ", InputStateType.GetMethods(BindingFlags.Public | BindingFlags.Static).Where(m => m.Name == "Change")
+                                .Select(m => m.ToString()));
                 return false;
+            }
+
             var ps = change.GetParameters();
             change.MakeGenericMethod(typeof(Vector2)).Invoke(null, new object?[]
             {
@@ -54,11 +76,15 @@ internal static class UiHover
             });
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            LastError = (ex.InnerException ?? ex).GetType().Name + ": " + (ex.InnerException ?? ex).Message;
             return false;
         }
     }
+
+    /// <summary>Why the last <see cref="SetMouse"/> failed.</summary>
+    public static string LastError = "";
 
     // keeps the position set every frame while a hover is held, so a following step (screenshot, check) sees the tooltip
     private sealed class HoverKeeper : MonoBehaviour
@@ -131,7 +157,7 @@ internal static class UiHover
             if (point.x < 0 || point.y < 0 || point.x > Screen.width || point.y > Screen.height)
                 throw new StepFailed($"uiHover: {name} is off the screen at ({point.x:0},{point.y:0}) of {Screen.width}x{Screen.height}");
             if (!SetMouse(point))
-                throw new StepFailed("uiHover: the Input System mouse could not be moved (no Unity.InputSystem Mouse on this game?)");
+                throw new StepFailed("uiHover: the Input System mouse could not be moved: " + LastError);
 
             _held = point;
             yield return null;

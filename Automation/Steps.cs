@@ -26,7 +26,7 @@ internal static class StepNames
     public static readonly string[] All =
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
-        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
+        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "uiHover", "uiRelease", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
         "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
     };
 }
