@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using BepInEx.Logging;
 using DrakesTestLab.Bootstrap;
 using DrakesTestLab.Util;
@@ -15,7 +16,7 @@ internal static class Asserts
     {
         "hasItem", "noItem", "equipped", "globalKey", "objectNear", "owner", "zdo", "uiVisible", "uiText", "logContains",
         "noErrors", "config", "skill", "stat", "position", "guardianPower", "wardAccess", "lastResult", "hook", "message", "unlockShown", "hoverText", "containerHas", "uiEnabled", "hovering", "crosshair",
-        "peerReceived", "peerConnected", "zdoOwner"
+        "peerReceived", "peerConnected", "zdoOwner", "screenText"
     };
 
     public static AssertResult Evaluate(Dictionary<string, object?> a, RunContext ctx)
@@ -120,6 +121,27 @@ internal static class Asserts
             {
                 var text = UiDriver.TextOf(a.First("name", "target"));
                 return (Matches(text, a), $"text is '{text}'");
+            }
+            case "screentext":
+            {
+                // everything the UI shows right now (TextMeshPro, Text, UI Toolkit), one line per text; "under" limits it to
+                // objects whose path contains that text. Use contains / notContains / regex like any check.
+                var texts = UiHover.ShownTexts(a.Has("under") ? a.Str("under") : null);
+                var all = string.Join("\n", texts);
+                var passed = Matches(all, a);
+                string detail;
+                if (a.Has("contains") || a.Has("notContains"))
+                {
+                    var needle = a.Has("contains") ? a.Str("contains") : a.Str("notContains");
+                    var hit = texts.FirstOrDefault(t => t.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0);
+                    detail = $"{texts.Count} shown texts; " + (hit != null ? $"'{needle}' is in: {hit.Replace("\n", " ")}" : $"'{needle}' is not shown");
+                }
+                else
+                {
+                    detail = $"{texts.Count} shown texts: " + string.Join(" | ", texts.Take(8).Select(t => t.Replace("\n", " ")));
+                }
+
+                return (passed, detail);
             }
             case "logcontains":
             {

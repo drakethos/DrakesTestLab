@@ -441,6 +441,8 @@ internal static class Steps
             case "holdkey": UiSteps.HoldKey(step); return null;
             case "releasekeys": HeldKeys.ReleaseAll(); return null;
             case "itemclick": return UiSteps.ItemClick(step, ctx);
+            case "uihover": return UiHover.Hover(step, ctx);
+            case "uirelease": UiHover.Release(); return null;
             case "lookat": return UiSteps.LookAt(step, ctx);
             case "setlanguage": LanguageSwitch.Set(Need(step, "language")); return null;
             case "drop": UiSteps.Drop(step, ctx); return null;
