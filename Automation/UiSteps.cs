@@ -372,8 +372,20 @@ internal static class UiSteps
             {
                 // aim from the camera, which sits above and behind the player (and settles for a few frames after a move)
                 var cam = GameCamera.instance != null ? GameCamera.instance.transform.position : p.GetEyePoint();
-                Aim(p, (center - cam).normalized);
+                var aimPoint = center + PointOffset(step, center - cam);
+                Aim(p, ApplyAngles(step, (aimPoint - cam).normalized));
                 yield return null;
+
+                // an offset view (up the trunk, off to the side) is not meant to hover the target: hold it a few frames while the camera settles
+                if (HasViewOffsets(step))
+                {
+                    if (++steady >= 4)
+                    {
+                        ctx.Log($"  looking near {target.name}");
+                        yield break;
+                    }
+                    continue;
+                }
 
                 hover = p.GetHoverObject();
                 if (hover != null && (hover == target || hover.transform.IsChildOf(target.transform) || target.transform.IsChildOf(hover.transform)))
@@ -417,7 +429,43 @@ internal static class UiSteps
         }
     }
 
-    private static readonly System.Reflection.FieldInfo? LookYaw = AccessTools.Field(typeof(Player), "m_lookYaw");
+    /// <summary>True when a step asks for a view that is not simply "at the thing": up/down/dy, left/right, pitch or yawOffset.</summary>
+    internal static bool HasViewOffsets(Dictionary<string, object?> step) =>
+        step.Has("up") || step.Has("down") || step.Has("dy") || step.Has("left") || step.Has("right") || step.Has("pitch") || step.Has("yawOffset");
+
+    /// <summary>
+    /// Metres to move an aim point: up/down/dy vertically, left/right sideways as seen looking along <paramref name="toward"/>
+    /// (the way from the viewer to the point). Positive up = higher, positive right = to the viewer's right.
+    /// </summary>
+    internal static Vector3 PointOffset(Dictionary<string, object?> step, Vector3 toward)
+    {
+        var up = step.Num("up") - step.Num("down") + step.Num("dy");
+        var right = step.Num("right") - step.Num("left");
+        toward.y = 0f;
+        var side = toward.sqrMagnitude > 0.0001f ? Vector3.Cross(Vector3.up, toward.normalized) : Vector3.zero;
+        return Vector3.up * up + side * right;
+    }
+
+    /// <summary>pitch (absolute degrees, + looks up) and yawOffset (degrees, + turns right) applied on top of an aim direction.</summary>
+    internal static Vector3 ApplyAngles(Dictionary<string, object?> step, Vector3 dir)
+    {
+        if (dir.sqrMagnitude < 0.0001f)
+            dir = Vector3.forward;
+        dir.Normalize();
+        if (step.Has("yawOffset"))
+            dir = Quaternion.Euler(0f, step.Num("yawOffset"), 0f) * dir;
+        if (step.Has("pitch"))
+        {
+            var flat = new Vector3(dir.x, 0f, dir.z);
+            flat = flat.sqrMagnitude > 0.0001f ? flat.normalized : Vector3.forward;
+            var rad = Mathf.Clamp(step.Num("pitch"), -89f, 89f) * Mathf.Deg2Rad;
+            dir = flat * Mathf.Cos(rad) + Vector3.up * Mathf.Sin(rad);
+        }
+
+        return dir;
+    }
+
+    private static readonly System.Reflection.FieldInfo? LookYaw =AccessTools.Field(typeof(Player), "m_lookYaw");
     private static readonly System.Reflection.FieldInfo? LookPitch = AccessTools.Field(typeof(Player), "m_lookPitch");
 
     /// <summary>

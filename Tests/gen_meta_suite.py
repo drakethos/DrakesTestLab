@@ -466,6 +466,25 @@ T('M-35', 'feature showcase: a real recording, a saved case, Player 2, the manua
     {'do': 'hook', 'name': 'testlab.showCheckpoint', 'args': {'clear': True}},
 ], desc='Pictures of the 0.3 features in use, for the README and the wiki.')
 
+T('M-36', 'face tilts the view: pitch, up/down and a level default (camera included)', [
+    {'do': 'place', 'prefab': 'piece_workbench', 'dz': 5, 'as': 'bench'},
+    {'do': 'face', 'target': 'bench'},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'plain face stays level'},
+    {'do': 'face', 'pitch': 30},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 30}, 'contains': 'near', 'label': 'pitch 30 tilts the camera up'},
+    {'do': 'face', 'pitch': -20},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': -20}, 'contains': 'near', 'label': 'pitch -20 tilts it down'},
+    {'do': 'face', 'target': 'bench', 'up': 6},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 20, 'tolerance': 15}, 'contains': 'near', 'label': 'up: 6 aims well above the bench'},
+    {'do': 'face', 'target': 'bench'},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'face with no tilt levels the view again'},
+], desc='face keeps its old level behaviour; pitch / up / down / left / right / yawOffset tilt the view like the mouse.')
+
 # ---------------------------------------------------------------- negative tests: the runner must catch these
 T('N-01', 'a failing check fails the test', [
     chk('hasItem', 'a check that cannot pass', prefab='DragonEgg'),

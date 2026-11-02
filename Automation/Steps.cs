@@ -320,7 +320,7 @@ internal static class Steps
                 throw new StepFailed("read needs \"config\", \"count\" or \"owner\"");
             }
             case "teleport": return Teleport(step, ctx);
-            case "face": Face(step, ctx); return null;
+            case "face": return Face(step, ctx);
             case "wait": return Wait(step, ctx);
             case "spawn": Spawn(step, ctx); return null;
             case "give":
@@ -611,22 +611,63 @@ internal static class Steps
         SetLookDir.Invoke(p, args);
     }
 
-    private static void Face(Dictionary<string, object?> step, RunContext ctx)
+    /// <summary>
+    /// face: turn the view. Plain (target, to, x/z, dx/dz) stays level. Optional, any combination: up/down/dy (metres above or below the
+    /// aim point; "y" with x/z is an absolute aim height), left/right (metres sideways), pitch (degrees, + looks up) and yawOffset
+    /// (degrees, + turns right). Any of those tilts the view like a player's mouse, camera included.
+    /// </summary>
+    private static IEnumerator Face(Dictionary<string, object?> step, RunContext ctx)
     {
         var p = P;
         Vector3 at;
+        var hasPoint = true;
         var target = step.First("target", "to");
         if (target.Length > 0)
-            at = (Targets.Find(ctx, target) ?? throw new StepFailed($"face target '{target}' not found")).transform.position;
+        {
+            var go = Targets.Find(ctx, target) ?? throw new StepFailed($"face target '{target}' not found");
+            at = go.transform.position;
+        }
         else
+        {
             at = Targets.PointFrom(step, p.transform.position + p.transform.forward);
+            hasPoint = step.Has("x") || step.Has("z") || step.Has("dx") || step.Has("dz");
+            if (hasPoint && step.Has("y"))
+                at.y = step.Num("y");
+        }
 
-        var dir = at - p.transform.position;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f)
-            return;
-        dir.Normalize();
-        UiSteps.Aim(p, dir);
+        var tilt = UiSteps.HasViewOffsets(step) || (target.Length == 0 && hasPoint && step.Has("y"));
+        if (!hasPoint && !tilt)
+            yield break;
+
+        // the camera settles over a few frames, so the aim is set again each frame until it holds
+        for (var frame = 0; frame < 4; frame++)
+        {
+            p = P;
+            Vector3 dir;
+            if (!hasPoint)
+                dir = p.transform.forward;
+            else if (!tilt)
+            {
+                dir = at - p.transform.position;
+                dir.y = 0f;
+            }
+            else
+            {
+                var from = GameCamera.instance != null ? GameCamera.instance.transform.position : p.GetEyePoint();
+                var aim = at + UiSteps.PointOffset(step, at - from);
+                dir = aim - from;
+            }
+
+            if (dir.sqrMagnitude < 0.0001f)
+                yield break;
+            dir.Normalize();
+            if (tilt)
+                dir = UiSteps.ApplyAngles(step, dir);
+            UiSteps.Aim(p, dir);
+            if (!tilt)
+                yield break;
+            yield return null;
+        }
     }
 
     private static IEnumerator Wait(Dictionary<string, object?> step, RunContext ctx)

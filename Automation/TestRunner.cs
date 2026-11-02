@@ -69,6 +69,16 @@ internal static class TestRunner
         TestHooks.Register("testlab.echo", args => args.TryGetValue("value", out var v) ? v : null, "DrakesTestLab");
         // is this key held as the game sees it (Input.GetKey, which holdKey / pressKey drive)? key: a Unity KeyCode name
         TestHooks.Register("testlab.keyHeld", args => args.TryGetValue("key", out var k) && Enum.TryParse<KeyCode>(Convert.ToString(k), true, out var code) && Input.GetKey(code), "DrakesTestLab");
+        // is the real camera tilted to `pitch` degrees (+ up) within `tolerance` (default 3)? Reads the camera itself, not the player's stored pitch.
+        TestHooks.Register("testlab.cameraPitch", args =>
+        {
+            if (GameCamera.instance == null)
+                return "no camera";
+            var actual = Mathf.Asin(Mathf.Clamp(GameCamera.instance.transform.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
+            var want = args.TryGetValue("pitch", out var w) ? Convert.ToSingle(w, System.Globalization.CultureInfo.InvariantCulture) : 0f;
+            var tol = args.TryGetValue("tolerance", out var t) ? Convert.ToSingle(t, System.Globalization.CultureInfo.InvariantCulture) : 3f;
+            return (Mathf.Abs(actual - want) <= tol ? "near " : "off ") + actual.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
+        }, "DrakesTestLab");
         TestHooks.Register("testlab.inventoryCount", _ => Player.m_localPlayer != null ? Player.m_localPlayer.GetInventory().NrOfItems() : -1, "DrakesTestLab");
 
         // the lab's own features, for its meta suite: save the current game as a case (name, radius), the recorder, the toolbox
