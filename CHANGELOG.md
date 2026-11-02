@@ -1,6 +1,6 @@
 # DrakesTestLab
 
-## Unreleased
+## 0.4.6
 
 - **The authoring guide and chat prompt now ship inside the mod** and are copied to `BepInEx/config/DrakesTestLab/docs/` at startup, so an AI assistant that cannot open GitHub pages can read them from disk. The first time, the lab logs where they are and the `raw.githubusercontent.com` links to give an assistant that can open links but not files, and writes the same note to `docs/READ-ME.txt`.
 
