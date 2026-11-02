@@ -2,8 +2,10 @@
   "name": "M-37 uiHover rests the game's mouse on a slot, screenText reads the tooltip",
   "description": "No one at the PC: the virtual mouse is put on the Stone Axe's inventory slot, the game opens its own tooltip, and screenText sees the text. Also proves screenText can say a text is NOT shown.",
   "steps": [
-    { "do": "give", "prefab": "AxeStone" },
     { "do": "pressKey", "button": "Inventory" },
+    { "do": "wait", "seconds": 0.5 },
+    { "do": "check", "check": "uiVisible", "name": "InventoryGui", "label": "the Inventory key opened the inventory" },
+    { "do": "give", "prefab": "AxeStone" },
     { "do": "wait", "seconds": 1 },
     { "do": "uiHover", "icon": "AxeStone", "until": "Stone Axe", "wait": 1 },
     { "do": "check", "check": "screenText", "contains": "Stone Axe", "label": "the hovered slot's tooltip names the axe" },
