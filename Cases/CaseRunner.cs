@@ -143,6 +143,8 @@ internal static class CaseRunner
             Directory.CreateDirectory(Folder);
             WriteIfMissing("README.md", Readme);
 
+            CopyDocs();
+
             var shipped = Path.Combine(ValheimPaths.TemplatesFolder, "cases");
             if (!Directory.Exists(shipped))
                 return;
@@ -158,6 +160,41 @@ internal static class CaseRunner
         {
             TestLabPlugin.Log?.LogWarning($"Could not write example test cases: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Copies the shipped authoring guide and chat prompt to config/DrakesTestLab/docs, so an AI assistant that cannot open GitHub
+    /// can read them from disk. Refreshed whenever the shipped copy differs (they are documentation, not something to edit).
+    /// </summary>
+    private static void CopyDocs()
+    {
+        var shipped = Path.Combine(ValheimPaths.TemplatesFolder, "docs");
+        if (!Directory.Exists(shipped))
+            return;
+        var dir = Path.Combine(Paths.ConfigPath, "DrakesTestLab", "docs");
+        Directory.CreateDirectory(dir);
+        foreach (var file in Directory.GetFiles(shipped, "*.md"))
+        {
+            var dest = Path.Combine(dir, Path.GetFileName(file));
+            if (!File.Exists(dest) || File.GetLastWriteTimeUtc(dest) < File.GetLastWriteTimeUtc(file) || new FileInfo(dest).Length != new FileInfo(file).Length)
+                File.Copy(file, dest, true);
+        }
+
+        // told once: where the docs are, and how to hand them to an assistant that cannot open github.com pages
+        var told = Path.Combine(dir, ".told");
+        if (File.Exists(told))
+            return;
+        const string raw = "https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/ai/";
+        File.WriteAllText(Path.Combine(dir, "READ-ME.txt"), string.Join(Environment.NewLine,
+            "DrakesTestLab: documents for an AI assistant",
+            "",
+            "TESTLAB-AUTHORING.md is the reference an assistant needs to write tests (steps, checks, hooks). CHAT-PROMPT.md is a prompt to paste.",
+            "Both are in this folder. If your assistant can open web links but not files, use the raw links (github.com's normal pages are often blocked for assistants):",
+            "  " + raw + "TESTLAB-AUTHORING.md",
+            "  " + raw + "CHAT-PROMPT.md",
+            "If it still cannot read them, save the file into your project folder or paste its text into the chat."));
+        File.WriteAllText(told, "");
+        TestLabPlugin.Log?.LogInfo($"AI assistant docs are in {dir}. If your assistant cannot open GitHub pages, give it the raw links: {raw}TESTLAB-AUTHORING.md (details in READ-ME.txt there).");
     }
 
     private static void WriteIfMissing(string file, string text)

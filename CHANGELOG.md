@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **The authoring guide and chat prompt now ship inside the mod** and are copied to `BepInEx/config/DrakesTestLab/docs/` at startup, so an AI assistant that cannot open GitHub pages can read them from disk. The first time, the lab logs where they are and the `raw.githubusercontent.com` links to give an assistant that can open links but not files, and writes the same note to `docs/READ-ME.txt`.
+
 ## 0.4.5
 
 - **`uiHover` and `uiRelease` steps.** Rest the game's own virtual mouse (written into Unity's Input System: no operating-system mouse moves, nobody has to be at the PC) on a piece of UI, so tooltips and hover states open exactly as for a player. Pick the target by `icon` (an item prefab: the slot that draws its icon), `text`, `name`, or `x`/`y` (`fx`/`fy` as fractions of the screen). `until` waits for a text and tries every matching slot in turn (the hotbar and the inventory can draw the same icon); `nth`, `where`, `wait` and `hold` tune it. The step log says what the pointer is over.
