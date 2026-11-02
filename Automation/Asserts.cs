@@ -136,8 +136,9 @@ internal static class Asserts
             {
                 var entry = ModEnvironment.FindEntry(a.Str("guid"), a.Str("section"), a.Str("key"))
                             ?? throw new InvalidOperationException("config entry not found");
-                var value = entry.GetSerializedValue();
-                return (Matches(value, a), $"value is '{value}'");
+                // the value in effect (what the server pushed, for a synced setting); "local": true reads the player's own saved value
+                var value = a.Bool("local") ? entry.GetSerializedValue() : ModEnvironment.EffectiveValue(entry);
+                return (Matches(value, a), $"value is '{value}'" + (a.Bool("local") ? " (local)" : ""));
             }
             case "skill":
             {

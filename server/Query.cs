@@ -22,7 +22,7 @@ internal static class Query
     public static bool Handles(string cmd) =>
         cmd.StartsWith("znet.", StringComparison.OrdinalIgnoreCase) || cmd.StartsWith("zdo.", StringComparison.OrdinalIgnoreCase)
         || cmd.StartsWith("world.", StringComparison.OrdinalIgnoreCase) || cmd.StartsWith("rpc.", StringComparison.OrdinalIgnoreCase)
-        || cmd.Equals("server.info", StringComparison.OrdinalIgnoreCase);
+        || cmd.Equals("server.info", StringComparison.OrdinalIgnoreCase) || cmd.Equals("sync.info", StringComparison.OrdinalIgnoreCase);
 
     public static (bool, string) Run(long sender, string cmd, Dictionary<string, object?> a)
     {
@@ -30,6 +30,8 @@ internal static class Query
         {
             case "server.info":
                 return (true, $"version={Version.GetVersionString()} peers={Peers().Count} zdos={ZDOMan.instance.NrOfObjects()} time={ZNet.instance.GetTimeSeconds():0}");
+
+            case "sync.info": return (true, SyncDebug.Info());
 
             case "znet.count": return (true, Peers().Count.ToString(CultureInfo.InvariantCulture));
             case "znet.peers": return (true, string.Join("; ", Peers().Select(Describe)));

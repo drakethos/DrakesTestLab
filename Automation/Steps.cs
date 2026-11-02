@@ -295,7 +295,8 @@ internal static class Steps
                 {
                     var entry = ModEnvironment.FindEntry(cfg.Str("guid"), cfg.Str("section"), cfg.Str("key"))
                                 ?? throw new StepFailed($"no setting [{cfg.Str("section")}] {cfg.Str("key")} of {cfg.Str("guid")} on this client");
-                    ctx.LastResult = entry.GetSerializedValue();
+                    // the value in effect (what the server pushed, for a synced setting); "local": true reads the player's own saved value
+                    ctx.LastResult = cfg.Bool("local") ? entry.GetSerializedValue() : ModEnvironment.EffectiveValue(entry);
                     return null;
                 }
 
@@ -425,12 +426,12 @@ internal static class Steps
                         var slash = kv.Key.LastIndexOf('/');
                         if (slash <= 0)
                             throw new StepFailed($"'{kv.Key}': use \"Section/Key\"");
-                        Ok(ModEnvironment.Set(guid, kv.Key.Substring(0, slash), kv.Key.Substring(slash + 1), J.Value(kv.Value)));
+                        Ok(ModEnvironment.Set(guid, kv.Key.Substring(0, slash), kv.Key.Substring(slash + 1), J.Value(kv.Value), step.Bool("asPlayer")));
                     }
                 }
                 else
                 {
-                    Ok(ModEnvironment.Set(guid, Need(step, "section"), Need(step, "key"), step.Str("value")));
+                    Ok(ModEnvironment.Set(guid, Need(step, "section"), Need(step, "key"), step.Str("value"), step.Bool("asPlayer")));
                 }
 
                 return null;

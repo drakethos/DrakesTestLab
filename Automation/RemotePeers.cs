@@ -79,7 +79,8 @@ internal static class RemotePeers
             throw new StepFailed("serverConfig needs guid, section, key and value");
 
         var timeout = Mathf.Max(1f, step.Num("timeout", 20f));
-        var args = new Dictionary<string, object?> { ["guid"] = guid, ["section"] = section, ["key"] = key, ["value"] = value };
+        // "force" (default on): make the server's sync send the value even when the server already had it, so a client holding a local edit is reset
+        var args = new Dictionary<string, object?> { ["guid"] = guid, ["section"] = section, ["key"] = key, ["value"] = value, ["force"] = step.Bool("force", true) };
         var set = RunServer(new Dictionary<string, object?> { ["cmd"] = "config.set", ["args"] = args, ["timeout"] = timeout }, ctx);
         while (set.MoveNext())
             yield return set.Current;
@@ -93,7 +94,7 @@ internal static class RemotePeers
         while (Time.realtimeSinceStartup < deadline)
         {
             var entry = ModEnvironment.FindEntry(guid, section, key);
-            if (entry != null && string.Equals(entry.GetSerializedValue(), serverValue, StringComparison.OrdinalIgnoreCase))
+            if (entry != null && string.Equals(ModEnvironment.EffectiveValue(entry), serverValue, StringComparison.OrdinalIgnoreCase))
             {
                 p1 = Time.realtimeSinceStartup - started;
                 break;
@@ -104,7 +105,8 @@ internal static class RemotePeers
 
         if (p1 == null)
         {
-            var have = ModEnvironment.FindEntry(guid, section, key)?.GetSerializedValue() ?? "(no such setting on this client)";
+            var found = ModEnvironment.FindEntry(guid, section, key);
+            var have = found != null ? ModEnvironment.EffectiveValue(found) : "(no such setting on this client)";
             throw new StepFailed($"Player 1 still has '{have}' for [{section}] {key} {timeout:0} s after the server set '{serverValue}': the setting did not sync");
         }
 

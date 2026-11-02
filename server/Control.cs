@@ -36,6 +36,9 @@ internal static class Control
     public static void Register(ZRoutedRpc rpc)
     {
         rpc.Register<string, string, string>(Rpc, OnCtl);
+        // by now every mod has loaded, so the config sync copies they carry exist and can be traced
+        if (LabServerPlugin.Harmony_ != null)
+            SyncDebug.Install(LabServerPlugin.Harmony_);
         LabServerPlugin.Log?.LogInfo($"Server control {(LabConfig.ControlEnabled.Value ? "is ON" : "is off (Control.Enabled = false)")}: {Rpc}.");
     }
 
@@ -114,12 +117,24 @@ internal static class Control
 
             case "players": return (true, Players());
 
-            case "config.get": return (true, ConfigEntryOf(a).GetSerializedValue());
+            case "config.get": return (true, EffectiveValue(ConfigEntryOf(a)));
             case "config.set":
             {
                 var entry = ConfigEntryOf(a);
-                entry.SetSerializedValue(Str(a, "value"));
-                return (true, entry.GetSerializedValue());
+                var value = Str(a, "value");
+
+                // The sync only sends a setting when it CHANGES. "force": true makes sure every client gets the value even when the server
+                // already had it (a client may still hold an edit of its own): it first sets a different value, then the wanted one.
+                if (a.TryGetValue("force", out var f) && (f is true || string.Equals(Convert.ToString(f, CultureInfo.InvariantCulture), "true", StringComparison.OrdinalIgnoreCase))
+                    && string.Equals(EffectiveValue(entry), value, StringComparison.OrdinalIgnoreCase))
+                {
+                    var other = Alternate(entry, value);
+                    if (other != null)
+                        entry.SetSerializedValue(other);
+                }
+
+                entry.SetSerializedValue(value);
+                return (true, EffectiveValue(entry));
             }
 
             case "hook.call": return (true, CallHook(Str(a, "name"), a.TryGetValue("args", out var h) ? h as Dictionary<string, object?> : null));
@@ -186,6 +201,22 @@ internal static class Control
     }
 
     // ------------------------------------------------------------------ config
+
+    // the value in effect (BoxedValue): the config sync mods bundle makes GetSerializedValue() return the local value instead
+    private static string EffectiveValue(ConfigEntryBase entry) => TomlTypeConverter.ConvertToString(entry.BoxedValue, entry.SettingType);
+
+    // a value different from the given one, for a yes/no or a number setting; null for any other type
+    private static string? Alternate(ConfigEntryBase entry, string current)
+    {
+        var t = entry.SettingType;
+        if (t == typeof(bool))
+            return bool.TryParse(current, out var b) ? (!b).ToString().ToLowerInvariant() : null;
+        if (t == typeof(int) || t == typeof(long) || t == typeof(short))
+            return long.TryParse(current, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) ? (n + 1).ToString(CultureInfo.InvariantCulture) : null;
+        if (t == typeof(float) || t == typeof(double))
+            return double.TryParse(current, NumberStyles.Float, CultureInfo.InvariantCulture, out var d) ? (d + 1).ToString(CultureInfo.InvariantCulture) : null;
+        return null;
+    }
 
     private static ConfigEntryBase ConfigEntryOf(Dictionary<string, object?> a)
     {

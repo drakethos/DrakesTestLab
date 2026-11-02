@@ -19,6 +19,7 @@ public class LabServerPlugin : BaseUnityPlugin
 
     internal static ManualLogSource? Log { get; private set; }
     internal static LabServerPlugin? Instance { get; private set; }
+    internal static Harmony? Harmony_ { get; private set; }
 
     // used by the server.quit control command (through Invoke, so it runs after the answer is sent)
     private void QuitNow() => Application.Quit();
@@ -42,6 +43,9 @@ public class LabServerPlugin : BaseUnityPlugin
         LabWorld.Prepare(Info.Location);
 
         // Player 1 / Player 2 roles and the command relay between them (see Roles.cs).
-        new Harmony(GUID).PatchAll(typeof(LabServerPlugin).Assembly);
+        var harmony = new Harmony(GUID);
+        harmony.PatchAll(typeof(LabServerPlugin).Assembly);
+        // the other mods are loaded by now? Not yet: trace their config sync once the game has started (see Control.Register)
+        Harmony_ = harmony;
     }
 }
