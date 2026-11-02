@@ -376,6 +376,19 @@ internal static class RemotePeers
 
     // ------------------------------------------------------------------ Player 1: send a step to Player 2
 
+    /// <summary>If <paramref name="holder"/>[key] is one of Player 1's tags, replace it by the object's prefab name and
+    /// put the spot Player 1 has it at ("around") on the step, so Player 2 finds the same object.</summary>
+    private static void RewriteTag(Dictionary<string, object?> holder, string key, RunContext ctx, Dictionary<string, object?> step)
+    {
+        if (holder.TryGetValue(key, out var value) && value is string tag
+            && ctx.Tags.TryGetValue(tag, out var tagged) && tagged != null)
+        {
+            var at = tagged.transform.position;
+            holder[key] = Utils.GetPrefabName(tagged);
+            step["around"] = new List<object?> { at.x, at.y, at.z };
+        }
+    }
+
     /// <summary>Runs a step on Player 2: sends it through the server and waits for the answer.
     /// Fails the step when there is no answer or Player 2 reports a failure.</summary>
     public static IEnumerator RunRemote(Dictionary<string, object?> step, RunContext ctx)
@@ -398,14 +411,16 @@ internal static class RemotePeers
         // Player 2 has none of my tags: name the object by prefab and say where I have it ("around"), so its nearest
         // object of that prefab to that spot is the same one
         foreach (var key in new[] { "target", "to" })
+            RewriteTag(remote, key, ctx, remote);
+
+        // a hook step carries its object in "args" ({"do": "hook", "name": "...", "args": {"target": "chest"}}): same rewrite there,
+        // on a copy so Player 1's own step keeps its tag
+        if (remote.TryGetValue("args", out var rawArgs) && rawArgs is Dictionary<string, object?> hookArgs)
         {
-            if (remote.TryGetValue(key, out var value) && value is string tag
-                && ctx.Tags.TryGetValue(tag, out var tagged) && tagged != null)
-            {
-                var at = tagged.transform.position;
-                remote[key] = Utils.GetPrefabName(tagged);
-                remote["around"] = new List<object?> { at.x, at.y, at.z };
-            }
+            var argsCopy = new Dictionary<string, object?>(hookArgs, StringComparer.OrdinalIgnoreCase);
+            foreach (var key in new[] { "target", "to" })
+                RewriteTag(argsCopy, key, ctx, remote);
+            remote["args"] = argsCopy;
         }
 
         var json = JsonWriter.Write(remote);
