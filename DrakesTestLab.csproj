@@ -262,6 +262,7 @@
 
     <Compile Include="Automation\UitkDriver.cs" />
     <Compile Include="Automation\UiSteps.cs" />
+    <Compile Include="Automation\UiHover.cs" />
 
     <Compile Include="Automation\CommandLine.cs" />
 

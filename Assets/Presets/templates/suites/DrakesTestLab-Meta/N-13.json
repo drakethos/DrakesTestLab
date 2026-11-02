@@ -1,0 +1,9 @@
+{
+  "name": "N-13 uiHover fails when nothing on screen matches",
+  "description": "A hover on an icon that is not shown must fail the step with the reason, not pass silently.",
+  "steps": [
+    { "do": "uiHover", "icon": "AxeStone", "wait": 0.2 }
+  ],
+  "asserts": [],
+  "expectFailure": "nothing shown matches"
+}

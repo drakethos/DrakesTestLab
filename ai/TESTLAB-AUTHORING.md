@@ -162,6 +162,7 @@ owner check, `as(who, steps)`.
 | `hook` | `name`, `args`, `as`, `expect`/`contains`/`notContains`/`regex`, `label`, `stop` | Calls a test hook the mod exposes |
 | `check` | `check` + that check's fields, `label`, `stop`, `screenshot` | A check in the middle of the steps |
 | `interact` | `target`, `alt`, `hold` | Press E on an object; the game's answer becomes `lastResult` |
+| `uiHover` / `uiRelease` | `icon` (item prefab: the slot that draws its icon) or `text` or `name` or `x`,`y` / `fx`,`fy`; `until` (text to wait for; every match is tried in turn), `nth`, `where`, `wait` (default 1), `hold` (default true) | Rests the game's own virtual mouse on a piece of UI (no OS mouse, nobody at the PC) so tooltips and hover states open; `uiRelease` parks it |
 | `click` / `toggle` / `type` | `button` (+ optional `nth`) / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label. Rich text tags are ignored when matching. `nth` (0 = first) picks one of several UI Toolkit elements with the same label (an up arrow on every row). A disabled button fails the step, like a player could not click it |
 | `pressKey` | `button` (Use, Inventory, Jump...) or `key`, `frames` | Fake key press the game reads as real |
 | `teleport`, `face`, `wait` | position or `target` (teleport: `yaw` to face a way); `seconds` or `until` + `timeout` | Movement and timing |
@@ -175,7 +176,7 @@ owner check, `as(who, steps)`.
 ### Checks
 
 `hasItem` (prefab, count, quality, data, crafter: `me`/`Alice`/`none`), `noItem`, `equipped`, `globalKey`, `objectNear`, `owner` (piece creator), `zdo`,
-`uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
+`screenText` (every text the UI shows right now, TextMeshPro / Text / UI Toolkit, rich text removed; `contains`, `notContains`, `regex`, `under` = only objects whose path contains it; read a tooltip after `uiHover`), `uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
 `hoverText`, `containerHas`, `logContains`, `noErrors` (`source`), `config`, `skill`, `stat`, `position`, `guardianPower`,
 `wardAccess`, `lastResult`, `hook`, `peerReceived`, `peerConnected`, `zdoOwner`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,
 `notContains`, `regex` (the whole answer matches a pattern), `min`, `max`.
