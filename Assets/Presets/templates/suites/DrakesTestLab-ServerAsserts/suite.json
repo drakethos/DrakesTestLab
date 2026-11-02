@@ -3,7 +3,7 @@
 {
   "name": "DrakesTestLab-ServerAsserts",
   "description": "The server's own view (peers, ZDOs, owners, RPC traffic) checked against what Player 1 and Player 2 see.",
-  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.1" } ],
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" } ],
   // the server owns the world: never reset or reload it between tests
   "resetBetweenTests": false
 }

@@ -3,7 +3,7 @@
 {
   "name": "DrakesTestLab-Server",
   "description": "Player 1 controls the dedicated server: admin list, whitelist, blacklist, a mod's settings, and who may do it.",
-  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.1" } ],
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" } ],
   // the server owns the world: never reset or reload it between tests
   "resetBetweenTests": false
 }

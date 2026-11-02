@@ -1,5 +1,19 @@
 # DrakesTestLab
 
+## 0.4.2
+
+Server control, server queries and three-way asserts. Everything here needs DrakesTestLabServer 0.1.1 with `[Control] Enabled = true` in its config.
+
+- **New step `server`.** Player 1 sends a command to the dedicated server: `admin.add/remove/list/is`, `permit.*` (whitelist), `ban.*` (blacklist), `kick`, `players`, `config.get/set` (any BepInEx setting, with an optional `"force": true` that flips the value first so a setting set to its current value still syncs), `hook.call/list` (test hooks of mods on the server) and `server.quit`. `"who": "me"` means Player 1. Only Player 1 may control the server; Player 2 is refused.
+- **New step `serverConfig`.** Sets a setting on the server and waits until Player 1 (and Player 2) report the new value, saying how long each took. A setting that never arrives fails the step with the value each client still has.
+- **New step `agree`.** Reads one value from Player 1, the server and Player 2 and requires them to match (`"expect"` or `"equal": true`). Reads: `config`, a server query (`"cmd"`), or a hook.
+- **`read` step** gets `config`, `count` and `owner` reads, as seen by that client.
+- **Server queries:** `server.info`, `sync.info`, `znet.count/peers/peer`, `world.zdocount/time`, `zdo.count/owner/describe/value`, `rpc.count/last/reset`.
+- **`setconfig` with `"asPlayer": true`** changes the value a player's client actually uses (the value the server last sent) instead of its own local value.
+- **Config checks read the effective value** (what the mod really uses), not the local file value; `"local": true` reads the file value.
+- Test suites `DrakesTestLab-Server`, `-ServerAsserts` and `-ConfigSync` need 0.4.2. Verified with two real clients on a dedicated server: all pass.
+- Known: Jotunn "admin only" settings (for example DrakesServerTeams) are sent when a client connects or its admin status changes, not when the server later changes the value. The server still enforces them. ServerSync settings (LockSmith, Renameit) sync live.
+
 ## 0.4.1
 
 - **Fixed: a failed check on Player 2 was reported as a pass.** A `check` step, or a `hook` step with `expect`, records a soft assertion. On Player 2 each command runs in its own context that nothing read, so a failed check there came back to Player 1 as "ok". A failed check on Player 2 now fails the command, and Player 1's step shows the reason. If you wrote tests with `"on": "player2"` on 0.4.0, run them again: checks that ran on Player 2 may have passed when they should not have.

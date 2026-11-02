@@ -8,7 +8,7 @@
     <AssemblyName>DrakesTestLabServer</AssemblyName>
     <RootNamespace>DrakesTestLabServer</RootNamespace>
     <!-- Server releases are tagged server-vX.Y.Z; CI passes /p:Version and stamps manifest.json with it. -->
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DebugType>none</DebugType>
     <PackageName>DrakeMods-DrakesTestLabServer</PackageName>

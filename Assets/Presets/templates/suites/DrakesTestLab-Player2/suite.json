@@ -1,7 +1,7 @@
 {
   "name": "DrakesTestLab-Player2",
   "description": "The real second client: needs server connect mode with this game as Player 1 and a second lab client as Player 2 on the same dedicated server (DrakesTestLabServer). Steps marked \"on\": \"player2\" run on the second client.",
-  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.1" } ],
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" } ],
   "setup": { "god": 1 },
   // the server owns the world: never reset or reload it between tests
   "resetBetweenTests": false

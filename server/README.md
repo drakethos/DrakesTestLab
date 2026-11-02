@@ -135,3 +135,7 @@ The replaced world is moved to the backup folder, never deleted outright (unless
 ## Version
 
 See the [changelog](CHANGELOG.md) and the [design notes](https://github.com/drakethos/DrakesTestLab/blob/main/docs/MULTIPLAYER.md).
+
+## Control and queries
+
+Set `[Control] Enabled = true` to let Player 1 run commands on the server from a test case (`"do": "server"`, `"do": "serverConfig"`, `"do": "agree"`): change the admin, whitelist and blacklist, kick, read and change any BepInEx setting, call other server mods' test hooks, restart the server. `[Control] Queries` (default on) lets the lab read ZNet, ZDO and RPC information. Only Player 1 may use either. Details: `docs/MULTIPLAYER.md` in DrakesTestLab (0.4.2+).

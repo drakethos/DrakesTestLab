@@ -5,7 +5,7 @@
   "name": "DrakesTestLab-ConfigSync",
   "description": "Change synced settings on the server and prove both clients get them; a client cannot keep its own value.",
   "requireMods": [
-    { "guid": "com.drakemods.testlab", "minVersion": "0.4.1" },
+    { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" },
     { "guid": "com.drakemods.locksmith", "minVersion": "0.6.3" },
     { "guid": "com.drakemods.serverteams", "minVersion": "0.0.1" }
   ],

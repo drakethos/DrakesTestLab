@@ -1,6 +1,6 @@
 {
     "name": "DrakesTestLabServer",
-    "version_number": "0.1.0",
+    "version_number": "0.1.1",
     "author": "DrakeMods",
     "description": "SERVER ONLY. Server half of DrakesTestLab: a fresh lab world on every start, plus Player 1 / Player 2 roles and a command relay so mods can be tested with two real players. Install on the dedicated server, not on clients.",
     "website_url": "https://github.com/drakethos/DrakesTestLab",

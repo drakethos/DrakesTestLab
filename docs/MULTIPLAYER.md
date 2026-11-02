@@ -86,3 +86,19 @@ a second account. Start the server (`docker compose up -d` in the server folder)
   server-mode difference. First suspect: the chest is created in the server's world and Player 1 does not get ownership
   of it in time to open it. Check chest ZDO ownership and latency before changing the test.
 - Hexium store listing for the server mod: category names and first-upload steps are unverified.
+
+## Server control, queries and three-way asserts (0.4.2)
+
+With `[Control] Enabled = true` in DrakesTestLabServer's config, Player 1 can change the server's conditions during a test and ask the server what it sees.
+
+```json
+{ "do": "server", "cmd": "admin.add", "args": { "who": "me" } }
+{ "do": "server", "cmd": "config.set", "args": { "guid": "com.drakemods.serverteams", "section": "1 Assignment", "key": "AssignmentMode", "value": "AdminOnly", "force": true } }
+{ "do": "serverConfig", "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests", "value": "false" }
+{ "do": "agree", "timeout": 15, "expect": "false", "equal": true, "label": "same everywhere", "reads": [
+  { "party": "player1", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+  { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+  { "party": "player2", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } } ] }
+```
+
+Commands: `admin.*`, `permit.*`, `ban.*` (`add`, `remove`, `list`, `is`/`clear`), `kick`, `players`, `config.get/set`, `hook.call/list`, `server.quit`. Queries: `server.info`, `sync.info`, `znet.count/peers/peer`, `world.zdocount/time`, `zdo.count/owner/describe/value`, `rpc.count/last/reset`. Always end a suite with a cleanup test that removes the admin right and restores settings. Ready-made suites: `DrakesTestLab-Server`, `-ServerAsserts`, `-ConfigSync`.
