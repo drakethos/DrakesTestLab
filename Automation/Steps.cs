@@ -27,7 +27,7 @@ internal static class StepNames
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
         "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
-        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping"
+        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
     };
 }
 
@@ -279,6 +279,45 @@ internal static class Steps
         {
             // run here it does nothing; with "on": "player2" it checks that Player 2 is connected and names it
             case "ping": ctx.Log("ping"); return null;
+            // ask the dedicated server to change a condition (server connect mode, Player 1; needs Control.Enabled on the server)
+            case "server": return RemotePeers.RunServer(step, ctx);
+            // change a mod's setting on the server and wait until both clients have it (reports the sync time of each)
+            case "serverconfig": return RemotePeers.RunServerConfig(step, ctx);
+            // a three-way assert: read Player 1, the server and Player 2 and require them to agree (or match "expect")
+            case "agree": return RemotePeers.RunAgree(step, ctx);
+            // read a value into the step's result (used by agree on Player 2): { "config": { "guid", "section", "key" } }
+            case "read":
+            {
+                // config: this client's copy of a setting. count: how many of a prefab this client has within radius of its player.
+                // owner: the name of the player who owns the nearest one (as this client sees it), "none", or "server".
+                var cfg = step.Obj("config");
+                if (cfg != null)
+                {
+                    var entry = ModEnvironment.FindEntry(cfg.Str("guid"), cfg.Str("section"), cfg.Str("key"))
+                                ?? throw new StepFailed($"no setting [{cfg.Str("section")}] {cfg.Str("key")} of {cfg.Str("guid")} on this client");
+                    ctx.LastResult = entry.GetSerializedValue();
+                    return null;
+                }
+
+                var count = step.Obj("count");
+                if (count != null)
+                {
+                    var around = ctx.AroundHint ?? P.transform.position;
+                    ctx.LastResult = Targets.Count(count.Str("prefab"), around, count.Num("radius", 10f));
+                    return null;
+                }
+
+                var own = step.Obj("owner");
+                if (own != null)
+                {
+                    var go = Targets.Find(ctx, own.Str("prefab"), own.Num("radius", 10f)) ?? throw new StepFailed($"no '{own.Str("prefab")}' within {own.Num("radius", 10f):0} m of this client");
+                    var zdo = (go.GetComponentInParent<ZNetView>() ?? go.GetComponentInChildren<ZNetView>())?.GetZDO() ?? throw new StepFailed("that object has no ZDO");
+                    ctx.LastResult = OwnerName(zdo.GetOwner());
+                    return null;
+                }
+
+                throw new StepFailed("read needs \"config\", \"count\" or \"owner\"");
+            }
             case "teleport": return Teleport(step, ctx);
             case "face": Face(step, ctx); return null;
             case "wait": return Wait(step, ctx);
@@ -546,6 +585,20 @@ internal static class Steps
     private static readonly MethodInfo? SetLookDir = AccessTools.Method(typeof(Character), "SetLookDir");
 
     /// <summary>Point the view (camera pitch included) along <paramref name="dir"/>.</summary>
+    /// <summary>The name of the player who owns a ZDO, as this client can tell: "none" (0), "server" (the server's session), the name of a
+    /// connected player (their character's ZDO carries their peer id), else the raw id.</summary>
+    private static string OwnerName(long owner)
+    {
+        if (owner == 0L)
+            return "none";
+        foreach (var info in ZNet.instance.GetPlayerList())
+            if (info.m_characterID.UserID == owner)
+                return info.m_name;
+        if (Player.m_localPlayer != null && Player.m_localPlayer.GetZDOID().UserID == owner)
+            return Player.m_localPlayer.GetPlayerName();
+        return owner == ZDOMan.GetSessionID() ? "this client" : "server";
+    }
+
     internal static void SetLook(Player p, Vector3 dir)
     {
         if (SetLookDir == null)

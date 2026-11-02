@@ -1,0 +1,17 @@
+{
+  "name": "C-02 a number setting set on the server reaches both clients",
+  "description": "DrakesServerTeams TeamGlowRange is set to 5 then back to 3.5 on the server; all three agree each time.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "serverConfig", "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange", "value": "5" },
+    { "do": "agree", "timeout": 15, "expect": "5", "equal": true, "label": "TeamGlowRange is 5 everywhere", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } },
+      { "party": "player2", "config": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } } ] },
+    { "do": "serverConfig", "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange", "value": "3.5" },
+    { "do": "agree", "timeout": 15, "expect": "3.5", "equal": true, "label": "and back to 3.5 everywhere", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } },
+      { "party": "player2", "config": { "guid": "com.drakemods.serverteams", "section": "4 Visuals", "key": "TeamGlowRange" } } ] }
+  ]
+}

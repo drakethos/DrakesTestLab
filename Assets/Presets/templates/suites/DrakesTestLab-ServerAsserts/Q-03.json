@@ -1,0 +1,15 @@
+{
+  "name": "Q-03 a new object is seen the same by Player 1, the server and Player 2",
+  "description": "Player 1 builds a chest. Player 1, the server and Player 2 each count the chests near it: at least one, and the three counts agree.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "owner": "me", "as": "chest" },
+    { "do": "wait", "seconds": 3 },
+    { "do": "teleport", "on": "player2", "to": "chest", "distance": 2 },
+    { "do": "wait", "seconds": 2 },
+    { "do": "agree", "timeout": 20, "min": 1, "equal": true, "label": "the chest is seen by all three", "reads": [
+      { "party": "player1", "count": { "prefab": "piece_chest_wood", "radius": 8 } },
+      { "party": "server", "cmd": "zdo.count", "args": { "prefab": "piece_chest_wood", "near": "me", "radius": 8 } },
+      { "party": "player2", "count": { "prefab": "piece_chest_wood", "radius": 8 } } ] }
+  ]
+}

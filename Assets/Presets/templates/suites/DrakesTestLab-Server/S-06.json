@@ -1,0 +1,9 @@
+{
+  "name": "S-06 only Player 1 controls the server",
+  "description": "Player 2 is told to run a server step: it is refused, because only Player 1 may control the server.",
+  "expectFailure": "only Player1 controls the server",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "server", "on": "player2", "cmd": "admin.add", "args": { "who": "me" } }
+  ]
+}

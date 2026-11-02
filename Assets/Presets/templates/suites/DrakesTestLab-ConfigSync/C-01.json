@@ -1,0 +1,17 @@
+{
+  "name": "C-01 a yes/no setting set on the server reaches both clients",
+  "description": "LockSmith EnableChests is set to false then true on the server. Each time Player 1, the server and Player 2 all report the new value, and the step says how long each client took.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "serverConfig", "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests", "value": "false" },
+    { "do": "agree", "timeout": 15, "expect": "false", "equal": true, "label": "EnableChests is false everywhere", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "player2", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } } ] },
+    { "do": "serverConfig", "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests", "value": "true" },
+    { "do": "agree", "timeout": 15, "expect": "true", "equal": true, "label": "and true again everywhere", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "player2", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } } ] }
+  ]
+}

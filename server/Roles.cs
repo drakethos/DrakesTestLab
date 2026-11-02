@@ -40,6 +40,13 @@ internal static class Roles
     private static bool Holds(string role, long id) =>
         Holders.TryGetValue(role, out var holder) && holder == id && Connected(holder);
 
+    /// <summary>True when this peer is the connected client that holds the Player1 role.</summary>
+    public static bool IsPlayer1(long id) => Holds(Player1, id);
+
+    /// <summary>" Player1" / " Player2" for a peer that holds a role, else an empty string (for the player list).</summary>
+    public static string RoleOf(long id) =>
+        Holds(Player1, id) ? " " + Player1 : Holds(Player2, id) ? " " + Player2 : "";
+
     private static void Tell(long peer, string role, string message) =>
         ZRoutedRpc.instance.InvokeRoutedRPC(peer, "DTL_Role", role, message);
 
@@ -117,7 +124,11 @@ internal static class ZNet_Awake_Roles_Patch
     // the routed RPC is created in ZNet.Awake, so the handlers can only be registered after it
     private static void Postfix(ZNet __instance)
     {
-        if (__instance.IsServer())
-            Roles.Register();
+        if (!__instance.IsServer())
+            return;
+
+        Roles.Register();
+        if (ZRoutedRpc.instance != null)
+            Control.Register(ZRoutedRpc.instance);
     }
 }

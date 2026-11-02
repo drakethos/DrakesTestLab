@@ -19,6 +19,8 @@ internal static class LabConfig
     public static ConfigEntry<WorldMode> Mode { get; private set; } = null!;
     public static ConfigEntry<string> WorldName { get; private set; } = null!;
     public static ConfigEntry<int> KeepBackups { get; private set; } = null!;
+    public static ConfigEntry<bool> ControlEnabled { get; private set; } = null!;
+    public static ConfigEntry<bool> QueriesEnabled { get; private set; } = null!;
 
     public static void Bind(ConfigFile config)
     {
@@ -28,5 +30,9 @@ internal static class LabConfig
             "World to replace. Empty = the server's own -world name.");
         KeepBackups = config.Bind("World", "KeepBackups", 3,
             "How many replaced worlds to keep (in testlab_world_backups next to the save folders). 0 = keep none.");
+        QueriesEnabled = config.Bind("Control", "Queries", true,
+            "Let the client that holds the Player1 role ask the server what it sees: the connected players, the ZDOs in the world (count, owner, stored values) and the routed RPC traffic. Read-only. A test can compare the answer with what Player 1 and Player 2 report.");
+        ControlEnabled = config.Bind("Control", "Enabled", false,
+            "Let the client that holds the Player1 role change the server from a test: the admin list, whitelist and blacklist, kicks, a mod's settings, a mod's own reset hooks, and a restart. OFF by default: on, the first lab client to claim Player1 (anyone who can join) can make itself an admin. Turn it on only on a test server.");
     }
 }

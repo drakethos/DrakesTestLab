@@ -1,0 +1,13 @@
+// Server settings and server sync: change a setting on the server (a mod's synced setting) and require Player 1, the server and Player 2 to
+// agree on it. Needs server connect mode as Player 1 with Player 2 connected, Control.Enabled = true on the server, and LockSmith and
+// DrakesServerTeams installed everywhere. Hand-written.
+{
+  "name": "DrakesTestLab-ConfigSync",
+  "description": "Change synced settings on the server and prove both clients get them; a client cannot keep its own value.",
+  "requireMods": [
+    { "guid": "com.drakemods.testlab", "minVersion": "0.4.1" },
+    { "guid": "com.drakemods.locksmith", "minVersion": "0.6.3" },
+    { "guid": "com.drakemods.serverteams", "minVersion": "0.0.1" }
+  ],
+  "resetBetweenTests": false
+}

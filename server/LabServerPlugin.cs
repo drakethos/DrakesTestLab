@@ -18,10 +18,15 @@ public class LabServerPlugin : BaseUnityPlugin
     public const string Version = "0.1.0";
 
     internal static ManualLogSource? Log { get; private set; }
+    internal static LabServerPlugin? Instance { get; private set; }
+
+    // used by the server.quit control command (through Invoke, so it runs after the answer is sent)
+    private void QuitNow() => Application.Quit();
 
     private void Awake()
     {
         Log = Logger;
+        Instance = this;
 
         // batchmode = the dedicated server. Anything else is a client that should never run this.
         if (!Application.isBatchMode)

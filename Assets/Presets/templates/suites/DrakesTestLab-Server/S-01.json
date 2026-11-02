@@ -1,0 +1,13 @@
+{
+  "name": "S-01 the player list and the admin list",
+  "description": "The server lists both players with their roles. Player 1 makes itself an admin, the server says so, and Player 1 takes it back.",
+  "steps": [
+    { "do": "server", "cmd": "players", "contains": "Player1", "label": "the server lists Player 1 with its role" },
+    { "do": "server", "cmd": "admin.remove", "args": { "who": "me" } },
+    { "do": "server", "cmd": "admin.is", "args": { "who": "me" }, "expect": "False", "label": "Player 1 starts as no admin" },
+    { "do": "server", "cmd": "admin.add", "args": { "who": "me" }, "contains": "added" },
+    { "do": "server", "cmd": "admin.is", "args": { "who": "me" }, "expect": "True", "label": "now an admin" },
+    { "do": "server", "cmd": "admin.remove", "args": { "who": "me" }, "contains": "removed" },
+    { "do": "server", "cmd": "admin.is", "args": { "who": "me" }, "expect": "False", "label": "no longer an admin" }
+  ]
+}

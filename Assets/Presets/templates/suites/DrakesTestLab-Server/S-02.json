@@ -1,0 +1,12 @@
+{
+  "name": "S-02 the whitelist (permitted list)",
+  "description": "An id is added to the permitted list and removed again. The list is cleared first and last: a non-empty permitted list keeps everyone else out.",
+  "steps": [
+    { "do": "server", "cmd": "permit.clear" },
+    { "do": "server", "cmd": "permit.add", "args": { "who": "Steam_76561198000000001" }, "contains": "added" },
+    { "do": "server", "cmd": "permit.list", "contains": "Steam_76561198000000001", "label": "the id is on the whitelist" },
+    { "do": "server", "cmd": "permit.remove", "args": { "who": "Steam_76561198000000001" } },
+    { "do": "server", "cmd": "permit.list", "notContains": "Steam_76561198000000001", "label": "and gone again" },
+    { "do": "server", "cmd": "permit.clear" }
+  ]
+}
