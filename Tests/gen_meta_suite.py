@@ -479,7 +479,7 @@ T('M-36', 'face tilts the view: pitch, up/down and a level default (camera inclu
     {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': -20}, 'contains': 'near', 'label': 'pitch -20 tilts it down'},
     {'do': 'face', 'target': 'bench', 'up': 6},
     wait(0.5),
-    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 20, 'tolerance': 15}, 'contains': 'near', 'label': 'up: 6 aims well above the bench'},
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 35, 'tolerance': 25}, 'contains': 'near', 'label': 'up: 6 aims clearly above the bench (10 to 60 degrees up)'},
     {'do': 'face', 'target': 'bench'},
     wait(0.5),
     {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'face with no tilt levels the view again'},

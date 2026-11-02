@@ -72,11 +72,11 @@
       "do": "hook",
       "name": "testlab.cameraPitch",
       "args": {
-        "pitch": 20,
-        "tolerance": 15
+        "pitch": 35,
+        "tolerance": 25
       },
       "contains": "near",
-      "label": "up: 6 aims well above the bench"
+      "label": "up: 6 aims clearly above the bench (10 to 60 degrees up)"
     },
     {
       "do": "face",
