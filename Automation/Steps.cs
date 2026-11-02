@@ -239,24 +239,35 @@ internal static class Steps
         ctx.Spawned.RemoveAll(go => go == null);
         foreach (var (tag, prefab, pos, spawned) in marks)
         {
+            // the world's objects appear over a few frames after the player is in: look for up to 8 s before calling it gone
             GameObject? best = null;
-            var bestD = 1.5f;
-            foreach (var v in Targets.AllViews())
+            var nearest = float.MaxValue;
+            var lookUntil = Time.realtimeSinceStartup + 8f;
+            while (true)
             {
-                if (!Utils.GetPrefabName(v.gameObject).Equals(prefab, StringComparison.OrdinalIgnoreCase))
-                    continue;
-                var d = Vector3.Distance(v.transform.position, pos);
-                if (d < bestD)
+                var bestD = 1.5f;
+                foreach (var v in Targets.AllViews())
                 {
-                    best = v.gameObject;
-                    bestD = d;
+                    if (!Utils.GetPrefabName(v.gameObject).Equals(prefab, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    var d = Vector3.Distance(v.transform.position, pos);
+                    nearest = Mathf.Min(nearest, d);
+                    if (d < bestD)
+                    {
+                        best = v.gameObject;
+                        bestD = d;
+                    }
                 }
+
+                if (best != null || Time.realtimeSinceStartup > lookUntil || ctx.TimedOut)
+                    break;
+                yield return null;
             }
 
             if (best == null)
             {
                 ctx.Tags.Remove(tag);
-                ctx.Log($"  '{tag}' ({prefab}) is gone after the relog");
+                ctx.Log($"  '{tag}' ({prefab}) is gone after the relog (it stood at {pos.x:0.0}, {pos.y:0.0}, {pos.z:0.0}; the nearest {prefab} now is {(nearest < float.MaxValue ? nearest.ToString("0.0") + " m away" : "none loaded")})");
                 continue;
             }
 
