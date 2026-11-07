@@ -40,6 +40,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> RunOnLaunch { get; private set; } = null!;
     public ConfigEntry<bool> QuitWhenDone { get; private set; } = null!;
     public ConfigEntry<float> StepDelay { get; private set; } = null!;
+    public ConfigEntry<bool> CountObjects { get; private set; } = null!;
     public ConfigEntry<string> Screenshots { get; private set; } = null!;
     public ConfigEntry<int> KeepRuns { get; private set; } = null!;
     public ConfigEntry<string> Player2 { get; private set; } = null!;
@@ -148,6 +149,7 @@ internal sealed class TestLabConfig
             "Run automated test suites by themselves once the world is ready: empty = off, all = every suite, or suite folder names separated by commas.");
         c.QuitWhenDone = config.Bind("Automation", "QuitWhenDone", true,
             "After a RunOnLaunch run, quit the game with exit code 0 (all passed) or 1 (something failed). Results are in config/DrakesTestLab/results.");
+        c.CountObjects = config.Bind("Automation", "CountObjects", false, "Count every Unity object before and after each test, to report which types grew (leak hunting). Costs about a second per test, so it is off by default; turn on to hunt a leak. Early tests also see the world still streaming in.");
         c.StepDelay = config.Bind("Automation", "StepDelay", 0.25f, "Pause in seconds between test steps (0 = as fast as possible; raise it to watch).");
         c.Screenshots = config.Bind("Automation", "Screenshots", "Failures",
             new ConfigDescription("Screenshots saved with the results: Off, Failures (a test that failed), or Always (proof of every test's end state).",

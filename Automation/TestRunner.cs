@@ -8,6 +8,7 @@ using System.Text;
 using DrakesTestLab.Bootstrap;
 using DrakesTestLab.Cases;
 using DrakesTestLab.UI.Toolbox;
+using DrakesTestLab.Util;
 using UnityEngine;
 
 namespace DrakesTestLab.Automation;
@@ -37,6 +38,11 @@ internal static class TestRunner
     /// <summary>Folder for this run's screenshots: results/run-&lt;stamp&gt;.</summary>
     public static string RunFolder { get; private set; } = "";
     private static string _runStamp = "";
+
+    /// <summary>Wall-clock start of the run, the realtime clock then (= seconds since the game started), and how long the world took to be ready.</summary>
+    public static DateTime RunStartedAt { get; private set; }
+    public static float RunStartRealtime { get; private set; }
+    public static float RunWorldReadySeconds { get; private set; }
 
     /// <summary>Every test the current run will do, so results written mid-run (or on quit) can list the rest.</summary>
     private static List<(string Suite, string Test)> _planned = new();
@@ -80,6 +86,30 @@ internal static class TestRunner
             return (Mathf.Abs(actual - want) <= tol ? "near " : "off ") + actual.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
         }, "DrakesTestLab");
         TestHooks.Register("testlab.inventoryCount", _ => Player.m_localPlayer != null ? Player.m_localPlayer.GetInventory().NrOfItems() : -1, "DrakesTestLab");
+
+        // timing, for the meta suite: are the running test's log lines stamped, were its finished steps timed,
+        // did the run record its start, and did the mod load timer see the mods (all of them with the preload patcher)
+        TestHooks.Register("testlab.logStamped", _ => _current != null && _current.StepLog.Count > 0 && _current.StepLog.TrueForAll(l => l.StartsWith("[+", StringComparison.Ordinal)), "DrakesTestLab");
+        TestHooks.Register("testlab.stepsTimed", _ => _current != null ? _current.StepTimes.Count : -1, "DrakesTestLab");
+        TestHooks.Register("testlab.runTimed", _ => RunStartedAt != default && _current != null && _current.StartedAt >= RunStartedAt && _current.StartRealtime > 0f, "DrakesTestLab");
+        TestHooks.Register("testlab.framesSampled", _ => _current != null ? FrameProfiler.Count - _current.FrameMark : -1, "DrakesTestLab");
+        TestHooks.Register("testlab.frameAvgFps", _ => _current != null ? FrameProfiler.Compute(_current.FrameMark, FrameProfiler.Count).AvgFps : -1f, "DrakesTestLab");
+        TestHooks.Register("testlab.stepFramesRecorded", _ => _current != null && _current.StepFrames.Count > 0 && _current.StepFrames[0].Frames > 0, "DrakesTestLab");
+        TestHooks.Register("testlab.memorySampled", _ => _current != null ? MemoryProfiler.Count - _current.FrameMark : -1, "DrakesTestLab");
+        TestHooks.Register("testlab.heapMb", _ => MemoryProfiler.CurrentMonoMb, "DrakesTestLab");
+        TestHooks.Register("testlab.totalMb", _ => MemoryProfiler.CurrentTotalMb, "DrakesTestLab");
+        TestHooks.Register("testlab.stepMemoryRecorded", _ => _current != null && _current.StepMem.Count > 0 && _current.StepMem[0].Valid, "DrakesTestLab");
+        TestHooks.Register("testlab.objectCount", _ => ObjectCensus.Take().Total, "DrakesTestLab");
+        TestHooks.Register("testlab.modLoadCount", _ => { ModLoadTimer.Close(); return ModLoadTimer.All.Count; }, "DrakesTestLab");
+        TestHooks.Register("testlab.modLoadSane", _ =>
+        {
+            ModLoadTimer.Close();
+            foreach (var m in ModLoadTimer.All)
+                if (m.Seconds < 0f || m.Seconds > 600f)
+                    return false;
+            // with the patcher every mod is listed, DrakesTestLab itself included
+            return !ModLoadTimer.FromPatcher || ModLoadTimer.All.Any(m => m.Guid == TestLabPlugin.GUID);
+        }, "DrakesTestLab");
 
         // the lab's own features, for its meta suite: save the current game as a case (name, radius), the recorder, the toolbox
         TestHooks.Register("testlab.saveCase", args =>
@@ -391,6 +421,9 @@ internal static class TestRunner
         }
 
         _runStamp = DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
+        RunStartedAt = DateTime.Now;
+        RunStartRealtime = Time.realtimeSinceStartup;
+        RunWorldReadySeconds = 0f;
         RunFolder = Path.Combine(SuiteLoader.ResultsFolder, "run-" + _runStamp);
         PruneOldRuns();
         Status = "Waiting for the world to be ready...";
@@ -410,6 +443,9 @@ internal static class TestRunner
             waited += Time.unscaledDeltaTime;
             yield return null;
         }
+
+        RunWorldReadySeconds = Time.realtimeSinceStartup - RunStartRealtime;
+        ModLoadTimer.Close();
 
         foreach (var name in _missing)
             Record(new TestResult { Suite = name, Test = "(suite)", Status = TestStatus.Failed, Reason = $"suite '{name}' was requested but is not in {SuiteLoader.Folder}" });
@@ -491,6 +527,12 @@ internal static class TestRunner
             Unattended = unattended
         };
         var started = Time.realtimeSinceStartup;
+        result.StartedAt = DateTime.Now;
+        result.StartRealtime = started;
+        // the census takes a noticeable moment: do it before the frame mark so it is not counted as a hitch of the test
+        if (TestLabConfig.Instance.CountObjects.Value)
+            result.CensusBefore = ObjectCensus.Take();
+        result.FrameMark = FrameProfiler.Mark();
         Status = $"{suite.Name} / {test.Name}: setting up";
 
         if (suite.ResetBetweenTests)
@@ -506,6 +548,7 @@ internal static class TestRunner
         if (test.Setup != null)
             yield return CaseRunner.ApplyCase(test.Setup, test.Name + " setup", quick: true);
 
+        result.SetupSeconds = Time.realtimeSinceStartup - started;
         string failure = "";
         var delay = TestLabConfig.Instance.StepDelay.Value;
         ModEnvironment.TestScope = true;
@@ -526,6 +569,8 @@ internal static class TestRunner
             }
 
             ctx.Log(label);
+            var stepStart = Time.realtimeSinceStartup;
+            var stepFrameMark = FrameProfiler.Mark();
             IEnumerator? routine = null;
             try
             {
@@ -566,6 +611,11 @@ internal static class TestRunner
                     yield return routine.Current;
                 }
             }
+
+            // the step's own time, before the configured delay between steps
+            result.StepTimes.Add((label, Time.realtimeSinceStartup - stepStart));
+            result.StepFrames.Add(FrameProfiler.Compute(stepFrameMark, FrameProfiler.Mark()));
+            result.StepMem.Add(MemoryProfiler.Compute(stepFrameMark, FrameProfiler.Mark()));
 
             if (failure.Length == 0 && delay > 0f)
                 yield return new WaitForSecondsRealtime(delay);
@@ -617,6 +667,11 @@ internal static class TestRunner
         LanguageSwitch.Restore();
 
         result.Seconds = Time.realtimeSinceStartup - started;
+        result.EndedAt = DateTime.Now;
+        result.Frames = FrameProfiler.Compute(result.FrameMark, FrameProfiler.Mark());
+        result.Mem = MemoryProfiler.Compute(result.FrameMark, FrameProfiler.Mark());
+        if (result.CensusBefore != null)
+            result.CensusAfter = ObjectCensus.Take();
         Record(result);
         TestLabPlugin.Log?.LogInfo($"Test {suite.Name}/{test.Name}: {result.Status}{(result.Reason.Length > 0 ? " - " + result.Reason : "")}");
     }
@@ -756,6 +811,15 @@ internal static class TestRunner
         sb.Append($"  \"complete\": {(complete ? "true" : "false")},\n");
         sb.Append($"  \"planned\": {_planned.Count},\n");
         sb.Append($"  \"finished\": \"{DateTime.Now:yyyy-MM-dd HH:mm:ss}\",\n");
+        var inv = CultureInfo.InvariantCulture;
+        var runTotal = RunStartedAt == default ? 0f : (float)(DateTime.Now - RunStartedAt).TotalSeconds;
+        sb.Append($"  \"started\": \"{RunStartedAt:yyyy-MM-dd HH:mm:ss}\",\n");
+        sb.Append($"  \"totalSeconds\": {runTotal.ToString("0.0", inv)},\n");
+        sb.Append($"  \"gameStartToRunSeconds\": {RunStartRealtime.ToString("0.0", inv)},\n");
+        sb.Append($"  \"worldReadySeconds\": {RunWorldReadySeconds.ToString("0.0", inv)},\n");
+        sb.Append($"  \"memoryNowMb\": {{ \"mono\": {MemoryProfiler.CurrentMonoMb.ToString("0.0", inv)}, \"total\": {MemoryProfiler.CurrentTotalMb.ToString("0.0", inv)}, \"reserved\": {MemoryProfiler.CurrentReservedMb.ToString("0.0", inv)} }},\n");
+        sb.Append($"  \"modLoadBeforeSeconds\": {ModLoadTimer.BeforeSeconds.ToString("0.00", inv)},\n");
+        sb.Append($"  \"modLoad\": {ModLoadTimer.ToJson(Esc)},\n");
         sb.Append($"  \"passed\": {passed},\n  \"failed\": {failed},\n  \"skipped\": {skipped},\n");
         sb.Append("  \"tests\": [\n");
         for (var i = 0; i < LastRun.Count; i++)
@@ -764,6 +828,24 @@ internal static class TestRunner
             sb.Append("    {\n");
             sb.Append($"      \"suite\": \"{Esc(r.Suite)}\",\n      \"test\": \"{Esc(r.Test)}\",\n");
             sb.Append($"      \"status\": \"{r.Status}\",\n      \"seconds\": {r.Seconds.ToString("0.00", CultureInfo.InvariantCulture)},\n");
+            sb.Append($"      \"started\": \"{(r.StartedAt == default ? "" : r.StartedAt.ToString("HH:mm:ss", CultureInfo.InvariantCulture))}\",\n");
+            sb.Append($"      \"ended\": \"{(r.EndedAt == default ? "" : r.EndedAt.ToString("HH:mm:ss", CultureInfo.InvariantCulture))}\",\n");
+            sb.Append($"      \"setupSeconds\": {r.SetupSeconds.ToString("0.00", CultureInfo.InvariantCulture)},\n");
+            sb.Append("      \"stepSeconds\": [");
+            for (var k = 0; k < r.StepTimes.Count; k++)
+                sb.Append(k == 0 ? "" : ", ").Append(r.StepTimes[k].Seconds.ToString("0.00", CultureInfo.InvariantCulture));
+            sb.Append("],\n");
+            sb.Append($"      \"frames\": {r.Frames.ToJson()},\n");
+            sb.Append($"      \"memory\": {r.Mem.ToJson()},\n");
+            sb.Append($"      \"objects\": {MemoryProfiler.CensusJson(r.CensusBefore, r.CensusAfter, Esc)},\n");
+            sb.Append("      \"stepMonoGrowthMb\": [");
+            for (var k = 0; k < r.StepMem.Count; k++)
+                sb.Append(k == 0 ? "" : ", ").Append(r.StepMem[k].MonoGrowthMb.ToString("0.0", CultureInfo.InvariantCulture));
+            sb.Append("],\n");
+            sb.Append("      \"stepWorstFrameMs\": [");
+            for (var k = 0; k < r.StepFrames.Count; k++)
+                sb.Append(k == 0 ? "" : ", ").Append(r.StepFrames[k].MaxMs.ToString("0.0", CultureInfo.InvariantCulture));
+            sb.Append("],\n");
             sb.Append($"      \"reason\": \"{Esc(r.Reason)}\",\n      \"screenshot\": \"{Esc(r.Screenshot)}\",\n");
             sb.Append("      \"screenshots\": [");
             for (var k = 0; k < r.Screenshots.Count; k++)
@@ -796,10 +878,29 @@ internal static class TestRunner
         sb.AppendLine();
         sb.AppendLine($"**{passed} passed, {failed} failed, {skipped} skipped**");
         sb.AppendLine();
-        sb.AppendLine("| Suite | Test | Result | Time | Reason |");
-        sb.AppendLine("|---|---|---|---|---|");
+        var total = RunStartedAt == default ? 0.0 : (DateTime.Now - RunStartedAt).TotalSeconds;
+        sb.AppendLine($"Run started {RunStartedAt:HH:mm:ss}, {total:0.0}s so far. Game start to run start {RunStartRealtime:0.0}s, world ready after {RunWorldReadySeconds:0.0}s.");
+        sb.AppendLine();
+        sb.AppendLine("| Suite | Test | Result | Started | Time | Frames | Memory | Reason |");
+        sb.AppendLine("|---|---|---|---|---|---|---|---|");
         foreach (var r in LastRun)
-            sb.AppendLine($"| {r.Suite} | {r.Test} | {r.Status} | {r.Seconds:0.0}s | {r.Reason.Replace("|", "/")} |");
+            sb.AppendLine($"| {r.Suite} | {r.Test} | {r.Status} | {(r.StartedAt == default ? "" : r.StartedAt.ToString("HH:mm:ss"))} | {r.Seconds:0.0}s | {r.Frames.Summary()} | {r.Mem.Summary()} | {r.Reason.Replace("|", "/")} |");
+
+        var mods = new List<ModLoadTimer.Entry>(ModLoadTimer.All);
+        if (mods.Count > 0)
+        {
+            mods.Sort((a, b) => b.Seconds.CompareTo(a.Seconds));
+            sb.AppendLine();
+            sb.AppendLine(ModLoadTimer.FromPatcher
+                ? $"## Mod load times (every mod; the first started {ModLoadTimer.BeforeSeconds:0.0}s after the game process did)"
+                : $"## Mod load times (only mods loaded after DrakesTestLab; {ModLoadTimer.BeforeSeconds:0.0}s passed before them. Install DrakesTestLab.Preload for all)");
+            sb.AppendLine();
+            sb.AppendLine("| Mod | Load |");
+            sb.AppendLine("|---|---|");
+            foreach (var m in mods)
+                sb.AppendLine($"| {m.Name} | {m.Seconds:0.00}s |");
+        }
+
         return sb.ToString();
     }
 }

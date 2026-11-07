@@ -21,7 +21,12 @@ public partial class TestLabPlugin : BaseUnityPlugin
         Instance = this;
         Log = Logger;
 
-        TestLabConfig.Bind(Config);
+        // BepInEx rewrites the whole .cfg on every Bind by default: batch them into one save.
+        var saveOnSet = Config.SaveOnConfigSet;
+        Config.SaveOnConfigSet = false;
+        try { TestLabConfig.Bind(Config); }
+        finally { Config.SaveOnConfigSet = saveOnSet; }
+        Config.Save();
         CreatureHostilityState.Enabled = !TestLabConfig.Instance.CreaturesHostile.Value;
         _harmony.PatchAll();
 
@@ -32,9 +37,13 @@ public partial class TestLabPlugin : BaseUnityPlugin
         UnityEngine.Object.DontDestroyOnLoad(inputGo);
         inputGo.AddComponent<TestLabInputDriver>();
         inputGo.AddComponent<ToolboxHost>();
+        inputGo.AddComponent<Util.FrameSampler>();
 
         Logger.LogInfo($"{ModName} {Version} loaded — Phase 1 QA boot.");
     }
+
+    // Start runs after every plugin's Awake: the last plugin's load time ends here
+    private void Start() => Util.ModLoadTimer.Close();
 
     private void OnDestroy()
     {

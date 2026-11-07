@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- BepInEx preloader patcher: times every plugin's load from the very first one. Optional; DrakesTestLab works without it. -->
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>DrakesTestLab.Preload</AssemblyName>
+    <RootNamespace>DrakesTestLab.Preload</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- compile against a profile's BepInEx core folder (override with /p:BepInExCore=...) -->
+    <BepInExCore Condition="'$(BepInExCore)' == ''">$(APPDATA)\com.kesomannen.gale\valheim\profiles\drakeTest\BepInEx\core</BepInExCore>
+    <ManagedDir Condition="'$(ManagedDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</ManagedDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="PreloadPatcher.cs" />
+    <Reference Include="BepInEx"><HintPath>$(BepInExCore)\BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepInExCore)\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <!-- compile-time only: BepInEx ships Mono.Cecil at runtime -->
+    <PackageReference Include="Mono.Cecil" Version="0.10.4" ExcludeAssets="runtime" PrivateAssets="all" />
+    <Reference Include="UnityEngine"><HintPath>$(ManagedDir)\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+  <!-- deploy next to the other test profiles' patchers -->
+  <Target Name="DeployPatcher" AfterTargets="Build">
+    <ItemGroup>
+      <_Profile Include="$(APPDATA)\com.kesomannen.gale\valheim\profiles\drakeTest\BepInEx" />
+    </ItemGroup>
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="%(_Profile.FullPath)\patchers\DrakesTestLab" Condition="Exists('%(_Profile.FullPath)')" />
+  </Target>
+</Project>

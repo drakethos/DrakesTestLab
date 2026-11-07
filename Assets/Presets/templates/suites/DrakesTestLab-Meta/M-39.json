@@ -1,0 +1,42 @@
+{
+  "name": "M-39 frame times: frames sampled per test and per step, with a sane frame rate",
+  "description": "Covers the frame profiler: every frame is recorded and the report shows fps, 1% low and hitches per test and step.",
+  "steps": [
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "hook",
+      "name": "testlab.framesSampled"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 5,
+      "label": "frames were sampled while the test ran"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.stepFramesRecorded",
+      "expect": true,
+      "label": "the finished step has its own frame stats"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.frameAvgFps"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "average frame rate is plausible"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

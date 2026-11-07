@@ -33,7 +33,7 @@ def wait(s=0.3):
 suite = {
     'name': 'DrakesTestLab-Meta',
     'description': "Tests the tester: every step and check against plain Valheim, and negative tests proving broken tests are caught.",
-    'requireMods': [{'guid': GUID, 'minVersion': '0.4.5'}],
+    'requireMods': [{'guid': GUID, 'minVersion': '0.5.0'}],
     'configOverrides': [{'guid': GUID, 'section': 'Rules', 'key': 'FallDamageMultiplier', 'value': '0.25'}],
     'include': '_lib/valheim.json',
     'setup': {'timeOfDay': 0.5, 'freezeTime': 1, 'god': 1, 'noBuild': 'off', 'hideUnlockPopups': 1},
@@ -484,6 +484,41 @@ T('M-36', 'face tilts the view: pitch, up/down and a level default (camera inclu
     wait(0.5),
     {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'face with no tilt levels the view again'},
 ], desc='face keeps its old level behaviour; pitch / up / down / left / right / yawOffset tilt the view like the mouse.')
+
+# ---------------------------------------------------------------- timing: stamped logs, timed steps, mod load times
+T('M-38', 'timing: stamped log lines, timed steps and run, mod load times', [
+    {'do': 'log', 'message': 'first step'},
+    wait(0.4),
+    {'do': 'hook', 'name': 'testlab.logStamped', 'expect': True, 'label': 'every log line starts with [+x.xs]'},
+    {'do': 'hook', 'name': 'testlab.stepsTimed'},
+    chk('lastResult', 'finished steps were timed', min=2),
+    {'do': 'hook', 'name': 'testlab.runTimed', 'expect': True, 'label': 'the run and the test recorded their start'},
+    {'do': 'hook', 'name': 'testlab.modLoadCount'},
+    chk('lastResult', 'at least one mod load time was recorded', min=1),
+    {'do': 'hook', 'name': 'testlab.modLoadSane', 'expect': True, 'label': 'mod load times are sane (all mods, with the preload patcher)'},
+], desc='Covers the report timestamps and the mod load timer. With DrakesTestLab.Preload installed every mod is listed, DrakesTestLab included.')
+
+T('M-39', 'frame times: frames sampled per test and per step, with a sane frame rate', [
+    wait(0.6),
+    {'do': 'hook', 'name': 'testlab.framesSampled'},
+    chk('lastResult', 'frames were sampled while the test ran', min=5),
+    {'do': 'hook', 'name': 'testlab.stepFramesRecorded', 'expect': True, 'label': 'the finished step has its own frame stats'},
+    {'do': 'hook', 'name': 'testlab.frameAvgFps'},
+    chk('lastResult', 'average frame rate is plausible', min=1),
+], desc='Covers the frame profiler: every frame is recorded and the report shows fps, 1% low and hitches per test and step.')
+
+T('M-40', 'memory: heap and total sampled per test and step, with an object census', [
+    wait(0.6),
+    {'do': 'hook', 'name': 'testlab.memorySampled'},
+    chk('lastResult', 'memory was sampled while the test ran', min=5),
+    {'do': 'hook', 'name': 'testlab.stepMemoryRecorded', 'expect': True, 'label': 'the finished step has its own memory stats'},
+    {'do': 'hook', 'name': 'testlab.heapMb'},
+    chk('lastResult', 'managed heap size is plausible (MB)', min=10),
+    {'do': 'hook', 'name': 'testlab.totalMb'},
+    chk('lastResult', 'total allocated memory is plausible (MB)', min=100),
+    {'do': 'hook', 'name': 'testlab.objectCount'},
+    chk('lastResult', 'the object census counted Unity objects', min=1000),
+], desc='Covers the memory profiler: heap, total, peak and GC counts per test and step, and the Unity object census before and after each test.')
 
 # ---------------------------------------------------------------- negative tests: the runner must catch these
 T('N-01', 'a failing check fails the test', [

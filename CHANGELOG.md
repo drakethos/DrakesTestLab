@@ -1,5 +1,16 @@
 # DrakesTestLab
 
+## 0.5.0
+
+- **Timestamps everywhere.** Every log line in a test is stamped `[+3.2s]` from the start of that test. The reports (JSON, Markdown, HTML) show when each test started, how long its setup and each step took, how long the whole run took, how long the game took to reach the run, and how long the world took to be ready. The HTML report has a Timing section: slowest tests, slowest steps, mod load times.
+- **Mod load times.** The report lists how long each mod took to load. Install the new optional preloader patcher (it ships in the package as `BepInEx/patchers/DrakesTestLab/DrakesTestLab.Preload.dll`) and every mod is timed, the very first included; without it only the mods that load after DrakesTestLab are listed individually, and the report says so. The last mod is timed to the end of chainloading, not to a frame later.
+- **Frame times.** Every frame is recorded while tests run. Each test and step reports average fps, 1% low fps, the 95th and 99th percentile frame time, the worst frame and the number of hitches (frames over 50 ms). The HTML report lists the roughest tests and the steps with the worst single frames.
+- **Memory.** Each test and step reports managed heap (start, end, peak), total memory, an allocation figure (churn) and GC counts per generation; the HTML report lists heap growth and the tests that allocate the most.
+- **Object census (optional).** `Automation/CountObjects` counts every Unity object before and after each test and names the types that grew, for leak hunting. Off by default because it costs about a second per test.
+- `Run-TestLabSuites.ps1` prints seconds per test, the run's time split, the roughest tests by fps, the biggest heap growers, the current memory and the slowest mod loads.
+- Faster start-up: the settings are saved once instead of once each, and the optional Libs message-card hook is found without scanning every loaded type (about 1.1 s down to 0.5 s).
+- Meta tests M-38 (timing), M-39 (frame times) and M-40 (memory).
+
 ## 0.4.6
 
 - **The authoring guide and chat prompt now ship inside the mod** and are copied to `BepInEx/config/DrakesTestLab/docs/` at startup, so an AI assistant that cannot open GitHub pages can read them from disk. The first time, the lab logs where they are and the `raw.githubusercontent.com` links to give an assistant that can open links but not files, and writes the same note to `docs/READ-ME.txt`.
