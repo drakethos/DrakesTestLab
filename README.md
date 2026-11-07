@@ -13,6 +13,18 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.5: how long things take
+
+Every test run now says where the time went, how smooth the game was and how much memory it used. It is all in `config/DrakesTestLab/results/` (`latest.html`, `latest.md`, `latest.json`) and in the summary the `Run-TestLabSuites.ps1` runner prints.
+
+- **Timestamps.** Every log line in a test starts with `[+3.2s]`, the seconds since that test began. Each test shows when it started, how long its setup and each step took; the run shows how long the game took to reach it and how long the world took to be ready. The HTML report has a **Timing** section with the slowest tests and the slowest steps.
+- **Mod load times.** How long each mod in your pack took to load, slowest first, so you can see which one slows the start. To time *every* mod (the first one included), install the optional preloader patcher: it ships in the package at `BepInEx/patchers/DrakesTestLab/DrakesTestLab.Preload.dll` and changes nothing in the game. Without it the report lists only the mods that load after DrakesTestLab and says so.
+- **Frame times.** Each test and step reports average fps, the **1% low** fps, the worst frame and the number of **hitches** (frames over 50 ms). The report lists the roughest tests and the steps that had the worst single frames, so a stutter points at the step that caused it.
+- **Memory.** Each test and step reports the managed heap (start, end, peak), total memory, how much it allocated and how many garbage collections ran. The report lists the tests whose heap grew the most (leak suspects) and the ones that allocate the most.
+- **Object census (optional).** Turn on `[Automation] CountObjects` and the lab counts every Unity object before and after each test and names the types that grew. It costs about a second per test, so it is off by default; early tests also see the world still streaming in.
+
+Numbers from the first test of a run include the world finishing its load, so compare tests with each other, not with the first.
+
 ## New in 0.4: a dedicated server and a real Player 2
 
 Test your mod on a real dedicated server with two real players.
@@ -131,7 +143,7 @@ Eight example cases ship with the mod and are copied into that folder on first r
 
 ## Automated tests
 
-Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report and failure screenshots are written to `config/DrakesTestLab/results/`.
+Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report (with timings, frame rate and memory per test: see *New in 0.5*) and failure screenshots are written to `config/DrakesTestLab/results/`.
 
 **Record a test instead of writing it:** F9 > Tests > Record, play the scenario, add checks with F7 / Shift+F7 on the lab bar, stop and save. Crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks and setting changes all become steps, and the test starts from a saved setup of the game as it was. See [Recording tests](https://github.com/drakethos/DrakesTestLab/wiki/Recording-Tests).
 
@@ -152,6 +164,7 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 - **Arena:** `Spawn` (level and clear around spawn, keep the standing stones) or `FindFlat`, radius, keep-radius, house offset, build the house on or off
 - **Rules:** no-build zones (`Vanilla` / `Off` / `Scaled`), fall damage, auto-safe falls
 - **Dev:** toolbox and overlay hotkeys, UI scale
+- **Automation:** `StepDelay`, `RunOnLaunch`, and `CountObjects` (count Unity objects around each test to find leaks; off by default)
 - **Server connect mode** (`[Bootstrap] Target = Server`, `[Connect]`): `Address` (the server's public `IP:port`), `Password`, `Role` (`Player1` / `Player2`), `TimeoutSeconds`, `Character`, `QuitOnFailure`, `QuitDelaySeconds`
 
 ---
