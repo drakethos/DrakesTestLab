@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## 0.5.1
+
+- README: documents the 0.5 timing, load-time, frame-time and memory reports. No code change.
+
 ## 0.5.0
 
 - **Timestamps everywhere.** Every log line in a test is stamped `[+3.2s]` from the start of that test. The reports (JSON, Markdown, HTML) show when each test started, how long its setup and each step took, how long the whole run took, how long the game took to reach the run, and how long the world took to be ready. The HTML report has a Timing section: slowest tests, slowest steps, mod load times.
