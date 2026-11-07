@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **Icon.** Same brass knot as the other mods: DrakeMods, Test Lab, the health mead, the portrait, and "Valheim Mod QA tools". Version stays 0.5.1 until the next release.
+
 ## 0.5.1
 
 - README: documents the 0.5 timing, load-time, frame-time and memory reports. No code change.
