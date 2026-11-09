@@ -653,7 +653,7 @@ internal static class ArenaBuilder
     /// Clears trees, stumps, logs, bushes and plants everywhere within the clear radius (it never needs to keep them), and rocks too
     /// unless disabled, but keeps rocks within <paramref name="keepRadius"/> of the centre: those are the standing stones at the start.
     /// </summary>
-    private static void ClearArena(Vector3 center, float radius, float keepRadius, bool clearRocks)
+    internal static void ClearArena(Vector3 center, float radius, float keepRadius, bool clearRocks)
     {
         var clearRadius = Mathf.Max(radius, TestLabConfig.Instance.ClearRadius.Value);
         var kinds = NaturalKind.Landscape & ~NaturalKind.Rock;

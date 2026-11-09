@@ -306,6 +306,14 @@
     <Compile Include="Util\PrefabIndex.cs" />
 
     <Compile Include="Util\ItemGiver.cs" />
+    <Compile Include="Util\OrbitCamera.cs" />
+    <Compile Include="Cosmetics\LabCoat.cs" />
+    <EmbeddedResource Include="Cosmetics\Art\mesh.json"><LogicalName>LabCoat/mesh.json</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\atlas.png"><LogicalName>LabCoat/atlas.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\atlas_n.png"><LogicalName>LabCoat/atlas_n.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\chest.png"><LogicalName>LabCoat/chest.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\chest_n.png"><LogicalName>LabCoat/chest_n.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\icon.png"><LogicalName>LabCoat/icon.png</LogicalName></EmbeddedResource>
 
     <Compile Include="Util\GameRefs.cs" />
 

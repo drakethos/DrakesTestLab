@@ -73,6 +73,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<float> QuietZoneRadius { get; private set; } = null!;
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
     public ConfigEntry<bool> ClearRocks { get; private set; } = null!;
+    public ConfigEntry<bool> LabCoat { get; private set; } = null!;
     public ConfigEntry<bool> BuildHouse { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetX { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetZ { get; private set; } = null!;
@@ -202,6 +203,8 @@ internal sealed class TestLabConfig
         c.KeepRadius = config.Bind("Arena", "KeepRadius", 20f,
             "Spawn mode: nothing within this many metres of the spawn point is removed (keeps the spawn standing stones).");
         c.ClearRocks = config.Bind("Arena", "ClearRocks", true, "Also remove boulders and mineable rocks from the test area (outside KeepRadius).");
+        c.LabCoat = config.Bind("Experimental", "LabCoat", false,
+            "EXPERIMENTAL, work in progress: adds the Drake_LabCoat chest item (a white lab coat built from the vanilla tunic; spawn it by name). Off by default; takes effect on the next game start.");
         c.BuildHouse = config.Bind("Arena", "BuildHouse", true, "Build the test house with all crafting stations in the arena.");
         c.HouseOffsetX = config.Bind("Arena", "HouseOffsetX", 0f, "Spawn mode: east/west offset of the test house from the spawn point.");
         c.HouseOffsetZ = config.Bind("Arena", "HouseOffsetZ", 26f, "Spawn mode: north/south offset of the test house from the spawn point.");
