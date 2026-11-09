@@ -163,6 +163,7 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 - **Fresh character:** on by default; turn off to use the bundled template character instead
 - **Arena:** `Spawn` (level and clear around spawn, keep the standing stones) or `FindFlat`, radius, keep-radius, house offset, build the house on or off
 - **Rules:** no-build zones (`Vanilla` / `Off` / `Scaled`), fall damage, auto-safe falls
+- **Quiet zone** (`[Arena] QuietZone`, `QuietZoneRadius`): a no-fly zone around the arena and you. While tests run (default), nothing wild spawns inside it, wild creatures there are removed and the game's random events (raids) do not start, so a test does not pass or fail on a stray boar. Creatures your tests or your mod make are left alone. `Tests` / `Always` / `Off`.
 - **Dev:** toolbox and overlay hotkeys, UI scale
 - **Automation:** `StepDelay`, `RunOnLaunch`, and `CountObjects` (count Unity objects around each test to find leaks; off by default)
 - **Server connect mode** (`[Bootstrap] Target = Server`, `[Connect]`): `Address` (the server's public `IP:port`), `Password`, `Role` (`Player1` / `Player2`), `TimeoutSeconds`, `Character`, `QuitOnFailure`, `QuitDelaySeconds`

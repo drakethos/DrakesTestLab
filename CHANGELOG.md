@@ -1,5 +1,10 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **Quiet zone (no-fly zone) for repeatable tests.** During tests, a zone around the arena and around the player (`[Arena] QuietZoneRadius`, default 80 m) keeps wild things out: the game's own spawners (wild spawns, spawn areas, creature spawners, event spawns) refuse to spawn inside it, wild creatures that are already there or wander in are removed, and the game's own random-event timer (raids) is held. Creatures a test or a mod makes itself (the spawn step, the toolbox, a mod's own code) are never removed, so a suite that spawns its own monsters works as before. `[Arena] QuietZone` = `Tests` (default, only while tests run), `Always` (also when you play by hand; a checkbox on the Player tab) or `Off`; a test can set it for itself with `setConfig`. An event a test starts on purpose still works, and the state reset now ends a running event.
+- Meta tests M-41 to M-45 (M-45 runs the real spawners for 45 s).
+
 ## 0.5.2
 
 - **Icon.** Same brass knot as the other mods: DrakeMods, Test Lab, the health mead, the portrait, and "Valheim Mod QA tools".

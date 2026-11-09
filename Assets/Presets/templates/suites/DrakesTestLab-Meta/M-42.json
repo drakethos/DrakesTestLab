@@ -1,0 +1,29 @@
+{
+  "name": "M-42 quiet zone: a creature the test made stays",
+  "description": "The zone only removes wild creatures, so a suite that spawns its own monsters works the same with it on.",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Boar",
+      "dz": 6,
+      "as": "boar"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.5
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "Boar",
+      "radius": 10,
+      "label": "the boar the test spawned is still there"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

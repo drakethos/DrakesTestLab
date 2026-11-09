@@ -68,6 +68,8 @@ internal sealed class TestLabConfig
     public ConfigEntry<bool> FallAutoSafe { get; private set; } = null!;
     public ConfigEntry<ArenaMode> ArenaPlacement { get; private set; } = null!;
     public ConfigEntry<float> ArenaRadius { get; private set; } = null!;
+    public ConfigEntry<QuietZoneMode> QuietZone { get; private set; } = null!;
+    public ConfigEntry<float> QuietZoneRadius { get; private set; } = null!;
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
     public ConfigEntry<bool> ClearRocks { get; private set; } = null!;
     public ConfigEntry<bool> BuildHouse { get; private set; } = null!;
@@ -189,6 +191,10 @@ internal sealed class TestLabConfig
         c.FallAutoSafe = config.Bind("Rules", "FallAutoSafe", true, "With a raised jump multiplier, falls up to the height you can jump do no damage.");
         c.ArenaPlacement = config.Bind("Arena", "Placement", ArenaMode.Spawn,
             "Spawn = level and clear the area around where you spawn (standing stones kept). FindFlat = search for naturally flat meadow and teleport there.");
+        c.QuietZone = config.Bind("Arena", "QuietZone", QuietZoneMode.Tests,
+            "No-fly zone against flaky tests. Inside it nothing wild spawns, wild creatures that are there or wander in are removed, and the game's random events (raids) do not start. Creatures a test or a mod makes itself are never removed. Tests = while the lab runs tests (default), Always = also when you play by hand, Off = never.");
+        c.QuietZoneRadius = config.Bind("Arena", "QuietZoneRadius", 80f,
+            "Radius of the quiet zone in metres, around the arena and around you. Wider than the arena so creatures cannot aggro from just outside it.");
         c.ArenaRadius = config.Bind("Arena", "Radius", 40f, "Radius of the levelled, cleared test area in metres.");
         c.KeepRadius = config.Bind("Arena", "KeepRadius", 20f,
             "Spawn mode: nothing within this many metres of the spawn point is removed (keeps the spawn standing stones).");

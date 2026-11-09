@@ -92,6 +92,7 @@ internal static class TestRunner
         TestHooks.Register("testlab.logStamped", _ => _current != null && _current.StepLog.Count > 0 && _current.StepLog.TrueForAll(l => l.StartsWith("[+", StringComparison.Ordinal)), "DrakesTestLab");
         TestHooks.Register("testlab.stepsTimed", _ => _current != null ? _current.StepTimes.Count : -1, "DrakesTestLab");
         TestHooks.Register("testlab.runTimed", _ => RunStartedAt != default && _current != null && _current.StartedAt >= RunStartedAt && _current.StartRealtime > 0f, "DrakesTestLab");
+        QuietZone.RegisterHooks();
         TestHooks.Register("testlab.framesSampled", _ => _current != null ? FrameProfiler.Count - _current.FrameMark : -1, "DrakesTestLab");
         TestHooks.Register("testlab.frameAvgFps", _ => _current != null ? FrameProfiler.Compute(_current.FrameMark, FrameProfiler.Count).AvgFps : -1f, "DrakesTestLab");
         TestHooks.Register("testlab.stepFramesRecorded", _ => _current != null && _current.StepFrames.Count > 0 && _current.StepFrames[0].Frames > 0, "DrakesTestLab");

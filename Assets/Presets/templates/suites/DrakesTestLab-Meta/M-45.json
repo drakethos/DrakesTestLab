@@ -1,0 +1,48 @@
+{
+  "name": "M-45 quiet zone: the natural spawners are held back over time (slow)",
+  "description": "Runs the real game spawners for 45 s at night and checks they were refused inside the zone. Slow, so run it on purpose (-Suites DrakesTestLab-Meta/M-45).",
+  "steps": [
+    {
+      "do": "wait",
+      "seconds": 45
+    },
+    {
+      "do": "hook",
+      "name": "quiet.blockedSpawns"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "the game tried to spawn inside the zone and was refused"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 80
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "no boar came in"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "setup": {
+    "timeOfDay": 0.0,
+    "freezeTime": 1,
+    "god": 1,
+    "noBuild": "off",
+    "hideUnlockPopups": 1
+  },
+  "timeout": 90
+}

@@ -1,0 +1,65 @@
+{
+  "name": "M-43 quiet zone: switched off, a wild creature stays",
+  "description": "QuietZone = Off (set for this test only) leaves wild creatures alone.",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZone": "Off"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.active",
+      "expect": false,
+      "label": "the zone is off"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.eventsAllowed",
+      "expect": true,
+      "label": "with the zone off the game event timer is not held"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 6
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 1.5
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 25
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "the wild boar is still there"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.clearCreatures",
+      "args": {
+        "radius": 40
+      },
+      "label": "clean up"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}
