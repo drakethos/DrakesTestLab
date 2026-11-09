@@ -512,7 +512,26 @@ internal static class TestRunner
                     continue;
                 }
 
-                yield return RunOne(suite, test, unattended);
+                // drive the test by hand: an exception thrown inside a nested coroutine would end this whole run silently
+                // (the game sits there with nothing running), so a crash fails this one test and the run goes on
+                var routine = RunOne(suite, test, unattended);
+                while (true)
+                {
+                    bool more;
+                    try
+                    {
+                        more = routine.MoveNext();
+                    }
+                    catch (Exception ex)
+                    {
+                        RecordRunnerCrash(suite, test, ex);
+                        break;
+                    }
+
+                    if (!more)
+                        break;
+                    yield return routine.Current;
+                }
             }
 
             ModEnvironment.RestoreAll();
@@ -535,8 +554,36 @@ internal static class TestRunner
         }
     }
 
+    /// <summary>Where RunOne is, so a crash says in which part of the test it happened.</summary>
+    private static string _stage = "";
+
+    private static void RecordRunnerCrash(SuiteDef suite, TestDef test, Exception ex)
+    {
+        TestLabPlugin.Log?.LogError($"The runner crashed in {suite.Name}/{test.Name} ({_stage}): {ex}");
+        try
+        {
+            ModEnvironment.TestScope = false;
+            ModEnvironment.RestoreTest();
+            HeldKeys.ReleaseAll();
+            VirtualPeers.LeaveAll();
+        }
+        catch (Exception cleanup)
+        {
+            TestLabPlugin.Log?.LogWarning($"Clean-up after the crash failed too: {cleanup.Message}");
+        }
+
+        var r = _current != null && _current.Suite == suite.Name && _current.Test == test.Name
+            ? _current
+            : new TestResult { Suite = suite.Name, Test = test.Name };
+        r.Status = TestStatus.Failed;
+        r.Reason = $"the lab's runner crashed while {_stage}: {ex.GetType().Name}: {ex.Message} (full trace in LogOutput.log)";
+        r.EndedAt = DateTime.Now;
+        Record(r);
+    }
+
     private static IEnumerator RunOne(SuiteDef suite, TestDef test, bool unattended)
     {
+        _stage = "starting";
         var result = new TestResult { Suite = suite.Name, Test = test.Name, Status = TestStatus.Running };
         Latest[Key(suite.Name, test.Name)] = result;
         _current = result;
@@ -559,6 +606,7 @@ internal static class TestRunner
         result.FrameMark = FrameProfiler.Mark();
         Status = $"{suite.Name} / {test.Name}: setting up";
 
+        _stage = "resetting";
         if (suite.ResetBetweenTests)
         {
             StateReset.Run();
@@ -566,16 +614,19 @@ internal static class TestRunner
         }
 
         // settings a setup changes (case "configs") last only for this test, like setConfig
+        _stage = "applying the setup";
         ModEnvironment.TestScope = true;
         if (suite.Setup != null)
             yield return CaseRunner.ApplyCase(suite.Setup, suite.Name + " setup", quick: true);
         if (test.Setup != null)
             yield return CaseRunner.ApplyCase(test.Setup, test.Name + " setup", quick: true);
 
+        _stage = "clearing the area";
         var clearSpec = test.ClearArea ?? suite.ClearArea;
         if (clearSpec != null && clearSpec.Enabled)
             ctx.Log($"clearArea: removed {clearSpec.Apply()} natural objects");
 
+        _stage = "running the steps";
         result.SetupSeconds = Time.realtimeSinceStartup - started;
         string failure = "";
         var delay = TestLabConfig.Instance.StepDelay.Value;
@@ -655,6 +706,7 @@ internal static class TestRunner
 
         if (failure.Length == 0)
         {
+            _stage = "checking the results";
             Status = $"{suite.Name} / {test.Name}: checking";
             foreach (var a in test.Asserts)
                 result.Asserts.Add(Asserts.Evaluate(a, ctx));
@@ -682,6 +734,7 @@ internal static class TestRunner
             yield return null;
         }
 
+        _stage = "cleaning up";
         foreach (var go in ctx.Spawned)
         {
             if (go != null && ZNetScene.instance != null)
@@ -694,6 +747,7 @@ internal static class TestRunner
         HeldKeys.ReleaseAll();
         LanguageSwitch.Restore();
 
+        _stage = "writing the result";
         result.Seconds = Time.realtimeSinceStartup - started;
         result.EndedAt = DateTime.Now;
         result.Frames = FrameProfiler.Compute(result.FrameMark, FrameProfiler.Mark());
