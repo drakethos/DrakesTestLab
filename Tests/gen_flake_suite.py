@@ -141,17 +141,17 @@ def near(category, expect=True, radius=30, label=None):
 NATURALS = ['trees', 'stumps', 'logs', 'bushes', 'pickables']
 
 T('F-08', 'clearArea removes every kind of natural object and says how many', [
-    natural('Beech1', 4), natural('Beech_Stub', 6), natural('Beech_log', 8), natural('Bush01', 10), natural('Pickable_Mushroom', 12),
+    natural('Beech1', 4), natural('Beech_Stub', 6), natural('beech_log', 8), natural('Bush01', 10), natural('Pickable_Mushroom', 12),
     near('trees', label='a tree is there'), near('stumps', label='a stump'), near('logs', label='a log'),
     near('bushes', label='a bush'), near('pickables', label='a plant to pick'),
     {'do': 'clearArea', 'radius': 30, 'what': NATURALS},
     chk('lastResult', 'it reported what it removed', min=5),
     near('trees', False, label='no tree'), near('stumps', False, label='no stump'), near('logs', False, label='no log'),
     near('bushes', False, label='no bush'), near('pickables', False, label='no plant'),
-], desc='Needs the prefabs Beech1, Beech_Stub, Beech_log, Bush01 and Pickable_Mushroom.')
+], desc='Needs the prefabs Beech1, Beech_Stub, beech_log, Bush01 and Pickable_Mushroom (testlab.prefabsLike lists names).')
 
 T('F-09', 'clearArea only removes the kinds it is asked to', [
-    natural('Beech1', 4), natural('Beech_log', 7),
+    natural('Beech1', 4), natural('beech_log', 7),
     {'do': 'clearArea', 'radius': 30, 'what': ['logs']},
     near('logs', False, label='the log is gone'),
     near('trees', True, label='the tree is still there'),

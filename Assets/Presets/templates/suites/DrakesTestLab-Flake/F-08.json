@@ -1,6 +1,6 @@
 {
   "name": "F-08 clearArea removes every kind of natural object and says how many",
-  "description": "Needs the prefabs Beech1, Beech_Stub, Beech_log, Bush01 and Pickable_Mushroom.",
+  "description": "Needs the prefabs Beech1, Beech_Stub, beech_log, Bush01 and Pickable_Mushroom (testlab.prefabsLike lists names).",
   "steps": [
     {
       "do": "spawn",
@@ -14,7 +14,7 @@
     },
     {
       "do": "spawn",
-      "prefab": "Beech_log",
+      "prefab": "beech_log",
       "dz": 8
     },
     {

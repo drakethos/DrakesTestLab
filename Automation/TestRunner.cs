@@ -92,6 +92,25 @@ internal static class TestRunner
         TestHooks.Register("testlab.logStamped", _ => _current != null && _current.StepLog.Count > 0 && _current.StepLog.TrueForAll(l => l.StartsWith("[+", StringComparison.Ordinal)), "DrakesTestLab");
         TestHooks.Register("testlab.stepsTimed", _ => _current != null ? _current.StepTimes.Count : -1, "DrakesTestLab");
         TestHooks.Register("testlab.runTimed", _ => RunStartedAt != default && _current != null && _current.StartedAt >= RunStartedAt && _current.StartRealtime > 0f, "DrakesTestLab");
+        // names of the game's prefabs that contain some text, for finding what to spawn: {"contains": "log", "max": 40}
+        TestHooks.Register("testlab.prefabsLike", args =>
+        {
+            var scene = ZNetScene.instance;
+            if (scene == null)
+                return "no world";
+            var text = args.TryGetValue("contains", out var c) ? Convert.ToString(c, System.Globalization.CultureInfo.InvariantCulture) ?? "" : "";
+            var max = args.TryGetValue("max", out var m) ? Convert.ToInt32(m, System.Globalization.CultureInfo.InvariantCulture) : 40;
+            var names = new List<string>();
+            var prefabs = HarmonyLib.AccessTools.Field(typeof(ZNetScene), "m_namedPrefabs")?.GetValue(scene) as System.Collections.IDictionary;
+            if (prefabs != null)
+                foreach (System.Collections.DictionaryEntry e in prefabs)
+                    if (e.Value is GameObject go && go.name.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0)
+                        names.Add(go.name);
+            names.Sort(StringComparer.OrdinalIgnoreCase);
+            if (names.Count > max)
+                names = names.GetRange(0, max);
+            return string.Join(", ", names);
+        }, "DrakesTestLab");
         QuietZone.RegisterHooks();
         TestHooks.Register("testlab.framesSampled", _ => _current != null ? FrameProfiler.Count - _current.FrameMark : -1, "DrakesTestLab");
         TestHooks.Register("testlab.frameAvgFps", _ => _current != null ? FrameProfiler.Compute(_current.FrameMark, FrameProfiler.Count).AvgFps : -1f, "DrakesTestLab");

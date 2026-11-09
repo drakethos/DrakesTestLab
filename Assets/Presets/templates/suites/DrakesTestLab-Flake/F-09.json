@@ -9,7 +9,7 @@
     },
     {
       "do": "spawn",
-      "prefab": "Beech_log",
+      "prefab": "beech_log",
       "dz": 7
     },
     {
