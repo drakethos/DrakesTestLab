@@ -1,9 +1,14 @@
 # DrakesTestLab
 
-## Unreleased
+## 0.6.0
 
 - **Quiet zone (no-fly zone) for repeatable tests.** During tests, a zone around the arena and around the player (`[Arena] QuietZoneRadius`, default 80 m) keeps wild things out: the game's own spawners (wild spawns, spawn areas, creature spawners, event spawns) refuse to spawn inside it, wild creatures that are already there or wander in are removed, and the game's own random-event timer (raids) is held. Creatures a test or a mod makes itself (the spawn step, the toolbox, a mod's own code) are never removed, so a suite that spawns its own monsters works as before. `[Arena] QuietZone` = `Tests` (default, only while tests run), `Always` (also when you play by hand; a checkbox on the Player tab) or `Off`; a test can set it for itself with `setConfig`. An event a test starts on purpose still works, and the state reset now ends a running event.
 - Meta tests M-41 to M-45 (M-45 runs the real spawners for 45 s).
+- **Clear natural objects.** The test area is cleared of trees, stumps, logs, bushes, plants and rocks over a wider radius (`[Arena] ClearRadius`, default 70 m, at start-up and again once the world has loaded), so a test never finds a stray tree in reach. New `clearArea` step, and a `clearArea` field on a suite or test (cleared before the steps); `objectNear` checks can ask for a category of natural object; the `treeAt` library function adds the tree a test needs instead of relying on the landscape.
+- **Flake suite** (`DrakesTestLab-Flake`): situations that only pass while the quiet zone and clearing work, with control tests; counter, raid-timer and `testlab.prefabsLike` hooks.
+- **A crash inside one test fails that test** (the report says which stage it reached) and the run goes on, instead of the whole run ending silently.
+- Orbit camera for screenshots of the player from any side (`invoke` `DrakesTestLab.Util.OrbitCamera.View(yaw, focus, dist, pitch)`, `.Off()`), and `.Stage(timeOfDay, radius)` to fix the time of day and clear a photo spot.
+- **Experimental, off by default:** `[Experimental] LabCoat` adds a work-in-progress `Drake_LabCoat` chest item (a white lab coat built from the vanilla tunic, no extra mods). Not finished; leave it off unless you want to try it.
 
 ## 0.5.2
 
