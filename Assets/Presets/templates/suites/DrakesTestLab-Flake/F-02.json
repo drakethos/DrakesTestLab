@@ -1,0 +1,67 @@
+{
+  "name": "F-02 wild creatures go, the creature the test made stays",
+  "description": "Selectivity: the zone must never touch what the test (or a mod) made itself.",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Boar",
+      "dz": 6,
+      "as": "mine"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 4
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 8
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 12
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 2.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 40
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 1,
+      "label": "exactly one boar left: the one the test spawned"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "Boar",
+      "radius": 10,
+      "label": "and it is the test boar"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

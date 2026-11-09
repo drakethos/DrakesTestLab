@@ -1,0 +1,45 @@
+{
+  "name": "C-02 control: with the zone off the game's raid timer is not held",
+  "description": "",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZone": "Off"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.mark"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.blockedEventsSince"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "nothing was refused"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

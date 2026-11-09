@@ -44,6 +44,7 @@ internal static class QuietZone
     public static int BlockedEvents { get; private set; }
 
     private static bool _wasActive;
+    private static int _markSpawns, _markEvents, _markRemoved;
 
     public static QuietZoneMode Mode => TestLabConfig.Instance.QuietZone.Value;
     public static float Radius => Mathf.Max(5f, TestLabConfig.Instance.QuietZoneRadius.Value);
@@ -248,6 +249,43 @@ internal static class QuietZone
             var dist = args.TryGetValue("dist", out var d) ? Convert.ToSingle(d, CultureInfo.InvariantCulture) : 10f;
             return p != null && Contains(p.transform.position + Vector3.right * dist);
         }, "DrakesTestLab");
+
+        // counters since a mark, so a test can ask "did the zone refuse anything during my test?"
+        TestHooks.Register("quiet.mark", _ =>
+        {
+            _markSpawns = BlockedSpawns;
+            _markEvents = BlockedEvents;
+            _markRemoved = Removed;
+            return "ok";
+        }, "DrakesTestLab");
+        TestHooks.Register("quiet.blockedSpawnsSince", _ => BlockedSpawns - _markSpawns, "DrakesTestLab");
+        TestHooks.Register("quiet.blockedEventsSince", _ => BlockedEvents - _markEvents, "DrakesTestLab");
+        TestHooks.Register("quiet.removedSince", _ => Removed - _markRemoved, "DrakesTestLab");
+
+        // the game's random-event timer decides to start an event, exactly as its own update does (so the zone is asked)
+        TestHooks.Register("quiet.timerEvent", _ =>
+        {
+            var system = RandEventSystem.instance;
+            if (system == null)
+                return "no event system";
+            var start = HarmonyLib.AccessTools.Method(typeof(RandEventSystem), "StartRandomEvent");
+            if (start == null)
+                return "no StartRandomEvent";
+            InEventTimer = true;
+            try
+            {
+                start.Invoke(system, null);
+            }
+            finally
+            {
+                InEventTimer = false;
+            }
+
+            return "ok";
+        }, "DrakesTestLab");
+
+        // name of the running random event, or "" when there is none
+        TestHooks.Register("quiet.currentEvent", _ => RandEventSystem.instance?.GetCurrentRandomEvent()?.m_name ?? "none", "DrakesTestLab");
 
         // would the game's own event timer be allowed to start an event right now? (does not count as blocked)
         TestHooks.Register("quiet.eventsAllowed", _ => !Active, "DrakesTestLab");

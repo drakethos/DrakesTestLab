@@ -1,0 +1,22 @@
+{
+  "name": "F-06 the previous raid did not carry over into this test",
+  "description": "Needs F-05 before it (the reset between tests ends a running event).",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.currentEvent"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": "none",
+      "label": "no event running at the start of the next test"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}
