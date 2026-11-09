@@ -68,6 +68,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<bool> FallAutoSafe { get; private set; } = null!;
     public ConfigEntry<ArenaMode> ArenaPlacement { get; private set; } = null!;
     public ConfigEntry<float> ArenaRadius { get; private set; } = null!;
+    public ConfigEntry<float> ClearRadius { get; private set; } = null!;
     public ConfigEntry<QuietZoneMode> QuietZone { get; private set; } = null!;
     public ConfigEntry<float> QuietZoneRadius { get; private set; } = null!;
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
@@ -195,6 +196,8 @@ internal sealed class TestLabConfig
             "No-fly zone against flaky tests. Inside it nothing wild spawns, wild creatures that are there or wander in are removed, and the game's random events (raids) do not start. Creatures a test or a mod makes itself are never removed. Tests = while the lab runs tests (default), Always = also when you play by hand, Off = never.");
         c.QuietZoneRadius = config.Bind("Arena", "QuietZoneRadius", 80f,
             "Radius of the quiet zone in metres, around the arena and around you. Wider than the arena so creatures cannot aggro from just outside it.");
+        c.ClearRadius = config.Bind("Arena", "ClearRadius", 70f,
+            "Radius in metres around the arena that is cleared of trees, stumps, logs, bushes, plants and rocks (at start-up and again once the world has loaded). Wider than the levelled arena, so a test never finds a stray tree or stump in reach. Tests add the trees they need themselves. 0 = only the arena Radius.");
         c.ArenaRadius = config.Bind("Arena", "Radius", 40f, "Radius of the levelled, cleared test area in metres.");
         c.KeepRadius = config.Bind("Arena", "KeepRadius", 20f,
             "Spawn mode: nothing within this many metres of the spawn point is removed (keeps the spawn standing stones).");

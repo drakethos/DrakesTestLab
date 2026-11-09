@@ -27,7 +27,7 @@ internal static class StepNames
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
         "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "uiHover", "uiRelease", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
-        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
+        "clearArea", "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
     };
 }
 
@@ -334,6 +334,14 @@ internal static class Steps
             case "face": return Face(step, ctx);
             case "wait": return Wait(step, ctx);
             case "spawn": Spawn(step, ctx); return null;
+            case "clearArea":
+            {
+                var spec = ClearSpec.Read(step) ?? new ClearSpec();
+                var n = spec.Apply();
+                ctx.LastResult = n;
+                ctx.Log($"  -> removed {n}");
+                return null;
+            }
             case "give":
                 if (step.Has("materialsFor"))
                 {

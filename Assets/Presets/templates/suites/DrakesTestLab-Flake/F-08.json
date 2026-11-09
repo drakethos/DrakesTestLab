@@ -1,0 +1,134 @@
+{
+  "name": "F-08 clearArea removes every kind of natural object and says how many",
+  "description": "Needs the prefabs Beech1, Beech_Stub, Beech_log, Bush01 and Pickable_Mushroom.",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Beech1",
+      "dz": 4
+    },
+    {
+      "do": "spawn",
+      "prefab": "Beech_Stub",
+      "dz": 6
+    },
+    {
+      "do": "spawn",
+      "prefab": "Beech_log",
+      "dz": 8
+    },
+    {
+      "do": "spawn",
+      "prefab": "Bush01",
+      "dz": 10
+    },
+    {
+      "do": "spawn",
+      "prefab": "Pickable_Mushroom",
+      "dz": 12
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 30,
+      "expect": true,
+      "label": "a tree is there"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "stumps",
+      "radius": 30,
+      "expect": true,
+      "label": "a stump"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "logs",
+      "radius": 30,
+      "expect": true,
+      "label": "a log"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "bushes",
+      "radius": 30,
+      "expect": true,
+      "label": "a bush"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "pickables",
+      "radius": 30,
+      "expect": true,
+      "label": "a plant to pick"
+    },
+    {
+      "do": "clearArea",
+      "radius": 30,
+      "what": [
+        "trees",
+        "stumps",
+        "logs",
+        "bushes",
+        "pickables"
+      ]
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 5,
+      "label": "it reported what it removed"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 30,
+      "expect": false,
+      "label": "no tree"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "stumps",
+      "radius": 30,
+      "expect": false,
+      "label": "no stump"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "logs",
+      "radius": 30,
+      "expect": false,
+      "label": "no log"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "bushes",
+      "radius": 30,
+      "expect": false,
+      "label": "no bush"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "pickables",
+      "radius": 30,
+      "expect": false,
+      "label": "no plant"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

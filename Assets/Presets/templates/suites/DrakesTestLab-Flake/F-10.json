@@ -1,0 +1,32 @@
+{
+  "name": "F-10 leave trees and a stump standing for the next test",
+  "description": "Setup for F-11 (they stay after the test ends).",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Beech1",
+      "dz": 6,
+      "keep": true
+    },
+    {
+      "do": "spawn",
+      "prefab": "Beech_Stub",
+      "dz": 8,
+      "keep": true
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 30,
+      "expect": true,
+      "label": "they are standing now"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

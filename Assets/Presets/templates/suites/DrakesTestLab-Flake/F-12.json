@@ -1,0 +1,46 @@
+{
+  "name": "F-12 the arena is clear far out, so the one tree a test adds is the only one",
+  "description": "The lab clears trees, stumps, logs, bushes, plants and rocks within [Arena] ClearRadius (70 m), so a test that needs a tree adds it.",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Beech1",
+      "dz": 8,
+      "as": "tree"
+    },
+    {
+      "do": "teleport",
+      "to": "tree",
+      "distance": 2
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "target": "tree",
+      "radius": 4,
+      "label": "the tree it added is within reach"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 60,
+      "expect": true,
+      "label": "there is a tree within 60 m"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 60,
+      "count": 1,
+      "label": "and it is the only one: no natural tree within 60 m"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

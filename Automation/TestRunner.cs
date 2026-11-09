@@ -447,6 +447,10 @@ internal static class TestRunner
 
         RunWorldReadySeconds = Time.realtimeSinceStartup - RunStartRealtime;
         ModLoadTimer.Close();
+        // zones around the arena that were not loaded when it was built still hold their trees
+        var clearedAgain = ArenaBuilder.ClearAgain();
+        if (clearedAgain > 0)
+            TestLabPlugin.Log?.LogInfo($"Cleared {clearedAgain} more natural objects around the arena once the world had loaded.");
 
         foreach (var name in _missing)
             Record(new TestResult { Suite = name, Test = "(suite)", Status = TestStatus.Failed, Reason = $"suite '{name}' was requested but is not in {SuiteLoader.Folder}" });
@@ -548,6 +552,10 @@ internal static class TestRunner
             yield return CaseRunner.ApplyCase(suite.Setup, suite.Name + " setup", quick: true);
         if (test.Setup != null)
             yield return CaseRunner.ApplyCase(test.Setup, test.Name + " setup", quick: true);
+
+        var clearSpec = test.ClearArea ?? suite.ClearArea;
+        if (clearSpec != null && clearSpec.Enabled)
+            ctx.Log($"clearArea: removed {clearSpec.Apply()} natural objects");
 
         result.SetupSeconds = Time.realtimeSinceStartup - started;
         string failure = "";

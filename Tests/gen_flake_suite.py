@@ -129,6 +129,52 @@ T('F-07', 'the zone catches what was alive when it switched on', [
     chk('lastResult', 'switched on, it counts what is already there as wild and removes it', equals=0),
 ], desc='Documents the edge: creatures alive when the zone comes on are treated as wild.')
 
+# ------------------------------------------------------------ a clean landscape: clear areas, add what a test needs
+def natural(prefab, dz):
+    return {'do': 'spawn', 'prefab': prefab, 'dz': dz}
+
+
+def near(category, expect=True, radius=30, label=None):
+    return chk('objectNear', label, category=category, radius=radius, expect=expect)
+
+
+NATURALS = ['trees', 'stumps', 'logs', 'bushes', 'pickables']
+
+T('F-08', 'clearArea removes every kind of natural object and says how many', [
+    natural('Beech1', 4), natural('Beech_Stub', 6), natural('Beech_log', 8), natural('Bush01', 10), natural('Pickable_Mushroom', 12),
+    near('trees', label='a tree is there'), near('stumps', label='a stump'), near('logs', label='a log'),
+    near('bushes', label='a bush'), near('pickables', label='a plant to pick'),
+    {'do': 'clearArea', 'radius': 30, 'what': NATURALS},
+    chk('lastResult', 'it reported what it removed', min=5),
+    near('trees', False, label='no tree'), near('stumps', False, label='no stump'), near('logs', False, label='no log'),
+    near('bushes', False, label='no bush'), near('pickables', False, label='no plant'),
+], desc='Needs the prefabs Beech1, Beech_Stub, Beech_log, Bush01 and Pickable_Mushroom.')
+
+T('F-09', 'clearArea only removes the kinds it is asked to', [
+    natural('Beech1', 4), natural('Beech_log', 7),
+    {'do': 'clearArea', 'radius': 30, 'what': ['logs']},
+    near('logs', False, label='the log is gone'),
+    near('trees', True, label='the tree is still there'),
+])
+
+T('F-10', 'leave trees and a stump standing for the next test', [
+    {'do': 'spawn', 'prefab': 'Beech1', 'dz': 6, 'keep': True},
+    {'do': 'spawn', 'prefab': 'Beech_Stub', 'dz': 8, 'keep': True},
+    near('trees', label='they are standing now'),
+], desc='Setup for F-11 (they stay after the test ends).')
+
+T('F-11', 'a test with clearArea starts with the area clear', [
+    near('landscape', False, label='the trees F-10 left behind were cleared before the first step'),
+], clearArea={'radius': 30, 'what': ['landscape']}, desc='Needs F-10 before it. The test field clearArea runs after the reset and the setup, before the steps.')
+
+T('F-12', 'the arena is clear far out, so the one tree a test adds is the only one', [
+    {'do': 'spawn', 'prefab': 'Beech1', 'dz': 8, 'as': 'tree'},
+    {'do': 'teleport', 'to': 'tree', 'distance': 2},
+    chk('objectNear', 'the tree it added is within reach', target='tree', radius=4),
+    near('trees', True, radius=60, label='there is a tree within 60 m'),
+    chk('objectNear', 'and it is the only one: no natural tree within 60 m', category='trees', radius=60, count=1),
+], desc='The lab clears trees, stumps, logs, bushes, plants and rocks within [Arena] ClearRadius (70 m), so a test that needs a tree adds it.')
+
 # ------------------------------------------------------------ controls: the trouble is real with the zone off
 T('C-01', 'control: with the zone off the same swarm stays', [
     QUIET_OFF,

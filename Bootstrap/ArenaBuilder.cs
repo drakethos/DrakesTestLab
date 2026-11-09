@@ -649,36 +649,30 @@ internal static class ArenaBuilder
     /// Removes trees, bushes, pickables (and optionally rocks) inside the arena so the flat ground is actually clear.
     /// Anything within keepRadius of the arena centre is left alone (the spawn standing stones).
     /// </summary>
+    /// <summary>
+    /// Clears trees, stumps, logs, bushes and plants everywhere within the clear radius (it never needs to keep them), and rocks too
+    /// unless disabled, but keeps rocks within <paramref name="keepRadius"/> of the centre: those are the standing stones at the start.
+    /// </summary>
     private static void ClearArena(Vector3 center, float radius, float keepRadius, bool clearRocks)
     {
-        var scene = ZNetScene.instance;
-        var field = HarmonyLib.AccessTools.Field(typeof(ZNetScene), "m_instances");
-        if (scene == null || field?.GetValue(scene) is not System.Collections.IDictionary dict)
-            return;
+        var clearRadius = Mathf.Max(radius, TestLabConfig.Instance.ClearRadius.Value);
+        var kinds = NaturalKind.Landscape & ~NaturalKind.Rock;
+        if (clearRocks)
+            kinds |= NaturalKind.Rock;
+        var n = Naturals.Clear(center, clearRadius, kinds, keepRadius);
+        TestLabPlugin.Log?.LogInfo($"Cleared {n} trees/stumps/logs/bushes/rocks within {clearRadius:0} m of the arena (rocks within {keepRadius:0} m of the centre kept).");
+    }
 
-        var doomed = new List<GameObject>();
-        foreach (System.Collections.DictionaryEntry entry in dict)
-        {
-            if (entry.Value is not ZNetView view || view == null)
-                continue;
-
-            var go = view.gameObject;
-            var d = go.transform.position - center;
-            d.y = 0f;
-            if (d.magnitude > radius + 6f || d.magnitude < keepRadius || go.GetComponent<Piece>() != null
-                || go.GetComponent<Character>() != null || go.GetComponent<Player>() != null || go.GetComponent<ItemDrop>() != null)
-                continue;
-
-            var plant = go.GetComponent<TreeBase>() != null || go.GetComponent<TreeLog>() != null || go.GetComponent<Pickable>() != null;
-            var rock = go.GetComponent<MineRock>() != null || go.GetComponent<MineRock5>() != null || go.GetComponent<Destructible>() != null;
-            if (plant || (clearRocks && rock))
-                doomed.Add(go);
-        }
-
-        foreach (var go in doomed)
-            scene.Destroy(go);
-
-        TestLabPlugin.Log?.LogInfo($"Cleared {doomed.Count} trees/bushes/rocks from the arena (kept everything within {keepRadius:0} m of the centre).");
+    /// <summary>Clears again once the world around the arena has loaded: zones that were not loaded when the arena was built still held their trees.</summary>
+    public static int ClearAgain()
+    {
+        if (!TestRules.HasArena)
+            return 0;
+        var cfg = TestLabConfig.Instance;
+        var kinds = NaturalKind.Landscape & ~NaturalKind.Rock;
+        if (cfg.ClearRocks.Value)
+            kinds |= NaturalKind.Rock;
+        return Naturals.Clear(TestRules.ArenaCenter, Mathf.Max(TestRules.ArenaRadius, cfg.ClearRadius.Value), kinds, cfg.KeepRadius.Value);
     }
 
     private static GameObject? Spawn(GameObject prefab, Vector3 pos, Quaternion rot)

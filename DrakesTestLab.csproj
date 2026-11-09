@@ -298,6 +298,7 @@
     <Compile Include="Util\ModLoadTimer.cs" />
     <Compile Include="Util\FrameProfiler.cs" />
     <Compile Include="Bootstrap\QuietZone.cs" />
+    <Compile Include="Bootstrap\Naturals.cs" />
     <Compile Include="Patches\QuietZonePatches.cs" />
     <Compile Include="Util\MemoryProfiler.cs" />
     <Compile Include="Util\LogCapture.cs" />

@@ -84,7 +84,10 @@ internal static class Asserts
                 var around = Targets.PointFrom(a, P.transform.position);
                 var radius = a.Num("radius", 10f);
                 int count;
-                if (ctx.Tags.TryGetValue(target, out var tagged))
+                // "category": trees, stumps, logs, bushes, pickables, rocks, drops, landscape, all: what kind of natural object, not which prefab
+                if (a.Has("category"))
+                    count = Naturals.Count(around, radius, Naturals.Parse(a.Str("category"), NaturalKind.Landscape));
+                else if (ctx.Tags.TryGetValue(target, out var tagged))
                     count = tagged != null && Vector3.Distance(tagged.transform.position, around) <= radius ? 1 : 0;
                 else
                     count = Targets.Count(target, around, radius);
