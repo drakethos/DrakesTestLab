@@ -127,6 +127,42 @@ internal static class Naturals
     /// <summary>How many natural objects of these kinds are within <paramref name="radius"/> metres (ground distance) of the point.</summary>
     public static int Count(Vector3 center, float radius, NaturalKind kinds) => Find(center, radius, kinds).Count;
 
+    /// <summary>
+    /// Turns off the clutter kinds named in <c>[Arena] HideClutter</c> (bushes, ferns, pebbles...) and redraws the clutter without
+    /// them. Clutter is drawn in bulk with no object per plant, so <see cref="Clear"/> never sees it. Returns how many kinds went.
+    /// Lasts until the game restarts (test runs end by quitting).
+    /// </summary>
+    public static int HideClutter()
+    {
+        var system = ClutterSystem.instance;
+        var words = (TestLabConfig.Instance.HideClutter.Value ?? "").Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+        if (system == null || words.Length == 0)
+            return 0;
+        var hidden = new List<string>();
+        foreach (var clutter in system.m_clutter)
+        {
+            if (clutter == null || !clutter.m_enabled)
+                continue;
+            var name = (clutter.m_name + " " + (clutter.m_prefab != null ? clutter.m_prefab.name : "")).ToLowerInvariant();
+            foreach (var word in words)
+            {
+                if (word.Trim().Length == 0 || name.IndexOf(word.Trim().ToLowerInvariant(), StringComparison.Ordinal) < 0)
+                    continue;
+                clutter.m_enabled = false;
+                hidden.Add(clutter.m_name);
+                break;
+            }
+        }
+
+        if (hidden.Count > 0)
+        {
+            system.ClearAll();
+            TestLabPlugin.Log?.LogInfo($"Hid {hidden.Count} kinds of ground clutter for the tests: {string.Join(", ", hidden)}.");
+        }
+
+        return hidden.Count;
+    }
+
     /// <summary>Removes them, the game's own way (the object and its save record). Returns how many.</summary>
     public static int Clear(Vector3 center, float radius, NaturalKind kinds, float keepRocksWithin = 0f)
     {

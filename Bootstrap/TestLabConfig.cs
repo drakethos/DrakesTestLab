@@ -69,6 +69,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<ArenaMode> ArenaPlacement { get; private set; } = null!;
     public ConfigEntry<float> ArenaRadius { get; private set; } = null!;
     public ConfigEntry<float> ClearRadius { get; private set; } = null!;
+    public ConfigEntry<string> HideClutter { get; private set; } = null!;
     public ConfigEntry<QuietZoneMode> QuietZone { get; private set; } = null!;
     public ConfigEntry<float> QuietZoneRadius { get; private set; } = null!;
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
@@ -199,6 +200,8 @@ internal sealed class TestLabConfig
             "Radius of the quiet zone in metres, around the arena and around you. Wider than the arena so creatures cannot aggro from just outside it.");
         c.ClearRadius = config.Bind("Arena", "ClearRadius", 70f,
             "Radius in metres around the arena that is cleared of trees, stumps, logs, bushes, plants and rocks (at start-up and again once the world has loaded). Wider than the levelled arena, so a test never finds a stray tree or stump in reach. Tests add the trees they need themselves. 0 = only the arena Radius.");
+        c.HideClutter = config.Bind("Arena", "HideClutter", "shrub,ormbunke,groundcover,rock,flowers,brush,vass",
+            "Ground clutter hidden while the lab runs tests: small bushes, ferns, saplings-like plants, pebbles. Clutter is drawn in bulk with no object per plant, so ClearRadius and clearArea cannot remove it. Comma-separated words matched against the clutter's name and prefab (meadows shrubs = shrub, ferns = ormbunke). Grass stays unless you add grass. Empty = hide nothing.");
         c.ArenaRadius = config.Bind("Arena", "Radius", 40f, "Radius of the levelled, cleared test area in metres.");
         c.KeepRadius = config.Bind("Arena", "KeepRadius", 20f,
             "Spawn mode: nothing within this many metres of the spawn point is removed (keeps the spawn standing stones).");

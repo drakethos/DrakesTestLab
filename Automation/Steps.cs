@@ -334,7 +334,7 @@ internal static class Steps
             case "face": return Face(step, ctx);
             case "wait": return Wait(step, ctx);
             case "spawn": Spawn(step, ctx); return null;
-            case "clearArea":
+            case "cleararea":
             {
                 var spec = ClearSpec.Read(step) ?? new ClearSpec();
                 var n = spec.Apply();

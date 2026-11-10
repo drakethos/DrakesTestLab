@@ -470,6 +470,8 @@ internal static class TestRunner
         var clearedAgain = ArenaBuilder.ClearAgain();
         if (clearedAgain > 0)
             TestLabPlugin.Log?.LogInfo($"Cleared {clearedAgain} more natural objects around the arena once the world had loaded.");
+        // bushes, ferns and pebbles are clutter, not objects: the clear above cannot reach them
+        DrakesTestLab.Bootstrap.Naturals.HideClutter();
 
         foreach (var name in _missing)
             Record(new TestResult { Suite = name, Test = "(suite)", Status = TestStatus.Failed, Reason = $"suite '{name}' was requested but is not in {SuiteLoader.Folder}" });
