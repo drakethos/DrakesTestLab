@@ -785,7 +785,8 @@ internal static class TestRunner
         {
             var folder = RunFolder.Length > 0 ? RunFolder : SuiteLoader.ResultsFolder;
             Directory.CreateDirectory(folder);
-            var fileName = $"{Safe(ctx.Suite.Name)}_{Safe(ctx.Test.Name)}_{ctx.Result.Screenshots.Count + 1:00}_{Safe(name)}.png";
+            // test names and labels can be long sentences: keep the file name well under the Windows path limit
+            var fileName = $"{Safe(ctx.Suite.Name)}_{Cut(Safe(ctx.Test.Name), 40)}_{ctx.Result.Screenshots.Count + 1:00}_{Cut(Safe(name), 60)}.png";
             var file = Path.Combine(folder, fileName);
             ScreenCapture.CaptureScreenshot(file);
             ctx.Result.Screenshot = file;
@@ -825,6 +826,8 @@ internal static class TestRunner
             TestLabPlugin.Log?.LogWarning($"Cleaning old test runs failed: {ex.Message}");
         }
     }
+
+    private static string Cut(string s, int max) => s.Length <= max ? s : s.Substring(0, max).TrimEnd('_');
 
     private static string Safe(string s)
     {
