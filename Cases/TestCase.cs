@@ -30,8 +30,11 @@ public sealed class PieceSpec
 {
     public string prefab = "";
     public float dx;
-    public float dy;
+    public float dy = float.NaN;                // unset = 0
     public float dz = 3f;
+    // Stand it on the terrain under it (dy then lifts from there). Unset: on the ground unless the piece names a dy
+    // (saved builds do, so a floor on stilts or a chest on a table keeps its height relative to you).
+    public int ground = -1;
     public float yaw;                           // degrees, relative to where you face
     public string owner = "me";                 // who built it (same name format as wards)
     public List<ItemSpec> items = new();        // a chest's contents
@@ -75,6 +78,16 @@ public sealed class WardSpec
     public bool enabled;                        // wards start OFF so you can stage the scenario
     public List<string> permitted = new();      // same name format as owner
     public float radius = -1f;                  // -1 = the ward's own radius
+}
+
+/// <summary>A virtual second player that joins the world when the case is applied (see Automation/VirtualPeers).</summary>
+[Serializable]
+public sealed class PeerSpec
+{
+    public string name = "";                    // "" = the [Automation] Player2 setting (Bjornita); Alice, Amy, Bob, Carol or any name
+    public float dx = 3f;                       // metres to your right
+    public float dz;                            // metres in front of you
+    public bool proxy = true;                   // answer RPCs like a real second client
 }
 
 [Serializable]
@@ -141,6 +154,9 @@ public sealed class TestCase
 
     // ward test bench: wards spawned relative to the player
     public List<WardSpec> wards = new();
+
+    // virtual second players that join the world (the case's commands run after they have arrived)
+    public List<PeerSpec> peers = new();
 
     // crafting
     public int stationLevel = -1;        // 0 = vanilla, >0 = every station is this level and ignores roof/fire

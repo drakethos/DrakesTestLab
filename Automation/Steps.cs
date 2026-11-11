@@ -204,6 +204,11 @@ internal static class Steps
                 marks.Add((kv.Key, Utils.GetPrefabName(kv.Value), kv.Value.transform.position, ctx.Spawned.Contains(kv.Value)));
         }
 
+        // A fresh character id (0:0) makes Valheim respawn at the world start, which on this seed is the ocean.
+        // The saved pieces are still at the logout spot; go back there before looking for them, or the zone never loads.
+        var home = Player.m_localPlayer != null ? Player.m_localPlayer.transform.position : Vector3.zero;
+        var homeRot = Player.m_localPlayer != null ? Player.m_localPlayer.transform.rotation : Quaternion.identity;
+
         var timeout = step.Num("timeout", 180f);
         var started = Time.realtimeSinceStartup;
         if (!SessionRelog.Begin())
@@ -229,10 +234,66 @@ internal static class Steps
                 stable = p != null && !p.InIntro() && !p.IsTeleporting() && ZNetScene.instance != null ? stable + Time.unscaledDeltaTime : 0f;
                 yield return null;
             }
+
+            var back = Player.m_localPlayer;
+            var away = back != null ? Vector3.Distance(back.transform.position, home) : 0f;
+            if (back != null && away > 4f)
+            {
+                var dest = home + Vector3.up * 0.5f;
+                ctx.Log($"  respawned {away:0} m from the logout spot; going back");
+                if (away < 100f)
+                {
+                    // A respawn has just used the teleport cooldown, so TeleportTo is refused and the player
+                    // stays put. A short hop can be a direct move; the zone is already loaded.
+                    back.transform.position = dest;
+                    back.transform.rotation = homeRot;
+                    var body = back.GetComponent<Rigidbody>();
+                    if (body != null)
+                    {
+                        body.position = dest;
+                        body.velocity = Vector3.zero;
+                    }
+                    Physics.SyncTransforms();
+                }
+                else
+                {
+                    var cool = 0f;
+                    while (cool < 2.5f && back.IsTeleporting())
+                    {
+                        cool += Time.unscaledDeltaTime;
+                        yield return null;
+                    }
+                    cool = 0f;
+                    while (cool < 3f)
+                    {
+                        cool += Time.unscaledDeltaTime;
+                        yield return null;
+                    }
+                    back.TeleportTo(dest, homeRot, true);
+                    var wait = 0f;
+                    while (wait < 20f && Player.m_localPlayer != null
+                           && (Player.m_localPlayer.IsTeleporting()
+                               || Vector3.Distance(Player.m_localPlayer.transform.position, home) > 8f))
+                    {
+                        if (Time.realtimeSinceStartup - started > timeout)
+                            throw new StepFailed($"the world did not load again within {timeout:0} s");
+                        wait += Time.unscaledDeltaTime;
+                        yield return null;
+                    }
+                }
+            }
         }
         finally
         {
             SessionRelog.Finished();
+        }
+
+        // Zones stream in after the teleport. Keep looking until the saved spots exist, or 12 s.
+        var settle = 0f;
+        while (settle < 12f && !MarksLoaded(marks))
+        {
+            settle += Mathf.Min(Time.unscaledDeltaTime, 0.5f);
+            yield return null;
         }
 
         // the reloaded world's objects replace the old tags
@@ -266,6 +327,33 @@ internal static class Steps
         }
 
         ctx.Log($"  back in after {Time.realtimeSinceStartup - started:0} s");
+    }
+
+    /// <summary>True when every tagged object from before the relog is loaded again within 1.5 m of where it was.</summary>
+    private static bool MarksLoaded(List<(string tag, string prefab, Vector3 pos, bool spawned)> marks)
+    {
+        if (marks.Count == 0)
+            return true;
+        foreach (var mark in marks)
+        {
+            if (FindMarked(mark.prefab, mark.pos) == null)
+                return false;
+        }
+
+        return true;
+    }
+
+    private static GameObject? FindMarked(string prefab, Vector3 pos)
+    {
+        foreach (var v in Targets.AllViews())
+        {
+            if (v == null || !Utils.GetPrefabName(v.gameObject).Equals(prefab, StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (Vector3.Distance(v.transform.position, pos) < 1.5f)
+                return v.gameObject;
+        }
+
+        return null;
     }
 
     public static IEnumerator? Execute(Dictionary<string, object?> step, RunContext ctx)
@@ -307,7 +395,7 @@ internal static class Steps
                 return null;
             }
             case "interact": Interact(step, ctx); return null;
-            case "click": Ok(UiDriver.Click(step.First("button", "target", "name"))); return null;
+            case "click": Ok(UiDriver.Click(step.First("button", "target", "name"), (int)step.Num("nth", 0))); return null;
             case "toggle": Ok(UiDriver.SetToggle(step.First("toggle", "target", "name"), step.Bool("value", true))); return null;
             case "type":
                 Ok(UiDriver.Type(step.First("field", "target", "name"), step.Str("text")));
@@ -337,7 +425,7 @@ internal static class Steps
                 }
 
                 // "expect" / "contains" / "notContains" on the step: also record the answer as a check (like a check step)
-                if (step.Has("expect") || step.Has("contains") || step.Has("notContains"))
+                if (step.Has("expect") || step.Has("contains") || step.Has("notContains") || step.Has("regex"))
                 {
                     var text = Convert.ToString(ctx.LastResult, CultureInfo.InvariantCulture) ?? "null";
                     var r = new AssertResult

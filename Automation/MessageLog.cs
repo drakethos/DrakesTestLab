@@ -99,7 +99,7 @@ internal static class ModMessageCard_Patch
     {
         foreach (var typeName in Targets)
         {
-            var type = AccessTools.TypeByName(typeName);
+            var type = FindType(typeName);
             if (type == null)
                 continue;
             foreach (var m in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
@@ -109,6 +109,16 @@ internal static class ModMessageCard_Patch
                     yield return m;
             }
         }
+    }
+
+    /// <summary>The first namespace segment is the assembly name; asking that assembly directly avoids AccessTools.TypeByName, which scans every type of every assembly.</summary>
+    private static Type? FindType(string fullName)
+    {
+        var assemblyName = fullName.Split('.')[0];
+        foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+            if (a.GetName().Name == assemblyName)
+                return a.GetType(fullName, false);
+        return null;
     }
 
     private static bool Prepare()

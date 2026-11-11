@@ -159,10 +159,10 @@ owner check, `as(who, steps)`.
 | `setConfig` | `values`: `{ "Section/Key": value }` (guid defaults to the suite's first required mod) or `guid`,`section`,`key`,`value` | Changes config **for this test only** |
 | `case` | `name` | Applies a case file from `cases/` (reuse complex starting states) |
 | `use` | `block`, `args` (or the args straight on the step) | Runs a block's or function's steps in place ([Blocks](#blocks-reusable-steps)); a function can also be called by its own name |
-| `hook` | `name`, `args`, `as`, `expect`/`contains`/`notContains`, `label`, `stop` | Calls a test hook the mod exposes |
+| `hook` | `name`, `args`, `as`, `expect`/`contains`/`notContains`/`regex`, `label`, `stop` | Calls a test hook the mod exposes |
 | `check` | `check` + that check's fields, `label`, `stop`, `screenshot` | A check in the middle of the steps |
 | `interact` | `target`, `alt`, `hold` | Press E on an object; the game's answer becomes `lastResult` |
-| `click` / `toggle` / `type` | `button` / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label |
+| `click` / `toggle` / `type` | `button` (+ optional `nth`) / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label. Rich text tags are ignored when matching. `nth` (0 = first) picks one of several UI Toolkit elements with the same label (an up arrow on every row). A disabled button fails the step, like a player could not click it |
 | `pressKey` | `button` (Use, Inventory, Jump...) or `key`, `frames` | Fake key press the game reads as real |
 | `teleport`, `face`, `wait` | position or `target` (teleport: `yaw` to face a way); `seconds` or `until` + `timeout` | Movement and timing |
 | `invoke` | `method` (`Namespace.Type.Member`), `args` | Calls a static method / reads a static property; result = `lastResult` |
@@ -177,7 +177,7 @@ owner check, `as(who, steps)`.
 `uiVisible` (text "contains" match; `"exact": true` for whole labels, use it with `expect: false`), `uiText`, `uiEnabled`, `message` (on-screen messages, `kind` Center/TopLeft/Unlock/Tutorial), `unlockShown`,
 `hoverText`, `containerHas`, `logContains`, `noErrors` (`source`), `config`, `skill`, `stat`, `position`, `guardianPower`,
 `wardAccess`, `lastResult`, `hook`, `peerReceived`, `peerConnected`, `zdoOwner`. Compare fields: `expect` (equals, numbers as numbers, case-insensitive), `contains`,
-`notContains`, `min`, `max`.
+`notContains`, `regex` (the whole answer matches a pattern), `min`, `max`.
 
 ## Virtual players (a second client)
 

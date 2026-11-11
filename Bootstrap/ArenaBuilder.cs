@@ -137,7 +137,13 @@ internal static class ArenaBuilder
             if (house)
             {
                 var houseCenter = houseAt ?? center;
-                houseCenter.y = center.y; // the whole arena was levelled to this height
+                // The level tool cannot drop ground more than 8 m, so a hill under the house can stay above the
+                // arena. A floor built at the arena height is then buried, and the game lifts the player out of it.
+                var pad = HighestGround(houseCenter, 8f, 5f);
+                houseCenter.y = pad > center.y + 0.2f ? pad + 0.2f : center.y;
+                if (houseCenter.y > center.y + 0.2f)
+                    TestLabPlugin.Log?.LogInfo(
+                        $"House site is {pad - center.y:0.0} m above the arena; floor set to {houseCenter.y:0.00} so the interior is not buried.");
                 if (TestLabConfig.Instance.KeepWorld.Value && HouseExists(houseCenter))
                 {
                     TestLabPlugin.Log?.LogInfo("Kept world already has the test house; not building it again.");
@@ -209,6 +215,23 @@ internal static class ArenaBuilder
         }
 
         TestLabPlugin.Log?.LogInfo($"Flattened {done}/{maps.Count} heightmaps around {center}.");
+    }
+
+    /// <summary>Highest terrain in the house footprint. The floor is built to this so no corner is underground.</summary>
+    private static float HighestGround(Vector3 center, float halfX, float halfZ)
+    {
+        var zs = ZoneSystem.instance;
+        if (zs == null)
+            return center.y;
+
+        var highest = zs.GetGroundHeight(center);
+        for (var x = -halfX; x <= halfX; x += 2f)
+        {
+            for (var z = -halfZ; z <= halfZ; z += 2f)
+                highest = Mathf.Max(highest, zs.GetGroundHeight(center + new Vector3(x, 0f, z)));
+        }
+
+        return highest;
     }
 
     public static float BuildHouse(Vector3 center)
@@ -649,7 +672,7 @@ internal static class ArenaBuilder
     /// Removes trees, bushes, pickables (and optionally rocks) inside the arena so the flat ground is actually clear.
     /// Anything within keepRadius of the arena centre is left alone (the spawn standing stones).
     /// </summary>
-    private static void ClearArena(Vector3 center, float radius, float keepRadius, bool clearRocks)
+    internal static void ClearArena(Vector3 center, float radius, float keepRadius, bool clearRocks)
     {
         var scene = ZNetScene.instance;
         var field = HarmonyLib.AccessTools.Field(typeof(ZNetScene), "m_instances");

@@ -233,6 +233,7 @@
     <Compile Include="Automation\SuiteModel.cs" />
 
     <Compile Include="Automation\ModEnvironment.cs" />
+    <Compile Include="Automation\RunRequests.cs" />
 
     <Compile Include="Automation\UiDriver.cs" />
 
@@ -270,6 +271,7 @@
     <Compile Include="UI\TestLabInputDriver.cs" />
 
     <Compile Include="UI\Toolbox\Ui.cs" />
+    <Compile Include="Bootstrap\TestLabTabs.cs" />
 
     <Compile Include="UI\Toolbox\ToolboxTab.cs" />
 
@@ -289,11 +291,22 @@
 
     <Compile Include="UI\Toolbox\ToolboxHost.cs" />
 
+    <Compile Include="Util\ModLoadTimer.cs" />
+    <Compile Include="Util\FrameProfiler.cs" />
+    <Compile Include="Util\MemoryProfiler.cs" />
     <Compile Include="Util\LogCapture.cs" />
 
     <Compile Include="Util\PrefabIndex.cs" />
 
     <Compile Include="Util\ItemGiver.cs" />
+    <Compile Include="Cosmetics\LabCoat.cs" />
+    <Compile Include="Util\OrbitCamera.cs" />
+    <EmbeddedResource Include="Cosmetics\Art\mesh.json"><LogicalName>LabCoat/mesh.json</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\atlas.png"><LogicalName>LabCoat/atlas.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\atlas_n.png"><LogicalName>LabCoat/atlas_n.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\chest.png"><LogicalName>LabCoat/chest.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\chest_n.png"><LogicalName>LabCoat/chest_n.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Cosmetics\Art\icon.png"><LogicalName>LabCoat/icon.png</LogicalName></EmbeddedResource>
 
     <Compile Include="Util\GameRefs.cs" />
 
@@ -387,6 +400,9 @@
       <_TestLabTemplateFiles Include="$(TargetDir)Assets\Presets\templates\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(_TestLabTemplateFiles)" DestinationFolder="$(ThunderstoreFolder)\plugins\Assets\Presets\templates\%(RecursiveDir)" SkipUnchangedFiles="true" Condition="'@(_TestLabTemplateFiles)' != ''" />
+
+    <!-- optional preloader patcher: times every mod's load, installed as BepInEx/patchers/<package>/ -->
+    <Exec Command="dotnet build &quot;$(MSBuildProjectDirectory)\Preload\DrakesTestLab.Preload.csproj&quot; -c Release -nologo -v:m -o &quot;$(ThunderstoreFolder)\patchers&quot;" Condition="'$(CI_SKIP_POST_BUILD)' == ''" />
 
     <Exec Command="powershell -Command Compress-Archive -Path '$(ThunderstoreFolder)\*' -DestinationPath '$(ZipOutput)' -Force" Condition="'$(CI_SKIP_POST_BUILD)' == ''" />
 

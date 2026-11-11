@@ -2,7 +2,14 @@
 
 ## Unreleased
 
+## 0.3.3
+
+- **Icon.** Same brass knot as the other mods: DrakeMods, Test Lab, the health mead, the portrait, and "Valheim Mod QA tools".
+- The test house floor follows the ground under it. Levelling cannot drop a hill more than 8 m, so a house built at the arena height used to end up buried and the game would lift the player out of it.
+- A `relog` step sends the player back to where they logged out. A fresh character id makes Valheim respawn at the world start (open ocean on the test seed), and the step used to look for saved pieces before that zone had loaded. A short return is a direct move: respawn spends the teleport cooldown, so `TeleportTo` was refused and the player stayed out of range of the pieces.
+- `click` on UI Toolkit windows: `"nth"` picks one of several elements with the same label (the up arrow on every row of a list); text is matched without rich text tags (a button drawn as a colored square plus a name is found by the name); and a disabled button now fails the step instead of being clicked, as a player could not click it.
 - `spawn` step: a piece whose origin is not its bottom (an archery target, a table) used to come out half buried. Spawned pieces now stand on the ground, like the build tool places them. `"sink": true` keeps the old behaviour (origin on the ground) and `"dy"` lifts a spawn by that many meters.
+- Case `pieces` now stand on the terrain under them, so on a slope they no longer come out buried or floating. `"dy"` lifts a piece from there when `"ground": true`. A piece that names a `"dy"` without `"ground"` (every saved build does) keeps its height relative to you as before; `"ground": false` forces that.
 - "Give materials for this" and the `give materialsFor` step no longer hand out the upgrader idol that 1.0 recipes list as a requirement; a normal craft or upgrade never asks for it.
 - Player tab: a **Durability** section. Every carried item that wears out is listed with its percentage and Set / Break / Fix buttons, plus a percentage slider and Set all / Break all / Fix all.
 

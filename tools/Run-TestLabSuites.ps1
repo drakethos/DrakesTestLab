@@ -35,6 +35,8 @@ param(
     [switch]$Stay,
     [switch]$Attended,
     [switch]$NoKillOnTimeout,
+    # hot mode (Run-HotSwap.ps1): the game stays open and takes rerun / quit requests (implies -Stay)
+    [switch]$Hot,
     # Valheim launch queue: -NoQueue skips it, -Priority goes next (only when the user says skip the line)
     [switch]$NoQueue,
     [switch]$Priority,
@@ -48,7 +50,6 @@ $ErrorActionPreference = 'Stop'
 # Nested runs see VALHEIM_QUEUE_HELD and do not queue again; without the queue script (outside the dev tree) it just runs.
 $valheimQueue = Join-Path $PSScriptRoot '..\..\scripts\Valheim-Queue.ps1'
 if (-not $NoQueue -and -not $env:VALHEIM_QUEUE_HELD -and (Test-Path -LiteralPath $valheimQueue)) {
-    $env:VALHEIM_QUEUE_HELD = '1'
     $passOn = foreach ($p in $PSBoundParameters.GetEnumerator()) {
         if ($p.Key -in 'NoQueue', 'Priority', 'QueueName') { continue }
         if ($p.Value -is [System.Management.Automation.SwitchParameter]) { if ($p.Value.IsPresent) { "-$($p.Key)" } }
@@ -91,6 +92,7 @@ $launchArgs = @('-applaunch', "$ValheimAppId",
     '-testlab-run', "`"$Suites`"")
 # -Attended: you answer the checkpoints (manual suites); the game stays open afterwards
 if ($Attended) { $Stay = $true; $launchArgs += '-testlab-attended' }
+if ($Hot) { $Stay = $true; $launchArgs += '-testlab-hot' }
 $launchArgs += if ($Stay) { '-testlab-stay' } else { '-testlab-quit' }
 if ($Screenshots -ne '') {
     $launchArgs += @('-testlab-screenshots', $Screenshots)
@@ -206,9 +208,30 @@ if (& $haveResults) {
     Write-Host ("Results: {0} passed, {1} failed, {2} skipped" -f $r.passed, $r.failed, $r.skipped)
     foreach ($t in $r.tests) {
         $mark = switch ($t.status) { 'Passed' { 'PASS' } 'Failed' { 'FAIL' } 'Skipped' { 'SKIP' } default { $t.status } }
-        $line = "  [$mark] $($t.suite) / $($t.test)"
+        $secs = if ($null -ne $t.seconds) { ' ({0:0.0}s)' -f [double]$t.seconds } else { '' }
+        $line = "  [$mark] $($t.suite) / $($t.test)$secs"
         if ($t.reason) { $line += " - $($t.reason)" }
         Write-Host $line
+    }
+
+    # timing: wall clock of the whole script, plus what the game reported
+    $elapsed = (Get-Date) - $started
+    Write-Host ''
+    Write-Host ('Time: {0:0}s total (launch to results)' -f $elapsed.TotalSeconds)
+    if ($null -ne $r.totalSeconds) {
+        Write-Host ('  game start to run start {0}s, world ready after {1}s, tests {2}s' -f $r.gameStartToRunSeconds, $r.worldReadySeconds, $r.totalSeconds)
+        $bySuite = $r.tests | Group-Object suite | ForEach-Object {
+            [pscustomobject]@{ Suite = $_.Name; Seconds = ($_.Group | Measure-Object seconds -Sum).Sum }
+        } | Sort-Object Seconds -Descending
+        foreach ($s in $bySuite) { Write-Host ('  suite {0}: {1:0.0}s' -f $s.Suite, $s.Seconds) }
+        $rough = @($r.tests | Where-Object { $_.frames -and $_.frames.frames -gt 0 } | Sort-Object { [double]$_.frames.lowFps } | Select-Object -First 3)
+        foreach ($t in $rough) { Write-Host ('  frames {0}/{1}: {2} fps avg, {3} fps 1% low, worst {4} ms, {5} hitches' -f $t.suite, $t.test, $t.frames.avgFps, $t.frames.lowFps, $t.frames.maxMs, $t.frames.hitches) }
+        if ($r.memoryNowMb) { Write-Host ('  memory now: heap {0} MB, total {1} MB, reserved {2} MB' -f $r.memoryNowMb.mono, $r.memoryNowMb.total, $r.memoryNowMb.reserved) }
+        $mem = @($r.tests | Where-Object { $_.memory } | Sort-Object { [double]$_.memory.monoEndMb - [double]$_.memory.monoStartMb } -Descending | Select-Object -First 3)
+        foreach ($t in $mem) { Write-Host ('  heap {0}/{1}: {2:+0.0;-0.0} MB (end {3} MB, peak {4} MB, churn ~{5} MB, GC {6}/{7}/{8})' -f $t.suite, $t.test, ([double]$t.memory.monoEndMb - [double]$t.memory.monoStartMb), $t.memory.monoEndMb, $t.memory.monoPeakMb, $t.memory.churnMb, $t.memory.gc0, $t.memory.gc1, $t.memory.gc2) }
+        $obj = @($r.tests | Where-Object { $_.objects -and ($_.objects.after - $_.objects.before) -gt 0 } | Sort-Object { $_.objects.after - $_.objects.before } -Descending | Select-Object -First 3)
+        foreach ($t in $obj) { Write-Host ('  objects {0}/{1}: +{2} ({3})' -f $t.suite, $t.test, ($t.objects.after - $t.objects.before), (($t.objects.grew | ForEach-Object { '{0} {1:+0;-0}' -f $_.type, $_.delta }) -join ', ')) }
+        foreach ($m in @($r.modLoad | Select-Object -First 5)) { Write-Host ('  mod load {0}: {1}s' -f $m.name, $m.seconds) }
     }
 
     Write-Host ''

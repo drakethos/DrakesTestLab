@@ -60,6 +60,11 @@ public static class TestHooks
             return;
         _scanned = true;
 
+        // a rescan forgets attribute hooks so a hot-swapped mod's new copy wins (code-registered hooks stay)
+        if (force)
+            foreach (var key in Hooks.Where(kv => kv.Value.Method != null).Select(kv => kv.Key).ToList())
+                Hooks.Remove(key);
+
         var seen = new HashSet<Assembly>();
         foreach (var info in Chainloader.PluginInfos.Values)
         {

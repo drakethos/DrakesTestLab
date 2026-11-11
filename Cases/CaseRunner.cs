@@ -186,7 +186,11 @@ internal static class CaseRunner
         }
 
         var facing = Quaternion.Euler(0f, player.transform.eulerAngles.y, 0f);
-        var pos = player.transform.position + facing * new Vector3(spec.dx, spec.dy, spec.dz);
+        var dy = float.IsNaN(spec.dy) ? 0f : spec.dy;
+        var pos = player.transform.position + facing * new Vector3(spec.dx, dy, spec.dz);
+        var ground = spec.ground == 1 || (spec.ground == -1 && float.IsNaN(spec.dy));
+        if (ground && ZoneSystem.instance != null)
+            pos.y = ZoneSystem.instance.GetGroundHeight(pos) + dy;
         var go = UnityEngine.Object.Instantiate(prefab, pos, Quaternion.Euler(0f, player.transform.eulerAngles.y + spec.yaw, 0f));
         PlacedPieces.Add(go);
         if (go.GetComponent<Piece>() is { } piece)
@@ -452,6 +456,20 @@ internal static class CaseRunner
             foreach (var who in w.permitted)
                 permitted.Add(WardTools.Parse(who));
             WardTools.Spawn(origin, WardTools.Parse(w.owner), w.enabled, permitted, w.radius);
+        }
+
+        // virtual second players, and wait for their characters so the commands below can name them
+        foreach (var peer in c.peers)
+        {
+            var peerName = peer.name.Length > 0 ? peer.name : TestLabConfig.Instance.Player2.Value;
+            if (Automation.VirtualPeers.Find(peerName) != null)
+                continue;
+            var at = player.transform.position + player.transform.right * peer.dx + player.transform.forward * peer.dz;
+            var vp = Automation.VirtualPeers.Join(peerName, at, true, 0f, 0f, false, peer.proxy);
+            var until = Time.realtimeSinceStartup + 5f;
+            while (vp.PuppetZdo != null && vp.Puppet == null && Time.realtimeSinceStartup < until)
+                yield return null;
+            yield return null;
         }
 
         // a saved build

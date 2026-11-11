@@ -134,6 +134,9 @@ jobs:
           # therefore lives under plugins/. Only manifest.json, icon.png, README.md and CHANGELOG.md sit at the root.
           mkdir -p "$PKG_DIR/plugins"
           cp bin/Release/DrakesTestLab.dll "$PKG_DIR/plugins/"
+          # optional preloader patcher (times every mod's load); Gale installs patchers/ as BepInEx/patchers/<package>/
+          dotnet build Preload/DrakesTestLab.Preload.csproj -c Release -nologo -v:m             /p:BepInExCore="$(pwd)/ci_valheim/BepInEx/core" /p:ManagedDir="$(pwd)/ci_valheim/valheim_Data/Managed"             -o "$PKG_DIR/patchers"
+          test -f "$PKG_DIR/patchers/DrakesTestLab.Preload.dll" || { echo "::error::preload patcher missing" >&2; exit 1; }
           cp README.md                      "$PKG_DIR/"
           cp icon.png                       "$PKG_DIR/"
           cp CHANGELOG.md                   "$PKG_DIR/"

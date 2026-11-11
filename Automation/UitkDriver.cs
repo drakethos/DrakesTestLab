@@ -48,9 +48,31 @@ internal static class UitkDriver
     private static string TextOf(VisualElement ve) => ve switch
     {
         TextField f => f.value ?? "",
-        TextElement t => t.text ?? "",
+        TextElement t => StripTags(t.text ?? ""),
         _ => ""
     };
+
+    /// <summary>What a player reads: rich text tags (colors, bold) are not part of the words.</summary>
+    private static string StripTags(string s)
+    {
+        if (s.IndexOf('<') < 0)
+            return s;
+        var sb = new System.Text.StringBuilder(s.Length);
+        var inTag = false;
+        foreach (var ch in s)
+        {
+            if (ch == '<')
+                inTag = true;
+            else if (ch == '>' && inTag)
+                inTag = false;
+            else if (!inTag)
+                sb.Append(ch);
+        }
+        return sb.ToString().Trim();
+    }
+
+    /// <summary>Why the last <see cref="Click"/> did nothing when the element exists (a disabled button), or null.</summary>
+    public static string? LastProblem { get; private set; }
 
     /// <summary>The title a form shows above or before a field: a Label in the field's own row or the row above it.</summary>
     private static string TitleOf(VisualElement field)
@@ -97,9 +119,50 @@ internal static class UitkDriver
         return byText ?? byContains;
     }
 
-    public static bool Click(string query)
+    /// <summary>
+    /// Every shown element of the type that matches, in the order <see cref="Find{T}"/> prefers them: element name, then exact text, then
+    /// text that contains the query. Several buttons can share a label (an up arrow on every row): pick one with its position here.
+    /// </summary>
+    public static List<T> FindAll<T>(string query) where T : VisualElement
     {
-        var button = Find<Button>(query);
+        var q = query.Trim();
+        var byName = new List<T>();
+        var byText = new List<T>();
+        var byContains = new List<T>();
+        foreach (var ve in All())
+        {
+            if (ve is not T typed || !Shown(ve))
+                continue;
+            if (string.Equals(ve.name, q, StringComparison.OrdinalIgnoreCase)
+                || (ve is TextField && string.Equals(TitleOf(ve).Trim(), q, StringComparison.OrdinalIgnoreCase)))
+            {
+                byName.Add(typed);
+                continue;
+            }
+            var text = TextOf(ve);
+            if (text.Equals(q, StringComparison.OrdinalIgnoreCase))
+                byText.Add(typed);
+            else if (text.Length > 0 && text.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+                byContains.Add(typed);
+        }
+        byName.AddRange(byText);
+        byName.AddRange(byContains);
+        return byName;
+    }
+
+    /// <summary>The <paramref name="nth"/> (0 = first) match, see <see cref="FindAll{T}"/>.</summary>
+    public static T? Find<T>(string query, int nth) where T : VisualElement
+    {
+        if (nth <= 0)
+            return Find<T>(query);
+        var all = FindAll<T>(query);
+        return nth < all.Count ? all[nth] : null;
+    }
+
+    public static bool Click(string query, int nth = 0)
+    {
+        LastProblem = null;
+        var button = Find<Button>(query, nth);
         if (button == null)
         {
             var toggle = Find<Toggle>(query);
@@ -110,15 +173,27 @@ internal static class UitkDriver
             }
 
             // anything else clickable (a switch row, a card): send a real click to the text; it bubbles to the element's handler
-            var other = Find<VisualElement>(query);
-            if (other == null || !other.enabledInHierarchy)
+            var other = Find<VisualElement>(query, nth);
+            if (other == null)
                 return false;
+            if (!other.enabledInHierarchy)
+            {
+                LastProblem = $"'{query}' is not clickable right now (it is disabled)";
+                return false;
+            }
             using (var click = ClickEvent.GetPooled())
             {
                 click.target = other;
                 other.SendEvent(click);
             }
             return true;
+        }
+
+        // a disabled button does nothing for a player, so it does nothing here
+        if (!button.enabledInHierarchy)
+        {
+            LastProblem = $"button '{query}' is not clickable right now (it is disabled)";
+            return false;
         }
 
         // invoke the button's click handlers directly (synthetic pointer events need a focused panel)

@@ -32,7 +32,7 @@ def main():
     names = [n for n in zipfile.ZipFile(zpath).namelist() if not n.endswith("/")]
     mapped = {n: map_file(n, pkg) for n in names if n not in ROOT_ONLY}
     base = f"BepInEx/plugins/{pkg}/"
-    want = [base + "DrakesTestLab.dll", base + "Assets/Presets/templates/TestLab/_main.1.fwl2",
+    want = [base + "DrakesTestLab.dll", "BepInEx/patchers/" + pkg + "/DrakesTestLab.Preload.dll", base + "Assets/Presets/templates/TestLab/_main.1.fwl2",
             base + "Assets/Presets/templates/TestLab/_manifest.txt", base + "Assets/Presets/templates/MasterBjorn.fch"]
     got = set(mapped.values())
     missing = [w for w in want if w not in got]

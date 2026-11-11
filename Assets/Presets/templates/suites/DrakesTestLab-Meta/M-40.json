@@ -1,0 +1,62 @@
+{
+  "name": "M-40 memory: heap and total sampled per test and step, with an object census",
+  "description": "Covers the memory profiler: heap, total, peak and GC counts per test and step, and the Unity object census before and after each test.",
+  "steps": [
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "hook",
+      "name": "testlab.memorySampled"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 5,
+      "label": "memory was sampled while the test ran"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.stepMemoryRecorded",
+      "expect": true,
+      "label": "the finished step has its own memory stats"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.heapMb"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 10,
+      "label": "managed heap size is plausible (MB)"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.totalMb"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 100,
+      "label": "total allocated memory is plausible (MB)"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.objectCount"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1000,
+      "label": "the object census counted Unity objects"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

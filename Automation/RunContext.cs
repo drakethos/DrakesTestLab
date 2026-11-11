@@ -28,6 +28,29 @@ internal sealed class TestResult
     public TestStatus Status = TestStatus.NotRun;
     public string Reason = "";
     public float Seconds;
+
+    /// <summary>Wall-clock start and end of the test, and the realtime clock at its start (step log lines are stamped relative to it).</summary>
+    public DateTime StartedAt;
+    public DateTime EndedAt;
+    public float StartRealtime;
+
+    /// <summary>Seconds spent in the test's setup (reset + case), before its first step.</summary>
+    public float SetupSeconds;
+
+    /// <summary>How long each step took, in order, for the "slowest steps" lists.</summary>
+    public List<(string Label, float Seconds)> StepTimes = new();
+
+    /// <summary>Frame-time stats for the whole test, and for each step (parallel to <see cref="StepTimes"/>).</summary>
+    public DrakesTestLab.Util.FrameStats Frames;
+    public List<DrakesTestLab.Util.FrameStats> StepFrames = new();
+    public int FrameMark;
+
+    /// <summary>Memory for the whole test and each step, and the Unity object counts before and after the test (null when counting is off).</summary>
+    public DrakesTestLab.Util.MemStats Mem;
+    public List<DrakesTestLab.Util.MemStats> StepMem = new();
+    public DrakesTestLab.Util.ObjectCensus? CensusBefore;
+    public DrakesTestLab.Util.ObjectCensus? CensusAfter;
+
     public List<string> StepLog = new();
     public List<AssertResult> Asserts = new();
     public string Screenshot = "";
@@ -56,7 +79,12 @@ internal sealed class RunContext
 
     public bool TimedOut => Time.realtimeSinceStartup > Deadline;
 
-    public void Log(string line) => Result.StepLog.Add(line);
+    /// <summary>Adds a log line stamped with the seconds since the test started, e.g. "[+3.2s] step 2/5: ...".</summary>
+    public void Log(string line)
+    {
+        var t = Time.realtimeSinceStartup - Result.StartRealtime;
+        Result.StepLog.Add($"[+{t:0.0}s] {line}");
+    }
 }
 
 /// <summary>Finds world objects for steps and asserts: a tag a test gave an object, or the nearest object of a prefab.</summary>

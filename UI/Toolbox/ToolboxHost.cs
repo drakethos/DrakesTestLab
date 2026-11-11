@@ -75,6 +75,15 @@ internal sealed class ToolboxHost : MonoBehaviour
         Automation.UiPicker.Update();
         Automation.Recorder.Tick();
         LabBar.Tick();
+        // tabs other mods registered through TestLabTabs, also the ones registered after this window was created
+        foreach (var entry in TestLabTabs.Registered)
+        {
+            if (!entry.Added)
+            {
+                entry.Added = true;
+                _tabs.Add(new ExternalTab(entry));
+            }
+        }
         foreach (var tab in _tabs)
             tab.Tick();
     }

@@ -1,0 +1,58 @@
+{
+  "name": "M-38 timing: stamped log lines, timed steps and run, mod load times",
+  "description": "Covers the report timestamps and the mod load timer. With DrakesTestLab.Preload installed every mod is listed, DrakesTestLab included.",
+  "steps": [
+    {
+      "do": "log",
+      "message": "first step"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "hook",
+      "name": "testlab.logStamped",
+      "expect": true,
+      "label": "every log line starts with [+x.xs]"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.stepsTimed"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 2,
+      "label": "finished steps were timed"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.runTimed",
+      "expect": true,
+      "label": "the run and the test recorded their start"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.modLoadCount"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "at least one mod load time was recorded"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.modLoadSane",
+      "expect": true,
+      "label": "mod load times are sane (all mods, with the preload patcher)"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -28,13 +28,110 @@ internal static class ResultsReport
         sb.Append("</style></head><body><main>");
         sb.Append($"<h1>DrakesTestLab results</h1><div class=\"sum\">{DateTime.Now:yyyy-MM-dd HH:mm} &middot; ");
         sb.Append($"<span class=\"Passed\">{passed} passed</span>, <span class=\"Failed\">{failed} failed</span>, <span class=\"Skipped\">{skipped} skipped</span></div>");
+        var total = TestRunner.RunStartedAt == default ? 0.0 : (DateTime.Now - TestRunner.RunStartedAt).TotalSeconds;
+        sb.Append($"<div class=\"sum\">Started {TestRunner.RunStartedAt:HH:mm:ss} &middot; {total:0.0}s so far &middot; game start to run start {TestRunner.RunStartRealtime:0.0}s &middot; world ready after {TestRunner.RunWorldReadySeconds:0.0}s</div>");
         sb.Append("<div class=\"filters\"><label><input type=\"checkbox\" id=\"onlyFailed\"> Only failed</label></div>");
+
+        // where the time went
+        var slowTests = new List<TestResult>(run);
+        slowTests.Sort((a, b) => b.Seconds.CompareTo(a.Seconds));
+        var slowSteps = new List<(string Test, string Label, float Seconds)>();
+        foreach (var r in run)
+            foreach (var s in r.StepTimes)
+                slowSteps.Add((r.Suite + " / " + r.Test, s.Label, s.Seconds));
+        slowSteps.Sort((a, b) => b.Seconds.CompareTo(a.Seconds));
+        var mods = new List<Util.ModLoadTimer.Entry>(Util.ModLoadTimer.All);
+        mods.Sort((a, b) => b.Seconds.CompareTo(a.Seconds));
+        if (slowTests.Count > 0)
+        {
+            sb.Append("<details><summary><b>Timing</b><span class=\"muted\">slowest tests, steps and mod load times</span></summary>");
+            sb.Append("<p><strong>Slowest tests</strong></p><ul>");
+            for (var i = 0; i < Math.Min(8, slowTests.Count); i++)
+                sb.Append($"<li>{slowTests[i].Seconds:0.0}s &mdash; {H(slowTests[i].Suite)} / {H(slowTests[i].Test)}</li>");
+            sb.Append("</ul>");
+            if (slowSteps.Count > 0)
+            {
+                sb.Append("<p><strong>Slowest steps</strong></p><ul>");
+                for (var i = 0; i < Math.Min(10, slowSteps.Count); i++)
+                    sb.Append($"<li>{slowSteps[i].Seconds:0.0}s &mdash; {H(slowSteps[i].Label)} <span class=\"muted\">({H(slowSteps[i].Test)})</span></li>");
+                sb.Append("</ul>");
+            }
+
+            // smoothness: lowest 1%-low fps per test, and the steps that had the single worst frames
+            var smooth = run.FindAll(r => r.Frames.Frames > 0);
+            smooth.Sort((a, b) => a.Frames.LowFps.CompareTo(b.Frames.LowFps));
+            if (smooth.Count > 0)
+            {
+                sb.Append("<p><strong>Roughest tests</strong> <span class=\"muted\">(lowest 1% low fps; a hitch is a frame over " + Util.FrameProfiler.HitchMs.ToString("0") + " ms)</span></p><ul>");
+                for (var i = 0; i < Math.Min(8, smooth.Count); i++)
+                    sb.Append($"<li>{H(smooth[i].Frames.Summary())} &mdash; {H(smooth[i].Suite)} / {H(smooth[i].Test)}</li>");
+                sb.Append("</ul>");
+            }
+
+            var spikes = new List<(string Test, string Label, float Ms)>();
+            foreach (var r in run)
+                for (var k = 0; k < r.StepFrames.Count && k < r.StepTimes.Count; k++)
+                    spikes.Add((r.Suite + " / " + r.Test, r.StepTimes[k].Label, r.StepFrames[k].MaxMs));
+            spikes.Sort((a, b) => b.Ms.CompareTo(a.Ms));
+            if (spikes.Count > 0)
+            {
+                sb.Append("<p><strong>Worst single frames</strong> <span class=\"muted\">(which step it happened in)</span></p><ul>");
+                for (var i = 0; i < Math.Min(10, spikes.Count); i++)
+                    sb.Append($"<li>{spikes[i].Ms:0} ms &mdash; {H(spikes[i].Label)} <span class=\"muted\">({H(spikes[i].Test)})</span></li>");
+                sb.Append("</ul>");
+            }
+
+            // memory: biggest heap growth (leak suspects), most allocation churn, and which object types a test left behind
+            var withMem = run.FindAll(r => r.Mem.Valid);
+            if (withMem.Count > 0)
+            {
+                withMem.Sort((a, b) => b.Mem.MonoGrowthMb.CompareTo(a.Mem.MonoGrowthMb));
+                sb.Append("<p><strong>Heap growth</strong> <span class=\"muted\">(managed memory in use, end minus start of the test; a GC in between can hide growth)</span></p><ul>");
+                for (var i = 0; i < Math.Min(8, withMem.Count); i++)
+                    sb.Append($"<li>{H(withMem[i].Mem.Summary())} &mdash; {H(withMem[i].Suite)} / {H(withMem[i].Test)}</li>");
+                sb.Append("</ul>");
+
+                withMem.Sort((a, b) => b.Mem.ChurnMb.CompareTo(a.Mem.ChurnMb));
+                sb.Append("<p><strong>Most allocation</strong> <span class=\"muted\">(churn: how much managed memory the test allocated, and how many GCs it caused)</span></p><ul>");
+                for (var i = 0; i < Math.Min(5, withMem.Count); i++)
+                    sb.Append($"<li>~{withMem[i].Mem.ChurnMb:0} MB, GC {withMem[i].Mem.Gen0}/{withMem[i].Mem.Gen1}/{withMem[i].Mem.Gen2} &mdash; {H(withMem[i].Suite)} / {H(withMem[i].Test)}</li>");
+                sb.Append("</ul>");
+            }
+
+            var growers = new List<(TestResult R, int Delta)>();
+            foreach (var r in run)
+                if (r.CensusBefore != null && r.CensusAfter != null)
+                    growers.Add((r, r.CensusAfter.Total - r.CensusBefore.Total));
+            growers.Sort((a, b) => b.Delta.CompareTo(a.Delta));
+            if (growers.Count > 0 && growers[0].Delta > 0)
+            {
+                sb.Append("<p><strong>Objects left behind</strong> <span class=\"muted\">(Unity objects after minus before the test, with the types that grew most)</span></p><ul>");
+                for (var i = 0; i < Math.Min(8, growers.Count) && growers[i].Delta > 0; i++)
+                {
+                    var g = growers[i].R.CensusAfter!.GrowthSince(growers[i].R.CensusBefore!, 3);
+                    var types = string.Join(", ", g.ConvertAll(x => $"{x.Type} {x.Delta:+0;-0}"));
+                    sb.Append($"<li>+{growers[i].Delta} ({H(types)}) &mdash; {H(growers[i].R.Suite)} / {H(growers[i].R.Test)}</li>");
+                }
+
+                sb.Append("</ul>");
+            }
+
+            if (mods.Count > 0)
+            {
+                sb.Append($"<p><strong>Mod load times</strong> <span class=\"muted\">({(Util.ModLoadTimer.FromPatcher ? $"every mod; the first started {Util.ModLoadTimer.BeforeSeconds:0.0}s after the game process did" : $"only mods loaded after DrakesTestLab; {Util.ModLoadTimer.BeforeSeconds:0.0}s passed before them. Install DrakesTestLab.Preload for all")})</span></p><ul>");
+                foreach (var m in mods)
+                    sb.Append($"<li>{m.Seconds:0.00}s &mdash; {H(m.Name)}</li>");
+                sb.Append("</ul>");
+            }
+
+            sb.Append("</details>");
+        }
 
         foreach (var r in run)
         {
             var open = r.Status == TestStatus.Failed ? " open" : "";
             sb.Append($"<details class=\"t t-{r.Status}\"{open}><summary><b class=\"{r.Status}\">{H(r.Status.ToString().ToUpperInvariant())}</b>");
-            sb.Append($"<span>{H(r.Suite)} / <strong>{H(r.Test)}</strong></span><span class=\"muted\">{r.Seconds:0.0}s</span>");
+            sb.Append($"<span>{H(r.Suite)} / <strong>{H(r.Test)}</strong></span><span class=\"muted\">{r.Seconds:0.0}s{(r.StartedAt == default ? "" : " &middot; " + r.StartedAt.ToString("HH:mm:ss"))}{(r.Frames.Frames > 0 ? " &middot; " + H(r.Frames.Summary()) : "")}{(r.Mem.Valid ? " &middot; " + H(r.Mem.Summary()) : "")}</span>");
             if (r.Reason.Length > 0)
                 sb.Append($"<span class=\"muted\">{H(r.Reason)}</span>");
             sb.Append("</summary>");
