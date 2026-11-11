@@ -422,7 +422,7 @@ internal static class Steps
             case "face": return Face(step, ctx);
             case "wait": return Wait(step, ctx);
             case "spawn": Spawn(step, ctx); return null;
-            case "clearArea":
+            case "cleararea":
             {
                 var spec = ClearSpec.Read(step) ?? new ClearSpec();
                 var n = spec.Apply();
@@ -513,7 +513,8 @@ internal static class Steps
                 // "clean": true leaves the lab's own "Testing ..." banner out of this picture (for docs)
                 if (step.Bool("clean"))
                     TestRunner.CleanShotUntilFrame = Time.frameCount + 2;
-                TestRunner.Screenshot(ctx, step.Str("name", "shot"));
+                // the file is named from "name"; many suites only give a "label", which used to leave every picture called "shot"
+                TestRunner.Screenshot(ctx, step.Str("name", step.Str("label", "shot")));
                 return null;
             case "log": ctx.Log("  " + step.Str("message")); return null;
             case "case": return ApplyCase(step);
