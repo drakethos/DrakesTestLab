@@ -11,6 +11,9 @@ namespace DrakesTestLab.Util;
 internal static class OrbitCamera
 {
     private static bool _on;
+
+    /// <summary>True while the orbit camera drives the view (overlays that would cover the subject hide themselves).</summary>
+    public static bool Active => _on;
     private static float _yaw, _focus = 1.0f, _dist = 2.4f, _pitch = 6f;
 
     public static bool View(float yaw, float focus, float dist, float pitch)

@@ -24,6 +24,12 @@ internal sealed class ToolboxHost : MonoBehaviour
     public static ToolboxHost? Instance { get; private set; }
     public static bool IsOpen { get; private set; }
 
+    /// <summary>The game takes no input and the cursor is free while the toolbox or the lab clipboard window is open.</summary>
+    public static bool BlocksInput => IsOpen || Gear.ClipboardMenu.IsOpen;
+
+    /// <summary>The built-in tab of this type, if any.</summary>
+    public T? FindTab<T>() where T : ToolboxTab => _tabs.Find(t => t is T) as T;
+
     private void Awake()
     {
         Instance = this;

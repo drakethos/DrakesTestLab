@@ -73,6 +73,7 @@ Details and the design: [docs/MULTIPLAYER.md](https://github.com/drakethos/Drake
 - **Share the world:** because the game logs straight in, the open / public / password choices come from the config (`[Server]`) and the Session tab, so friends can join the test world through Steam.
 - **Camera aim:** the `face` and `lookAt` steps tilt the view like the mouse (`up`, `down`, `left`, `right`, `pitch`, `yawOffset`), third-person camera included, so a test can look 1.5 m up a trunk or straight down at the floor. Plain `face` stays level.
 - **Fires:** one button refuels every fire and fuel-driven cooking station, or keeps them topped up.
+- **Lab gear:** a **clipboard** (`Drake_Clipboard`, a tool) and **black lab glasses** (`Drake_LabGlasses`, utility slot), free to craft by hand or handed out from the Player tab. Hold the clipboard and left click to note down what you look at (prefab, id, position, state); right click opens the clipboard: spawn another, give me one, open it in the Spawn tab, go there, repair, hurt, destroy, copy ids, and the list of notes (kept in `config/DrakesTestLab/clipboard.json`). Wear the glasses for a readout card by the crosshair of anything in sight: prefab, ZDO id and owner, builder, health and support, creature level and faction, item quality / durability / crafter / custom data, chest contents, fuel, door and ward state, sign text, plant growth, the components on the object, biome and height of the ground.
 
 ![Cauldron and mead ketill standing over lit fire pits, cooking spit alongside](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/fire-stations.jpg)
 
@@ -164,6 +165,7 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 - **Arena:** `Spawn` (level and clear around spawn, keep the standing stones) or `FindFlat`, radius, keep-radius, house offset, build the house on or off
 - **Rules:** no-build zones (`Vanilla` / `Off` / `Scaled`), fall damage, auto-safe falls
 - **Quiet zone** (`[Arena] QuietZone`, `QuietZoneRadius`): a no-fly zone around the arena and you. While tests run (default), nothing wild spawns inside it, wild creatures there are removed and the game's random events (raids) do not start, so a test does not pass or fail on a stray boar. Creatures your tests or your mod make are left alone. `Tests` / `Always` / `Off`.
+- **Gear** (`[Gear]`): `LabGear` (the clipboard and glasses items, on by default), `GiveOnSpawn`, `GlassesRange` (how far the glasses read, default 60 m)
 - **Dev:** toolbox and overlay hotkeys, UI scale
 - **Automation:** `StepDelay`, `RunOnLaunch`, and `CountObjects` (count Unity objects around each test to find leaks; off by default)
 - **Server connect mode** (`[Bootstrap] Target = Server`, `[Connect]`): `Address` (the server's public `IP:port`), `Password`, `Role` (`Player1` / `Player2`), `TimeoutSeconds`, `Character`, `QuitOnFailure`, `QuitDelaySeconds`

@@ -315,6 +315,17 @@
     <EmbeddedResource Include="Cosmetics\Art\chest.png"><LogicalName>LabCoat/chest.png</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="Cosmetics\Art\chest_n.png"><LogicalName>LabCoat/chest_n.png</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="Cosmetics\Art\icon.png"><LogicalName>LabCoat/icon.png</LogicalName></EmbeddedResource>
+    <Compile Include="Gear\GearArt.cs" />
+    <Compile Include="Gear\GearMeshes.cs" />
+    <Compile Include="Gear\LabGear.cs" />
+    <Compile Include="Gear\Readout.cs" />
+    <Compile Include="Gear\Clipboard.cs" />
+    <Compile Include="Gear\ClipboardMenu.cs" />
+    <Compile Include="Gear\GearHost.cs" />
+    <Compile Include="Patches\GearPatches.cs" />
+    <EmbeddedResource Include="Gear\Art\gear_atlas.png"><LogicalName>Gear/gear_atlas.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Gear\Art\clipboard_icon.png"><LogicalName>Gear/clipboard_icon.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Gear\Art\glasses_icon.png"><LogicalName>Gear/glasses_icon.png</LogicalName></EmbeddedResource>
 
     <Compile Include="Util\GameRefs.cs" />
 

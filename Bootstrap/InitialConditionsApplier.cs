@@ -39,6 +39,8 @@ internal static class InitialConditionsApplier
 
         ApplySkills(player, cfg.SkillLevels.Value);
         ApplyItems(player, cfg.StartingItems.Value);
+        if (cfg.LabGearOnSpawn.Value && Gear.LabGear.Enabled)
+            Gear.LabGear.GiveAll();
 
         if (cfg.OverrideSpawnPosition.Value)
         {

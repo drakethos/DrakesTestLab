@@ -76,6 +76,13 @@ internal sealed class PlayerTab : ToolboxTab
             ("Builder kit", GiveBuilderKit),
             ("Combat kit", GiveCombatKit),
             ("Clear inventory", () => p.GetInventory().RemoveAll()));
+        if (Gear.LabGear.Enabled)
+        {
+            Ui.Row(
+                ("Lab gear: clipboard + glasses", Gear.LabGear.GiveAll),
+                ("Give and equip", () => Gear.LabGear.EquipAll()));
+            Ui.Hint("Hold the clipboard: left click notes what you look at, right click opens it. Wear the glasses (utility slot) for a readout of anything in sight.");
+        }
         Ui.Row(("Reset character data", () => GameRefs.RunConsoleCommand("resetcharacter")));
 
         DrawDurability(p);

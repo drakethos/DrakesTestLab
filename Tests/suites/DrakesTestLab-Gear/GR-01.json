@@ -1,0 +1,417 @@
+{
+  "name": "GR-01 lab gear: craft the clipboard and glasses, read a wall, note it, open the clipboard, photograph both",
+  "timeout": 240,
+  "steps": [
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Gear.LabGear.Reload",
+      "args": []
+    },
+    {
+      "do": "clearInventory"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.clear"
+    },
+    {
+      "do": "teleport",
+      "dx": 0.01,
+      "dz": 0,
+      "yaw": 180
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.Stage",
+      "args": [
+        0.5,
+        14
+      ]
+    },
+    {
+      "do": "place",
+      "prefab": "woodwall",
+      "as": "wall",
+      "dz": 2.5
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "craft",
+      "prefab": "Drake_Clipboard",
+      "label": "clipboard crafts by hand"
+    },
+    {
+      "do": "craft",
+      "prefab": "Drake_LabGlasses",
+      "label": "glasses craft by hand"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Drake_Clipboard",
+      "label": "clipboard in inventory"
+    },
+    {
+      "do": "check",
+      "check": "hasItem",
+      "prefab": "Drake_LabGlasses",
+      "label": "glasses in inventory"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.equip"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.0
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.held",
+      "expect": true,
+      "label": "clipboard is held in the right hand"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.worn",
+      "expect": true,
+      "label": "glasses are worn in the utility slot"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.describe"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.materials"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.probe"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.8
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-probe",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.probe",
+      "args": {
+        "clear": true
+      }
+    },
+    {
+      "do": "lookAt",
+      "target": "wall",
+      "distance": 2
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.target",
+      "expect": "woodwall",
+      "label": "the crosshair target is the wall"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.readout",
+      "contains": "Health:",
+      "label": "the glasses read the wall's health"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.readout",
+      "contains": "Piece:",
+      "label": "the glasses read the wall's builder"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.readout",
+      "contains": "ZDO:",
+      "label": "the glasses read the wall's ZDO"
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-readout-card",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.note",
+      "expect": 1,
+      "label": "noting the wall makes one note"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.lastNote",
+      "contains": "woodwall",
+      "label": "the note names the wall"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.menu",
+      "args": {
+        "open": true
+      },
+      "expect": true,
+      "label": "the clipboard window opens"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-clipboard-menu",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.menu",
+      "args": {
+        "open": false
+      },
+      "expect": false,
+      "label": "the clipboard window closes"
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        0,
+        1.0,
+        2.6,
+        6
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-front",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        0,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-front",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        45,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-right",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        -45,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-left",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        90,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-side",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        40,
+        0.85,
+        1.9,
+        6
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-hand-a",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        -40,
+        0.85,
+        1.9,
+        6
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-hand-b",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        -90,
+        0.85,
+        1.9,
+        6
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-hand-side",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        180,
+        1.0,
+        2.6,
+        6
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-back",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.describe"
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.Off",
+      "args": []
+    },
+    {
+      "do": "drop",
+      "prefab": "Drake_Clipboard"
+    },
+    {
+      "do": "drop",
+      "prefab": "Drake_LabGlasses"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.held",
+      "expect": false,
+      "label": "clipboard dropped"
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.Off",
+      "args": []
+    },
+    {
+      "do": "lookAt",
+      "target": "Drake_Clipboard",
+      "distance": 1.5
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-dropped",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.Off",
+      "args": []
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}
