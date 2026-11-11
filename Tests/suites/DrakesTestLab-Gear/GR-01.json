@@ -89,6 +89,12 @@
       "name": "testlab.gear.materials"
     },
     {
+      "do": "teleport",
+      "dx": 0.01,
+      "dz": 0,
+      "yaw": 180
+    },
+    {
       "do": "hook",
       "name": "testlab.gear.probe"
     },
