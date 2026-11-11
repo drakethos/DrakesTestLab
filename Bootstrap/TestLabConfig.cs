@@ -74,6 +74,9 @@ internal sealed class TestLabConfig
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
     public ConfigEntry<bool> ClearRocks { get; private set; } = null!;
     public ConfigEntry<bool> LabCoat { get; private set; } = null!;
+    public ConfigEntry<bool> LabGear { get; private set; } = null!;
+    public ConfigEntry<bool> LabGearOnSpawn { get; private set; } = null!;
+    public ConfigEntry<float> GlassesRange { get; private set; } = null!;
     public ConfigEntry<bool> BuildHouse { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetX { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetZ { get; private set; } = null!;
@@ -205,6 +208,10 @@ internal sealed class TestLabConfig
         c.ClearRocks = config.Bind("Arena", "ClearRocks", true, "Also remove boulders and mineable rocks from the test area (outside KeepRadius).");
         c.LabCoat = config.Bind("Experimental", "LabCoat", false,
             "EXPERIMENTAL, work in progress: adds the Drake_LabCoat chest item (a white lab coat built from the vanilla tunic; spawn it by name). Off by default; takes effect on the next game start.");
+        c.LabGear = config.Bind("Gear", "LabGear", true,
+            "Adds the lab gear items: Drake_Clipboard (a tool: left click notes what you look at, right click opens the clipboard) and Drake_LabGlasses (utility slot: a readout of anything you look at). Both are free to craft by hand; the Player tab and 'testlab.gear' hand them out. Takes effect on the next game start.");
+        c.LabGearOnSpawn = config.Bind("Gear", "GiveOnSpawn", false, "Put the clipboard and the glasses in the inventory when the test character spawns.");
+        c.GlassesRange = config.Bind("Gear", "GlassesRange", 60f, new ConfigDescription("How far the glasses read (metres). The clipboard alone reads to 12 m.", new AcceptableValueRange<float>(5f, 300f)));
         c.BuildHouse = config.Bind("Arena", "BuildHouse", true, "Build the test house with all crafting stations in the arena.");
         c.HouseOffsetX = config.Bind("Arena", "HouseOffsetX", 0f, "Spawn mode: east/west offset of the test house from the spawn point.");
         c.HouseOffsetZ = config.Bind("Arena", "HouseOffsetZ", 26f, "Spawn mode: north/south offset of the test house from the spawn point.");

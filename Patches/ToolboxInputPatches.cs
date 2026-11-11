@@ -13,7 +13,7 @@ internal static class Player_TakeInput_Patch
 {
     private static void Postfix(ref bool __result)
     {
-        if (ToolboxHost.IsOpen)
+        if (ToolboxHost.BlocksInput)
             __result = false;
     }
 }
@@ -27,7 +27,7 @@ internal static class PlayerController_TakeInput_Patch
 
     private static void Postfix(ref bool __result)
     {
-        if (ToolboxHost.IsOpen)
+        if (ToolboxHost.BlocksInput)
             __result = false;
     }
 }
@@ -41,7 +41,7 @@ internal static class GameCamera_UpdateMouseCapture_Patch
 
     private static void Postfix()
     {
-        if (!ToolboxHost.IsOpen)
+        if (!ToolboxHost.BlocksInput)
             return;
 
         Cursor.lockState = CursorLockMode.None;
@@ -59,7 +59,7 @@ internal static class ZInput_ScrollWheel_Patch
 
     private static void Postfix(ref float __result)
     {
-        if (ToolboxHost.IsOpen)
+        if (ToolboxHost.BlocksInput)
             __result = 0f;
     }
 }

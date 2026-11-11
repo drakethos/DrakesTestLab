@@ -37,6 +37,7 @@ public partial class TestLabPlugin : BaseUnityPlugin
         UnityEngine.Object.DontDestroyOnLoad(inputGo);
         inputGo.AddComponent<TestLabInputDriver>();
         inputGo.AddComponent<ToolboxHost>();
+        inputGo.AddComponent<Gear.GearHost>();
         inputGo.AddComponent<Util.FrameSampler>();
         inputGo.AddComponent<QuietZoneSweeper>();
 

@@ -31,8 +31,22 @@ internal static class TestLabConsole
         ["testlab.clearpersistent"] = new Entry { Help = "Delete persistent test saves.", Run = _ => ClearPersistent() },
         ["testlab.clearephemeral"] = new Entry { Help = "Delete ephemeral test saves.", Run = _ => ClearEphemeral() },
         ["testlab.dev"] = new Entry { Help = "Toggle devcommands auto-enable.", Run = _ => TestControlsApplier.ToggleDevCommands() },
-        ["testlab.hostile"] = new Entry { Help = "Toggle creature hostility.", Run = _ => TestControlsApplier.ToggleHostile() }
+        ["testlab.hostile"] = new Entry { Help = "Toggle creature hostility.", Run = _ => TestControlsApplier.ToggleHostile() },
+        ["testlab.gear"] = new Entry { Help = "Lab gear: 'testlab.gear' gives the clipboard and the glasses, 'testlab.gear equip' also equips them, 'testlab.gear reload' re-reads their art and fit from config/DrakesTestLab/dev/Gear, 'testlab.gear describe' logs how they were built.", Run = GearCommand },
+        ["testlab.clipboard"] = new Entry { Help = "Open or close the lab clipboard window.", Run = _ => DrakesTestLab.Gear.ClipboardMenu.Toggle(DrakesTestLab.Gear.GearHost.Current) }
     };
+
+    private static void GearCommand(string[] parts)
+    {
+        var what = parts.Length > 1 ? parts[1].ToLowerInvariant() : "";
+        switch (what)
+        {
+            case "equip": GameRefs.LogToConsole("DrakesTestLab: " + DrakesTestLab.Gear.LabGear.EquipAll()); break;
+            case "reload": GameRefs.LogToConsole(DrakesTestLab.Gear.LabGear.Reload()); break;
+            case "describe": GameRefs.LogToConsole(DrakesTestLab.Gear.LabGear.Describe()); break;
+            default: DrakesTestLab.Gear.LabGear.GiveAll(); GameRefs.LogToConsole("DrakesTestLab: lab gear given (clipboard + glasses)."); break;
+        }
+    }
 
     /// <summary>Handles "testlab.xxx" lines. Returns true when the line was ours.</summary>
     public static bool TryHandle(string line)
