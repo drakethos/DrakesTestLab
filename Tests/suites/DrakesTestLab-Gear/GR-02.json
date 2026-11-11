@@ -1,0 +1,12 @@
+{
+  "name": "GR-02 standard kit: spawn gives the clipboard, the glasses and the lab coat",
+  "timeout": 60,
+  "steps": [
+    { "do": "clearInventory" },
+    { "do": "invoke", "method": "DrakesTestLab.Bootstrap.InitialConditionsApplier.ApplyStandardKit", "args": [] },
+    { "do": "check", "check": "hasItem", "prefab": "Drake_Clipboard", "label": "clipboard is part of the standard kit" },
+    { "do": "check", "check": "hasItem", "prefab": "Drake_LabGlasses", "label": "glasses are part of the standard kit" },
+    { "do": "check", "check": "hasItem", "prefab": "Drake_LabCoat", "label": "lab coat is part of the standard kit" }
+  ],
+  "asserts": [ { "check": "noErrors", "source": "DrakesTestLab" } ]
+}

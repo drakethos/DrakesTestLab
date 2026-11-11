@@ -153,6 +153,9 @@ internal static class LabCoat
         drop.m_itemData.m_dropPrefab = clone;
     }
 
+    /// <summary>Gives the coat to the local player's inventory (not equipped, same as the lab gear's give-on-spawn).</summary>
+    public static int Give() => Util.ItemGiver.Give(PrefabName, 1);
+
     /// <summary>
     /// Test diagnostic: what the local player's body material really carries right now (shader, the chest textures
     /// VisEquipment copied from the worn armor, and the coat renderer's material). Suites log it with "invoke".
@@ -230,7 +233,6 @@ internal static class LabCoat
                 (triangles[t + 1], triangles[t + 2]) = (triangles[t + 2], triangles[t + 1]);
 
         var skinned = new Mesh { name = "LabCoat" };
-        skinned.uv = uvs;
 
         // The standard way to fit clothes to a skinned character: put the garment in the body's own bind space, copy the
         // body's bone weights from the nearest skin (so cloth and skin bend together in every pose), and push any cloth
@@ -259,6 +261,10 @@ internal static class LabCoat
             skinned.bindposes = bind;
             skinned.boneWeights = Weigh(vertices, tunic.bones, bind, rootToMesh.inverse);
         }
+
+        // set after vertices on both branches: Unity validates a mesh's per-vertex arrays against its current vertex count,
+        // and uvs is index-aligned with vertices/meshVertices/fit.Value.vertices either way (the fit only moves positions).
+        skinned.uv = uvs;
 
         _fitted = fit != null;
         skinned.RecalculateBounds();
@@ -634,7 +640,7 @@ internal static class LabCoat
 
     // ---- registration (no Jotunn): ObjectDB for the item, ZNetScene so it can be spawned and synced ----
 
-    /// <summary>Experimental, off by default: [Experimental] LabCoat in the TestLab config.</summary>
+    /// <summary>On by default, part of the standard kit: [Experimental] LabCoat in the TestLab config.</summary>
     private static bool Enabled => Bootstrap.TestLabConfig.Instance?.LabCoat?.Value == true;
 
     internal static void RegisterIn(ObjectDB db)

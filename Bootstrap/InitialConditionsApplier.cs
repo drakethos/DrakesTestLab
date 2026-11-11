@@ -17,6 +17,20 @@ internal static class InitialConditionsApplier
         ApplyIfReady();
     }
 
+    /// <summary>
+    /// The standard kit (lab gear, lab coat), each piece respecting its own on/off and give-on-spawn config switches.
+    /// Split out from <see cref="ApplyIfReady"/> so a test (or a "give me the kit again" command) can exercise exactly
+    /// this, without the rest of spawn (skills, starting items, position, or an on-load case re-running).
+    /// </summary>
+    public static void ApplyStandardKit()
+    {
+        var cfg = TestLabConfig.Instance;
+        if (cfg.LabGearOnSpawn.Value && Gear.LabGear.Enabled)
+            Gear.LabGear.GiveAll();
+        if (cfg.LabCoatOnSpawn.Value && cfg.LabCoat.Value)
+            Cosmetics.LabCoat.Give();
+    }
+
     public static void ApplyIfReady()
     {
         if (_applied)
@@ -39,8 +53,7 @@ internal static class InitialConditionsApplier
 
         ApplySkills(player, cfg.SkillLevels.Value);
         ApplyItems(player, cfg.StartingItems.Value);
-        if (cfg.LabGearOnSpawn.Value && Gear.LabGear.Enabled)
-            Gear.LabGear.GiveAll();
+        ApplyStandardKit();
 
         if (cfg.OverrideSpawnPosition.Value)
         {

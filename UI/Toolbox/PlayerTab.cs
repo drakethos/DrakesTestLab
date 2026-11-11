@@ -83,6 +83,8 @@ internal sealed class PlayerTab : ToolboxTab
                 ("Give and equip", () => Gear.LabGear.EquipAll()));
             Ui.Hint("Hold the clipboard: left click notes what you look at, right click opens it. Wear the glasses (utility slot) for a readout of anything in sight.");
         }
+        if (TestLabConfig.Instance.LabCoat.Value)
+            Ui.Row(("Lab coat", () => Cosmetics.LabCoat.Give()));
         Ui.Row(("Reset character data", () => GameRefs.RunConsoleCommand("resetcharacter")));
 
         DrawDurability(p);

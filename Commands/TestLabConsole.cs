@@ -33,7 +33,8 @@ internal static class TestLabConsole
         ["testlab.dev"] = new Entry { Help = "Toggle devcommands auto-enable.", Run = _ => TestControlsApplier.ToggleDevCommands() },
         ["testlab.hostile"] = new Entry { Help = "Toggle creature hostility.", Run = _ => TestControlsApplier.ToggleHostile() },
         ["testlab.gear"] = new Entry { Help = "Lab gear: 'testlab.gear' gives the clipboard and the glasses, 'testlab.gear equip' also equips them, 'testlab.gear reload' re-reads their art and fit from config/DrakesTestLab/dev/Gear, 'testlab.gear describe' logs how they were built.", Run = GearCommand },
-        ["testlab.clipboard"] = new Entry { Help = "Open or close the lab clipboard window.", Run = _ => DrakesTestLab.Gear.ClipboardMenu.Toggle(DrakesTestLab.Gear.GearHost.Current) }
+        ["testlab.clipboard"] = new Entry { Help = "Open or close the lab clipboard window.", Run = _ => DrakesTestLab.Gear.ClipboardMenu.Toggle(DrakesTestLab.Gear.GearHost.Current) },
+        ["testlab.labcoat"] = new Entry { Help = "Lab coat: 'testlab.labcoat' gives it, 'testlab.labcoat reload' re-reads its art from config/DrakesTestLab/dev/LabCoat, 'testlab.labcoat describe' logs what the body is wearing.", Run = LabCoatCommand }
     };
 
     private static void GearCommand(string[] parts)
@@ -45,6 +46,17 @@ internal static class TestLabConsole
             case "reload": GameRefs.LogToConsole(DrakesTestLab.Gear.LabGear.Reload()); break;
             case "describe": GameRefs.LogToConsole(DrakesTestLab.Gear.LabGear.Describe()); break;
             default: DrakesTestLab.Gear.LabGear.GiveAll(); GameRefs.LogToConsole("DrakesTestLab: lab gear given (clipboard + glasses)."); break;
+        }
+    }
+
+    private static void LabCoatCommand(string[] parts)
+    {
+        var what = parts.Length > 1 ? parts[1].ToLowerInvariant() : "";
+        switch (what)
+        {
+            case "reload": GameRefs.LogToConsole(DrakesTestLab.Cosmetics.LabCoat.Reload()); break;
+            case "describe": GameRefs.LogToConsole(DrakesTestLab.Cosmetics.LabCoat.Describe()); break;
+            default: DrakesTestLab.Cosmetics.LabCoat.Give(); GameRefs.LogToConsole("DrakesTestLab: lab coat given."); break;
         }
     }
 
