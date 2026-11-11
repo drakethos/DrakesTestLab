@@ -289,6 +289,10 @@ internal static class LabGear
         m.name = "LabGear_mat (" + m.shader.name + ")";
         TestLabPlugin.Log?.LogInfo($"Lab gear: material from {(donor != null ? donor.name : "none")} shader {m.shader.name}.");
         m.mainTexture = GearArt.LoadTexture("gear_atlas.png");
+        // our UVs are plain 0..1 atlas coordinates; the donor's own tiling/offset (its wood or weapon texture's _MainTex_ST)
+        // would otherwise repeat a slice of our atlas across the whole mesh instead of showing it as laid out
+        m.mainTextureScale = Vector2.one;
+        m.mainTextureOffset = Vector2.zero;
         foreach (var tex in new[] { "_BumpMap", "_MetallicGlossMap", "_EmissionMap", "_EmissiveTex", "_MetalTex" })
             if (m.HasProperty(tex))
                 m.SetTexture(tex, null);
@@ -461,29 +465,12 @@ internal static class LabGear
     }
 
     /// <summary>
-    /// Default grip of the clipboard in right-hand space, taken from the hammer it replaces: the board runs down the hammer's
-    /// handle (the clip in the fist, the board hanging below it) and faces the hammer's thin side.
+    /// Default grip of the clipboard in right-hand space. Verified in game (orbit screenshots + a rotation sweep, 2026-11-11):
+    /// the hand joint's own basis already holds the board upright with the paper facing outward, so the mesh needs no extra
+    /// rotation; only a small offset so the grip sits near the clip (the top of the board, where a hand would naturally hold
+    /// it) rather than the board's centre.
     /// </summary>
-    private static (Vector3 pos, Quaternion rot) ClipboardGrip()
-    {
-        if (_hammerBounds is not { } b)
-            return (new Vector3(0f, -0.1f, 0f), Quaternion.identity);
-        var ext = b.extents;
-        var longest = ext.x >= ext.y && ext.x >= ext.z ? 0 : ext.y >= ext.z ? 1 : 2;
-        var shortest = ext.x <= ext.y && ext.x <= ext.z ? 0 : ext.y <= ext.z ? 1 : 2;
-        if (shortest == longest)
-            shortest = (longest + 1) % 3;
-        var down = Vector3.zero;
-        down[longest] = Mathf.Sign(b.center[longest] == 0f ? 1f : b.center[longest]);
-        var normal = Vector3.zero;
-        normal[shortest] = 1f;
-        var up = -down;
-        var right = Vector3.Cross(up, normal);
-        var rot = Quaternion.LookRotation(normal, up);
-        var pos = down * 0.12f;
-        _ = right;
-        return (pos, rot);
-    }
+    private static (Vector3 pos, Quaternion rot) ClipboardGrip() => (new Vector3(0f, -0.1f, 0.05f), Quaternion.identity);
 
     // ---- tuning, reload, diagnostics ----
 
@@ -655,7 +642,7 @@ internal static class LabGear
             mixed.mainTexture = _donorPiece.mainTexture;
             variants.Add(("piece-ours-donortex", mixed));
         }
-        var origin = player.transform.position + player.transform.forward * 2f + Vector3.up * 1.3f;
+        var origin = player.transform.position + player.transform.forward * 2.5f + Vector3.up * 1.4f;
         var right = player.transform.right;
         var n = 0;
         foreach (var (name, mat) in variants)
@@ -663,7 +650,7 @@ internal static class LabGear
             if (mat == null) continue;
             var go = new GameObject("GearProbe_" + name);
             go.transform.position = origin + right * (n - (variants.Count - 1) / 2f) * 0.3f;
-            go.transform.rotation = Quaternion.LookRotation(-player.transform.forward, Vector3.up);
+            go.transform.rotation = Quaternion.LookRotation(player.transform.forward, Vector3.up);
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
             go.AddComponent<MeshRenderer>().sharedMaterial = mat;
             _probes.Add(go);
