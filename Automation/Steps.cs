@@ -26,8 +26,8 @@ internal static class StepNames
     public static readonly string[] All =
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
-        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
-        "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear"
+        "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "uiHover", "uiRelease", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
+        "clearArea", "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
     };
 }
 
@@ -300,24 +300,35 @@ internal static class Steps
         ctx.Spawned.RemoveAll(go => go == null);
         foreach (var (tag, prefab, pos, spawned) in marks)
         {
+            // the world's objects appear over a few frames after the player is in: look for up to 8 s before calling it gone
             GameObject? best = null;
-            var bestD = 1.5f;
-            foreach (var v in Targets.AllViews())
+            var nearest = float.MaxValue;
+            var lookUntil = Time.realtimeSinceStartup + 8f;
+            while (true)
             {
-                if (!Utils.GetPrefabName(v.gameObject).Equals(prefab, StringComparison.OrdinalIgnoreCase))
-                    continue;
-                var d = Vector3.Distance(v.transform.position, pos);
-                if (d < bestD)
+                var bestD = 1.5f;
+                foreach (var v in Targets.AllViews())
                 {
-                    best = v.gameObject;
-                    bestD = d;
+                    if (!Utils.GetPrefabName(v.gameObject).Equals(prefab, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    var d = Vector3.Distance(v.transform.position, pos);
+                    nearest = Mathf.Min(nearest, d);
+                    if (d < bestD)
+                    {
+                        best = v.gameObject;
+                        bestD = d;
+                    }
                 }
+
+                if (best != null || Time.realtimeSinceStartup > lookUntil || ctx.TimedOut)
+                    break;
+                yield return null;
             }
 
             if (best == null)
             {
                 ctx.Tags.Remove(tag);
-                ctx.Log($"  '{tag}' ({prefab}) is gone after the relog");
+                ctx.Log($"  '{tag}' ({prefab}) is gone after the relog (it stood at {pos.x:0.0}, {pos.y:0.0}, {pos.z:0.0}; the nearest {prefab} now is {(nearest < float.MaxValue ? nearest.ToString("0.0") + " m away" : "none loaded")})");
                 continue;
             }
 
@@ -358,13 +369,67 @@ internal static class Steps
 
     public static IEnumerator? Execute(Dictionary<string, object?> step, RunContext ctx)
     {
+        // "on": "player2" sends the step to the real second client through the server (server connect mode)
+        if (RemotePeers.IsRemote(step))
+            return RemotePeers.RunRemote(step, ctx);
+
         var action = step.First("do", "action", "step").Trim();
         switch (action.ToLowerInvariant())
         {
+            // run here it does nothing; with "on": "player2" it checks that Player 2 is connected and names it
+            case "ping": ctx.Log("ping"); return null;
+            // ask the dedicated server to change a condition (server connect mode, Player 1; needs Control.Enabled on the server)
+            case "server": return RemotePeers.RunServer(step, ctx);
+            // change a mod's setting on the server and wait until both clients have it (reports the sync time of each)
+            case "serverconfig": return RemotePeers.RunServerConfig(step, ctx);
+            // a three-way assert: read Player 1, the server and Player 2 and require them to agree (or match "expect")
+            case "agree": return RemotePeers.RunAgree(step, ctx);
+            // read a value into the step's result (used by agree on Player 2): { "config": { "guid", "section", "key" } }
+            case "read":
+            {
+                // config: this client's copy of a setting. count: how many of a prefab this client has within radius of its player.
+                // owner: the name of the player who owns the nearest one (as this client sees it), "none", or "server".
+                var cfg = step.Obj("config");
+                if (cfg != null)
+                {
+                    var entry = ModEnvironment.FindEntry(cfg.Str("guid"), cfg.Str("section"), cfg.Str("key"))
+                                ?? throw new StepFailed($"no setting [{cfg.Str("section")}] {cfg.Str("key")} of {cfg.Str("guid")} on this client");
+                    // the value in effect (what the server pushed, for a synced setting); "local": true reads the player's own saved value
+                    ctx.LastResult = cfg.Bool("local") ? entry.GetSerializedValue() : ModEnvironment.EffectiveValue(entry);
+                    return null;
+                }
+
+                var count = step.Obj("count");
+                if (count != null)
+                {
+                    var around = ctx.AroundHint ?? P.transform.position;
+                    ctx.LastResult = Targets.Count(count.Str("prefab"), around, count.Num("radius", 10f));
+                    return null;
+                }
+
+                var own = step.Obj("owner");
+                if (own != null)
+                {
+                    var go = Targets.Find(ctx, own.Str("prefab"), own.Num("radius", 10f)) ?? throw new StepFailed($"no '{own.Str("prefab")}' within {own.Num("radius", 10f):0} m of this client");
+                    var zdo = (go.GetComponentInParent<ZNetView>() ?? go.GetComponentInChildren<ZNetView>())?.GetZDO() ?? throw new StepFailed("that object has no ZDO");
+                    ctx.LastResult = OwnerName(zdo.GetOwner());
+                    return null;
+                }
+
+                throw new StepFailed("read needs \"config\", \"count\" or \"owner\"");
+            }
             case "teleport": return Teleport(step, ctx);
-            case "face": Face(step, ctx); return null;
+            case "face": return Face(step, ctx);
             case "wait": return Wait(step, ctx);
             case "spawn": Spawn(step, ctx); return null;
+            case "clearArea":
+            {
+                var spec = ClearSpec.Read(step) ?? new ClearSpec();
+                var n = spec.Apply();
+                ctx.LastResult = n;
+                ctx.Log($"  -> removed {n}");
+                return null;
+            }
             case "give":
                 if (step.Has("materialsFor"))
                 {
@@ -468,12 +533,12 @@ internal static class Steps
                         var slash = kv.Key.LastIndexOf('/');
                         if (slash <= 0)
                             throw new StepFailed($"'{kv.Key}': use \"Section/Key\"");
-                        Ok(ModEnvironment.Set(guid, kv.Key.Substring(0, slash), kv.Key.Substring(slash + 1), J.Value(kv.Value)));
+                        Ok(ModEnvironment.Set(guid, kv.Key.Substring(0, slash), kv.Key.Substring(slash + 1), J.Value(kv.Value), step.Bool("asPlayer")));
                     }
                 }
                 else
                 {
-                    Ok(ModEnvironment.Set(guid, Need(step, "section"), Need(step, "key"), step.Str("value")));
+                    Ok(ModEnvironment.Set(guid, Need(step, "section"), Need(step, "key"), step.Str("value"), step.Bool("asPlayer")));
                 }
 
                 return null;
@@ -483,6 +548,8 @@ internal static class Steps
             case "holdkey": UiSteps.HoldKey(step); return null;
             case "releasekeys": HeldKeys.ReleaseAll(); return null;
             case "itemclick": return UiSteps.ItemClick(step, ctx);
+            case "uihover": return UiHover.Hover(step, ctx);
+            case "uirelease": UiHover.Release(); return null;
             case "lookat": return UiSteps.LookAt(step, ctx);
             case "setlanguage": LanguageSwitch.Set(Need(step, "language")); return null;
             case "drop": UiSteps.Drop(step, ctx); return null;
@@ -628,6 +695,20 @@ internal static class Steps
     private static readonly MethodInfo? SetLookDir = AccessTools.Method(typeof(Character), "SetLookDir");
 
     /// <summary>Point the view (camera pitch included) along <paramref name="dir"/>.</summary>
+    /// <summary>The name of the player who owns a ZDO, as this client can tell: "none" (0), "server" (the server's session), the name of a
+    /// connected player (their character's ZDO carries their peer id), else the raw id.</summary>
+    private static string OwnerName(long owner)
+    {
+        if (owner == 0L)
+            return "none";
+        foreach (var info in ZNet.instance.GetPlayerList())
+            if (info.m_characterID.UserID == owner)
+                return info.m_name;
+        if (Player.m_localPlayer != null && Player.m_localPlayer.GetZDOID().UserID == owner)
+            return Player.m_localPlayer.GetPlayerName();
+        return owner == ZDOMan.GetSessionID() ? "this client" : "server";
+    }
+
     internal static void SetLook(Player p, Vector3 dir)
     {
         if (SetLookDir == null)
@@ -639,22 +720,63 @@ internal static class Steps
         SetLookDir.Invoke(p, args);
     }
 
-    private static void Face(Dictionary<string, object?> step, RunContext ctx)
+    /// <summary>
+    /// face: turn the view. Plain (target, to, x/z, dx/dz) stays level. Optional, any combination: up/down/dy (metres above or below the
+    /// aim point; "y" with x/z is an absolute aim height), left/right (metres sideways), pitch (degrees, + looks up) and yawOffset
+    /// (degrees, + turns right). Any of those tilts the view like a player's mouse, camera included.
+    /// </summary>
+    private static IEnumerator Face(Dictionary<string, object?> step, RunContext ctx)
     {
         var p = P;
         Vector3 at;
+        var hasPoint = true;
         var target = step.First("target", "to");
         if (target.Length > 0)
-            at = (Targets.Find(ctx, target) ?? throw new StepFailed($"face target '{target}' not found")).transform.position;
+        {
+            var go = Targets.Find(ctx, target) ?? throw new StepFailed($"face target '{target}' not found");
+            at = go.transform.position;
+        }
         else
+        {
             at = Targets.PointFrom(step, p.transform.position + p.transform.forward);
+            hasPoint = step.Has("x") || step.Has("z") || step.Has("dx") || step.Has("dz");
+            if (hasPoint && step.Has("y"))
+                at.y = step.Num("y");
+        }
 
-        var dir = at - p.transform.position;
-        dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f)
-            return;
-        dir.Normalize();
-        UiSteps.Aim(p, dir);
+        var tilt = UiSteps.HasViewOffsets(step) || (target.Length == 0 && hasPoint && step.Has("y"));
+        if (!hasPoint && !tilt)
+            yield break;
+
+        // the camera settles over a few frames, so the aim is set again each frame until it holds
+        for (var frame = 0; frame < 4; frame++)
+        {
+            p = P;
+            Vector3 dir;
+            if (!hasPoint)
+                dir = p.transform.forward;
+            else if (!tilt)
+            {
+                dir = at - p.transform.position;
+                dir.y = 0f;
+            }
+            else
+            {
+                var from = GameCamera.instance != null ? GameCamera.instance.transform.position : p.GetEyePoint();
+                var aim = at + UiSteps.PointOffset(step, at - from);
+                dir = aim - from;
+            }
+
+            if (dir.sqrMagnitude < 0.0001f)
+                yield break;
+            dir.Normalize();
+            if (tilt)
+                dir = UiSteps.ApplyAngles(step, dir);
+            UiSteps.Aim(p, dir);
+            if (!tilt)
+                yield break;
+            yield return null;
+        }
     }
 
     private static IEnumerator Wait(Dictionary<string, object?> step, RunContext ctx)

@@ -1,0 +1,13 @@
+{
+  "name": "C-03 a client cannot keep its own value of a synced setting",
+  "description": "Player 1 changes LockSmith EnableChests on its own client. The server value is the one that counts: Player 1 goes back to it and Player 2 never has the local change. Exploratory: shows how the setting sync treats a client edit.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "serverConfig", "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests", "value": "true" },
+    { "do": "setConfig", "guid": "com.drakemods.locksmith", "values": { "02 Features/EnableChests": "false" } },
+    { "do": "agree", "timeout": 20, "expect": "true", "equal": true, "label": "the server value wins on every side", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } },
+      { "party": "player2", "config": { "guid": "com.drakemods.locksmith", "section": "02 Features", "key": "EnableChests" } } ] }
+  ]
+}

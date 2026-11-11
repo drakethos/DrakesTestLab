@@ -60,6 +60,10 @@ internal sealed class PlayerTab : ToolboxTab
         if (GUILayout.Toggle(hostile, "Creatures hostile") != hostile)
             TestControlsApplier.ToggleHostile();
 
+        var quiet = TestLabConfig.Instance.QuietZone.Value == QuietZoneMode.Always;
+        if (GUILayout.Toggle(quiet, "Quiet zone (no wild creatures or events) always") != quiet)
+            TestLabConfig.Instance.QuietZone.Value = quiet ? QuietZoneMode.Tests : QuietZoneMode.Always;
+
         InfiniteStamina = GUILayout.Toggle(InfiniteStamina, "Infinite stamina");
 
         Ui.Row(

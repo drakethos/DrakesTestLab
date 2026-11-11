@@ -2,16 +2,97 @@
 
 ## Unreleased
 
-## 0.3.3
-
-- **Icon.** Same brass knot as the other mods: DrakeMods, Test Lab, the health mead, the portrait, and "Valheim Mod QA tools".
-- The test house floor follows the ground under it. Levelling cannot drop a hill more than 8 m, so a house built at the arena height used to end up buried and the game would lift the player out of it.
-- A `relog` step sends the player back to where they logged out. A fresh character id makes Valheim respawn at the world start (open ocean on the test seed), and the step used to look for saved pieces before that zone had loaded. A short return is a direct move: respawn spends the teleport cooldown, so `TeleportTo` was refused and the player stayed out of range of the pieces.
-- `click` on UI Toolkit windows: `"nth"` picks one of several elements with the same label (the up arrow on every row of a list); text is matched without rich text tags (a button drawn as a colored square plus a name is found by the name); and a disabled button now fails the step instead of being clicked, as a player could not click it.
 - `spawn` step: a piece whose origin is not its bottom (an archery target, a table) used to come out half buried. Spawned pieces now stand on the ground, like the build tool places them. `"sink": true` keeps the old behaviour (origin on the ground) and `"dy"` lifts a spawn by that many meters.
 - Case `pieces` now stand on the terrain under them, so on a slope they no longer come out buried or floating. `"dy"` lifts a piece from there when `"ground": true`. A piece that names a `"dy"` without `"ground"` (every saved build does) keeps its height relative to you as before; `"ground": false` forces that.
 - "Give materials for this" and the `give materialsFor` step no longer hand out the upgrader idol that 1.0 recipes list as a requirement; a normal craft or upgrade never asks for it.
 - Player tab: a **Durability** section. Every carried item that wears out is listed with its percentage and Set / Break / Fix buttons, plus a percentage slider and Set all / Break all / Fix all.
+- **Hot mode** (`[Automation] HotMode` or `-testlab-hot`, off by default): after a run the game stays open and takes requests from `config/DrakesTestLab/requests` (`run.txt`, `reset.txt`, `quit.txt`), for scripts that keep one game warm.
+
+## 0.6.0
+
+- **Quiet zone (no-fly zone) for repeatable tests.** During tests, a zone around the arena and around the player (`[Arena] QuietZoneRadius`, default 80 m) keeps wild things out: the game's own spawners (wild spawns, spawn areas, creature spawners, event spawns) refuse to spawn inside it, wild creatures that are already there or wander in are removed, and the game's own random-event timer (raids) is held. Creatures a test or a mod makes itself (the spawn step, the toolbox, a mod's own code) are never removed, so a suite that spawns its own monsters works as before. `[Arena] QuietZone` = `Tests` (default, only while tests run), `Always` (also when you play by hand; a checkbox on the Player tab) or `Off`; a test can set it for itself with `setConfig`. An event a test starts on purpose still works, and the state reset now ends a running event.
+- Meta tests M-41 to M-45 (M-45 runs the real spawners for 45 s).
+- **Clear natural objects.** The test area is cleared of trees, stumps, logs, bushes, plants and rocks over a wider radius (`[Arena] ClearRadius`, default 70 m, at start-up and again once the world has loaded), so a test never finds a stray tree in reach. New `clearArea` step, and a `clearArea` field on a suite or test (cleared before the steps); `objectNear` checks can ask for a category of natural object; the `treeAt` library function adds the tree a test needs instead of relying on the landscape.
+- **Flake suite** (`DrakesTestLab-Flake`): situations that only pass while the quiet zone and clearing work, with control tests; counter, raid-timer and `testlab.prefabsLike` hooks.
+- **A crash inside one test fails that test** (the report says which stage it reached) and the run goes on, instead of the whole run ending silently.
+- Orbit camera for screenshots of the player from any side (`invoke` `DrakesTestLab.Util.OrbitCamera.View(yaw, focus, dist, pitch)`, `.Off()`), and `.Stage(timeOfDay, radius)` to fix the time of day and clear a photo spot.
+- **Experimental, off by default:** `[Experimental] LabCoat` adds a work-in-progress `Drake_LabCoat` chest item (a white lab coat built from the vanilla tunic, no extra mods). Not finished; leave it off unless you want to try it.
+
+## 0.5.2
+
+- **Icon.** Same brass knot as the other mods: DrakeMods, Test Lab, the health mead, the portrait, and "Valheim Mod QA tools".
+- README: documents the 0.5 timing, load-time, frame-time and memory reports.
+
+## 0.5.0
+
+- **Timestamps everywhere.** Every log line in a test is stamped `[+3.2s]` from the start of that test. The reports (JSON, Markdown, HTML) show when each test started, how long its setup and each step took, how long the whole run took, how long the game took to reach the run, and how long the world took to be ready. The HTML report has a Timing section: slowest tests, slowest steps, mod load times.
+- **Mod load times.** The report lists how long each mod took to load. Install the new optional preloader patcher (it ships in the package as `BepInEx/patchers/DrakesTestLab/DrakesTestLab.Preload.dll`) and every mod is timed, the very first included; without it only the mods that load after DrakesTestLab are listed individually, and the report says so. The last mod is timed to the end of chainloading, not to a frame later.
+- **Frame times.** Every frame is recorded while tests run. Each test and step reports average fps, 1% low fps, the 95th and 99th percentile frame time, the worst frame and the number of hitches (frames over 50 ms). The HTML report lists the roughest tests and the steps with the worst single frames.
+- **Memory.** Each test and step reports managed heap (start, end, peak), total memory, an allocation figure (churn) and GC counts per generation; the HTML report lists heap growth and the tests that allocate the most.
+- **Object census (optional).** `Automation/CountObjects` counts every Unity object before and after each test and names the types that grew, for leak hunting. Off by default because it costs about a second per test.
+- `Run-TestLabSuites.ps1` prints seconds per test, the run's time split, the roughest tests by fps, the biggest heap growers, the current memory and the slowest mod loads.
+- Faster start-up: the settings are saved once instead of once each, and the optional Libs message-card hook is found without scanning every loaded type (about 1.1 s down to 0.5 s).
+- Meta tests M-38 (timing), M-39 (frame times) and M-40 (memory).
+
+## 0.4.6
+
+- **The authoring guide and chat prompt now ship inside the mod** and are copied to `BepInEx/config/DrakesTestLab/docs/` at startup, so an AI assistant that cannot open GitHub pages can read them from disk. The first time, the lab logs where they are and the `raw.githubusercontent.com` links to give an assistant that can open links but not files, and writes the same note to `docs/READ-ME.txt`.
+
+## 0.4.5
+
+- **`uiHover` and `uiRelease` steps.** Rest the game's own virtual mouse (written into Unity's Input System: no operating-system mouse moves, nobody has to be at the PC) on a piece of UI, so tooltips and hover states open exactly as for a player. Pick the target by `icon` (an item prefab: the slot that draws its icon), `text`, `name`, or `x`/`y` (`fx`/`fy` as fractions of the screen). `until` waits for a text and tries every matching slot in turn (the hotbar and the inventory can draw the same icon); `nth`, `where`, `wait` and `hold` tune it. The step log says what the pointer is over.
+- **`screenText` check.** Reads every text the UI shows right now (TextMeshPro, Text and UI Toolkit, rich text removed) and tests it with `contains`, `notContains` or `regex`; `under` limits it to objects whose path contains that text. With `uiHover` it reads any mod's tooltip, including UIs that draw their own (SeneaL UI).
+- **Remote steps rewrite tags inside a hook's `args`.** A step tagged `"on": "player2"` now also turns `args.target` / `args.to` into prefab plus position, so a hook that takes its object from `args` finds it on Player 2.
+- New meta tests M-37 (hover + read a tooltip) and N-13 (a hover with nothing to hover fails).
+- **Fixed: `relog` lost its tagged objects.** After a relog the lab looked for each tagged object the moment the player was in, before the world had loaded it, so a saved chest was reported gone (Meta test M-28 failed on 0.4.3 and 0.4.4). It now looks for up to 8 s, and a miss logs where the object stood and how far the nearest one is.
+
+## 0.4.4
+
+- **`click` on UI Toolkit windows:** `"nth"` picks one of several elements with the same label (the up arrow on every row of a list); text is matched without rich text tags (a button drawn as a colored square plus a name is found by the name); and a disabled button now fails the step instead of being clicked, as a player could not click it.
+- **`regex` compare field:** `hook` steps and checks can test the whole answer against a pattern, for readings like `40x34/12` where a range is part of the claim.
+- **Cases can bring virtual second players:** a case's `peers` list (`name`, `dx`, `dz`, `proxy`) joins them when the case is applied, and the case's commands run after they have arrived.
+- **Other mods can add a toolbox tab:** `DrakesTestLab.TestLabTabs.Register(title, group, draw)`, called by reflection, so a mod needs no reference to the lab.
+- **Docs:** `ai/CHAT-PROMPT.md` now gives raw.githubusercontent.com links to the authoring guide, for assistants that can open links but not GitHub's `/blob/` pages or attachments.
+
+## 0.4.3
+
+- **`face` and `lookAt` can tilt the view.** New optional fields: `up` / `down` / `dy` (metres above or below the aim point), `left` / `right` (metres sideways), `pitch` (degrees, + looks up), `yawOffset` (degrees, + turns right) and, with `x`/`z`, an absolute `y` aim height. The view tilts like the mouse, third-person camera included (before, `face` only turned the player and always levelled the view). `lookAt` with a tilt holds the view a few frames instead of waiting for the crosshair to hover the target, so `{ "do": "lookAt", "target": "tree", "up": 1.5 }` aims 1.5 m up the trunk.
+- A plain `face` (target, `x`/`z`, `dx`/`dz`, no tilt field) behaves exactly as before: existing tests are unchanged.
+- New hook `testlab.cameraPitch` (`pitch`, `tolerance`): reads the real camera's angle, to prove a tilt. New meta test M-36; the Meta suite now requires 0.4.3.
+
+## 0.4.2
+
+Server control, server queries and three-way asserts. Everything here needs DrakesTestLabServer 0.1.1 with `[Control] Enabled = true` in its config.
+
+- **New step `server`.** Player 1 sends a command to the dedicated server: `admin.add/remove/list/is`, `permit.*` (whitelist), `ban.*` (blacklist), `kick`, `players`, `config.get/set` (any BepInEx setting, with an optional `"force": true` that flips the value first so a setting set to its current value still syncs), `hook.call/list` (test hooks of mods on the server) and `server.quit`. `"who": "me"` means Player 1. Only Player 1 may control the server; Player 2 is refused.
+- **New step `serverConfig`.** Sets a setting on the server and waits until Player 1 (and Player 2) report the new value, saying how long each took. A setting that never arrives fails the step with the value each client still has.
+- **New step `agree`.** Reads one value from Player 1, the server and Player 2 and requires them to match (`"expect"` or `"equal": true`). Reads: `config`, a server query (`"cmd"`), or a hook.
+- **`read` step** gets `config`, `count` and `owner` reads, as seen by that client.
+- **Server queries:** `server.info`, `sync.info`, `znet.count/peers/peer`, `world.zdocount/time`, `zdo.count/owner/describe/value`, `rpc.count/last/reset`.
+- **`setconfig` with `"asPlayer": true`** changes the value a player's client actually uses (the value the server last sent) instead of its own local value.
+- **Config checks read the effective value** (what the mod really uses), not the local file value; `"local": true` reads the file value.
+- Test suites `DrakesTestLab-Server`, `-ServerAsserts` and `-ConfigSync` need 0.4.2. Verified with two real clients on a dedicated server: all pass.
+- Known: Jotunn "admin only" settings (for example DrakesServerTeams) are sent when a client connects or its admin status changes, not when the server later changes the value. The server still enforces them. ServerSync settings (LockSmith, Renameit) sync live.
+
+## 0.4.1
+
+- **Fixed: a failed check on Player 2 was reported as a pass.** A `check` step, or a `hook` step with `expect`, records a soft assertion. On Player 2 each command runs in its own context that nothing read, so a failed check there came back to Player 1 as "ok". A failed check on Player 2 now fails the command, and Player 1's step shows the reason. If you wrote tests with `"on": "player2"` on 0.4.0, run them again: checks that ran on Player 2 may have passed when they should not have.
+- The `DrakesTestLab-Player2` suite now requires 0.4.1.
+- Verified with two real clients on a dedicated server (a Game Pass client as Player 1 and a Steam client as Player 2): the lab's own Player 2 suite, LockSmith (a stranger is refused a private chest and gets in once it is public) and DrakesServerTeams (two real players join different teams and each reads the other's team) all pass.
+
+## 0.4.0
+
+Server mode and a real Player 2. The lab can now test against a dedicated server with two real players. The server half is a separate package, **DrakesTestLabServer** (server only), released on its own `server-v...` tags.
+
+- **Server connect mode.** `[Bootstrap] Target = Server` joins the dedicated test server instead of building a local world. The server owns the world. Set the server's public `IP:port` in `[Connect] Address` and its password in `[Connect] Password`.
+- **Joins through PlayFab on every platform.** The game's own join-by-IP picks Steam on a Steam client, which a crossplay (PlayFab-only) server never answers (error 5003). The lab looks the server up on PlayFab by its public IP and joins it the way the game's `-joincode` option does. A Game Pass / Xbox client only speaks PlayFab, so the server runs with crossplay on.
+- **A failed connect fails cleanly.** If the server cannot be reached the lab writes a failed result (`ServerConnect/Connect`, assert "connected to the test server"), shows the reason, and closes the game (`[Connect] QuitOnFailure`, default on; off brings the main menu back). An unattended `-testlab-run` exits with code 1.
+- **Player 1 and Player 2.** `[Connect] Role` is `Player1` (default, runs the test cases) or `Player2` (runs no tests, only does what Player 1 sends). The server gives each role to one client.
+- **`"on": "player2"`.** Any step in a test case can be marked `"on": "player2"` to run on the real second client, through the server. A tagged object named in such a step is sent as its prefab plus Player 1's position, so Player 2 finds the same object. New `ping` step: checks Player 2 is connected and names it.
+- **`zdoOwner` check:** `"expect": "other"` passes when the owner is some player who is not Player 1 (a real Player 2 has the same character name as Player 1).
+- **New suite `DrakesTestLab-Player2`:** Player 2 answers a ping, runs steps on its own character, opens Player 1's chest (the chest opens and changes owner) and is refused a private chest.
+- Needs the same game version and the same mods on the server and on both clients; the server refuses a client without them ("incompatible version" in the game).
+- Design and test order: `docs/MULTIPLAYER.md`.
 
 ## 0.3.2
 

@@ -76,6 +76,16 @@ internal static class TestRunner
         TestHooks.Register("testlab.echo", args => args.TryGetValue("value", out var v) ? v : null, "DrakesTestLab");
         // is this key held as the game sees it (Input.GetKey, which holdKey / pressKey drive)? key: a Unity KeyCode name
         TestHooks.Register("testlab.keyHeld", args => args.TryGetValue("key", out var k) && Enum.TryParse<KeyCode>(Convert.ToString(k), true, out var code) && Input.GetKey(code), "DrakesTestLab");
+        // is the real camera tilted to `pitch` degrees (+ up) within `tolerance` (default 3)? Reads the camera itself, not the player's stored pitch.
+        TestHooks.Register("testlab.cameraPitch", args =>
+        {
+            if (GameCamera.instance == null)
+                return "no camera";
+            var actual = Mathf.Asin(Mathf.Clamp(GameCamera.instance.transform.forward.y, -1f, 1f)) * Mathf.Rad2Deg;
+            var want = args.TryGetValue("pitch", out var w) ? Convert.ToSingle(w, System.Globalization.CultureInfo.InvariantCulture) : 0f;
+            var tol = args.TryGetValue("tolerance", out var t) ? Convert.ToSingle(t, System.Globalization.CultureInfo.InvariantCulture) : 3f;
+            return (Mathf.Abs(actual - want) <= tol ? "near " : "off ") + actual.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
+        }, "DrakesTestLab");
         TestHooks.Register("testlab.inventoryCount", _ => Player.m_localPlayer != null ? Player.m_localPlayer.GetInventory().NrOfItems() : -1, "DrakesTestLab");
 
         // timing, for the meta suite: are the running test's log lines stamped, were its finished steps timed,
@@ -83,6 +93,26 @@ internal static class TestRunner
         TestHooks.Register("testlab.logStamped", _ => _current != null && _current.StepLog.Count > 0 && _current.StepLog.TrueForAll(l => l.StartsWith("[+", StringComparison.Ordinal)), "DrakesTestLab");
         TestHooks.Register("testlab.stepsTimed", _ => _current != null ? _current.StepTimes.Count : -1, "DrakesTestLab");
         TestHooks.Register("testlab.runTimed", _ => RunStartedAt != default && _current != null && _current.StartedAt >= RunStartedAt && _current.StartRealtime > 0f, "DrakesTestLab");
+        // names of the game's prefabs that contain some text, for finding what to spawn: {"contains": "log", "max": 40}
+        TestHooks.Register("testlab.prefabsLike", args =>
+        {
+            var scene = ZNetScene.instance;
+            if (scene == null)
+                return "no world";
+            var text = args.TryGetValue("contains", out var c) ? Convert.ToString(c, System.Globalization.CultureInfo.InvariantCulture) ?? "" : "";
+            var max = args.TryGetValue("max", out var m) ? Convert.ToInt32(m, System.Globalization.CultureInfo.InvariantCulture) : 40;
+            var names = new List<string>();
+            var prefabs = HarmonyLib.AccessTools.Field(typeof(ZNetScene), "m_namedPrefabs")?.GetValue(scene) as System.Collections.IDictionary;
+            if (prefabs != null)
+                foreach (System.Collections.DictionaryEntry e in prefabs)
+                    if (e.Value is GameObject go && go.name.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0)
+                        names.Add(go.name);
+            names.Sort(StringComparer.OrdinalIgnoreCase);
+            if (names.Count > max)
+                names = names.GetRange(0, max);
+            return string.Join(", ", names);
+        }, "DrakesTestLab");
+        QuietZone.RegisterHooks();
         TestHooks.Register("testlab.framesSampled", _ => _current != null ? FrameProfiler.Count - _current.FrameMark : -1, "DrakesTestLab");
         TestHooks.Register("testlab.frameAvgFps", _ => _current != null ? FrameProfiler.Compute(_current.FrameMark, FrameProfiler.Count).AvgFps : -1f, "DrakesTestLab");
         TestHooks.Register("testlab.stepFramesRecorded", _ => _current != null && _current.StepFrames.Count > 0 && _current.StepFrames[0].Frames > 0, "DrakesTestLab");
@@ -268,6 +298,46 @@ internal static class TestRunner
         Start(plan, false);
     }
 
+    /// <summary>Server connect mode could not reach the server: record it as a failed test with a failed assert, write the
+    /// results, and (for an unattended run) quit with a failure exit code instead of waiting at a menu.</summary>
+    public static void ReportConnectFailure(string reason)
+    {
+        TestLabPlugin.Log?.LogError("ServerConnect failed: " + reason);
+        var result = new TestResult { Suite = "ServerConnect", Test = "Connect", Status = TestStatus.Failed, Reason = reason };
+        result.Asserts.Add(new AssertResult { Description = "connected to the test server", Passed = false, Detail = reason });
+        LastRun = new List<TestResult> { result };
+        _planned = new List<(string, string)> { (result.Suite, result.Test) };
+        _runStamp = DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture);
+        WriteResults(complete: true);
+        Status = "Failed: " + reason;
+        var cfg = TestLabConfig.Instance;
+        var unattended = CommandLine.Value("-testlab-run") != null || CommandLine.Has("-testlab-quit");
+        var quit = !CommandLine.Has("-testlab-stay") && (unattended || cfg.ConnectQuitOnFailure.Value);
+        var delay = unattended ? 1f : Mathf.Max(1f, cfg.ConnectQuitDelay.Value);
+
+        BootNotice.Show(
+            "DrakesTestLab could not connect to the test server.\n" + reason +
+            (quit ? $"\nThe game closes in {delay:0} seconds (the result is saved)." : ""),
+            sticky: true);
+
+        // the menu was hidden for the connect: bring it back so there is always a way out
+        if (FejdStartup.instance != null)
+        {
+            try { MenuSuppressor.Restore(FejdStartup.instance); }
+            catch (Exception ex) { TestLabPlugin.Log?.LogWarning($"Could not restore the main menu: {ex.Message}"); }
+        }
+
+        if (quit && ToolboxHost.Instance != null)
+            ToolboxHost.Instance.StartCoroutine(QuitAfter(delay));
+    }
+
+    private static IEnumerator QuitAfter(float seconds)
+    {
+        yield return new WaitForSecondsRealtime(seconds);
+        TestLabPlugin.Log?.LogInfo("ServerConnect: closing the game after the failed connect.");
+        Application.Quit(1);
+    }
+
     /// <summary>[Automation] RunOnLaunch: once per game start, after the world and arena are ready.</summary>
     public static void MaybeRunOnLaunch()
     {
@@ -441,6 +511,10 @@ internal static class TestRunner
 
         RunWorldReadySeconds = Time.realtimeSinceStartup - RunStartRealtime;
         ModLoadTimer.Close();
+        // zones around the arena that were not loaded when it was built still hold their trees
+        var clearedAgain = ArenaBuilder.ClearAgain();
+        if (clearedAgain > 0)
+            TestLabPlugin.Log?.LogInfo($"Cleared {clearedAgain} more natural objects around the arena once the world had loaded.");
 
         foreach (var name in _missing)
             Record(new TestResult { Suite = name, Test = "(suite)", Status = TestStatus.Failed, Reason = $"suite '{name}' was requested but is not in {SuiteLoader.Folder}" });
@@ -483,7 +557,26 @@ internal static class TestRunner
                     continue;
                 }
 
-                yield return RunOne(suite, test, unattended);
+                // drive the test by hand: an exception thrown inside a nested coroutine would end this whole run silently
+                // (the game sits there with nothing running), so a crash fails this one test and the run goes on
+                var routine = RunOne(suite, test, unattended);
+                while (true)
+                {
+                    bool more;
+                    try
+                    {
+                        more = routine.MoveNext();
+                    }
+                    catch (Exception ex)
+                    {
+                        RecordRunnerCrash(suite, test, ex);
+                        break;
+                    }
+
+                    if (!more)
+                        break;
+                    yield return routine.Current;
+                }
             }
 
             ModEnvironment.RestoreAll();
@@ -506,8 +599,36 @@ internal static class TestRunner
         }
     }
 
+    /// <summary>Where RunOne is, so a crash says in which part of the test it happened.</summary>
+    private static string _stage = "";
+
+    private static void RecordRunnerCrash(SuiteDef suite, TestDef test, Exception ex)
+    {
+        TestLabPlugin.Log?.LogError($"The runner crashed in {suite.Name}/{test.Name} ({_stage}): {ex}");
+        try
+        {
+            ModEnvironment.TestScope = false;
+            ModEnvironment.RestoreTest();
+            HeldKeys.ReleaseAll();
+            VirtualPeers.LeaveAll();
+        }
+        catch (Exception cleanup)
+        {
+            TestLabPlugin.Log?.LogWarning($"Clean-up after the crash failed too: {cleanup.Message}");
+        }
+
+        var r = _current != null && _current.Suite == suite.Name && _current.Test == test.Name
+            ? _current
+            : new TestResult { Suite = suite.Name, Test = test.Name };
+        r.Status = TestStatus.Failed;
+        r.Reason = $"the lab's runner crashed while {_stage}: {ex.GetType().Name}: {ex.Message} (full trace in LogOutput.log)";
+        r.EndedAt = DateTime.Now;
+        Record(r);
+    }
+
     private static IEnumerator RunOne(SuiteDef suite, TestDef test, bool unattended)
     {
+        _stage = "starting";
         var result = new TestResult { Suite = suite.Name, Test = test.Name, Status = TestStatus.Running };
         Latest[Key(suite.Name, test.Name)] = result;
         _current = result;
@@ -530,6 +651,7 @@ internal static class TestRunner
         result.FrameMark = FrameProfiler.Mark();
         Status = $"{suite.Name} / {test.Name}: setting up";
 
+        _stage = "resetting";
         if (suite.ResetBetweenTests)
         {
             StateReset.Run();
@@ -537,12 +659,19 @@ internal static class TestRunner
         }
 
         // settings a setup changes (case "configs") last only for this test, like setConfig
+        _stage = "applying the setup";
         ModEnvironment.TestScope = true;
         if (suite.Setup != null)
             yield return CaseRunner.ApplyCase(suite.Setup, suite.Name + " setup", quick: true);
         if (test.Setup != null)
             yield return CaseRunner.ApplyCase(test.Setup, test.Name + " setup", quick: true);
 
+        _stage = "clearing the area";
+        var clearSpec = test.ClearArea ?? suite.ClearArea;
+        if (clearSpec != null && clearSpec.Enabled)
+            ctx.Log($"clearArea: removed {clearSpec.Apply()} natural objects");
+
+        _stage = "running the steps";
         result.SetupSeconds = Time.realtimeSinceStartup - started;
         string failure = "";
         var delay = TestLabConfig.Instance.StepDelay.Value;
@@ -622,6 +751,7 @@ internal static class TestRunner
 
         if (failure.Length == 0)
         {
+            _stage = "checking the results";
             Status = $"{suite.Name} / {test.Name}: checking";
             foreach (var a in test.Asserts)
                 result.Asserts.Add(Asserts.Evaluate(a, ctx));
@@ -649,6 +779,7 @@ internal static class TestRunner
             yield return null;
         }
 
+        _stage = "cleaning up";
         foreach (var go in ctx.Spawned)
         {
             if (go != null && ZNetScene.instance != null)
@@ -661,6 +792,7 @@ internal static class TestRunner
         HeldKeys.ReleaseAll();
         LanguageSwitch.Restore();
 
+        _stage = "writing the result";
         result.Seconds = Time.realtimeSinceStartup - started;
         result.EndedAt = DateTime.Now;
         result.Frames = FrameProfiler.Compute(result.FrameMark, FrameProfiler.Mark());

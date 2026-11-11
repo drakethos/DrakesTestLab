@@ -38,6 +38,7 @@ public partial class TestLabPlugin : BaseUnityPlugin
         inputGo.AddComponent<TestLabInputDriver>();
         inputGo.AddComponent<ToolboxHost>();
         inputGo.AddComponent<Util.FrameSampler>();
+        inputGo.AddComponent<QuietZoneSweeper>();
 
         Logger.LogInfo($"{ModName} {Version} loaded — Phase 1 QA boot.");
     }

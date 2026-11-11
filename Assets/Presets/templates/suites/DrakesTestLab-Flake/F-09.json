@@ -1,0 +1,45 @@
+{
+  "name": "F-09 clearArea only removes the kinds it is asked to",
+  "description": "",
+  "steps": [
+    {
+      "do": "spawn",
+      "prefab": "Beech1",
+      "dz": 4
+    },
+    {
+      "do": "spawn",
+      "prefab": "beech_log",
+      "dz": 7
+    },
+    {
+      "do": "clearArea",
+      "radius": 30,
+      "what": [
+        "logs"
+      ]
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "logs",
+      "radius": 30,
+      "expect": false,
+      "label": "the log is gone"
+    },
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "trees",
+      "radius": 30,
+      "expect": true,
+      "label": "the tree is still there"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

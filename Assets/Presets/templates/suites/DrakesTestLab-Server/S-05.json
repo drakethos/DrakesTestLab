@@ -1,0 +1,8 @@
+{
+  "name": "S-05 an unknown server command is refused",
+  "description": "A command the server does not know fails the step with a list of the ones it does.",
+  "expectFailure": "unknown server command",
+  "steps": [
+    { "do": "server", "cmd": "make.me.king" }
+  ]
+}

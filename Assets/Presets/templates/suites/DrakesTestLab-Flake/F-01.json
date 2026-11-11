@@ -1,0 +1,92 @@
+{
+  "name": "F-01 a swarm of six wild creatures around the player is gone",
+  "description": "A burst of wild creatures at once: the sweep has to catch every one, not just the first.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.mark"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 3
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 5
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 7
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 9
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 11
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 13
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 2.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "",
+        "radius": 40
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "not one creature is left within 40 m"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.removedSince"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 6,
+      "label": "the zone removed all six"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

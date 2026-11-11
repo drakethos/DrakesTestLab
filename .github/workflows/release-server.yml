@@ -1,0 +1,209 @@
+name: Release server
+
+# The server-only mod (DrakesTestLabServer) has its own releases, separate from the client lab. Push a tag:
+#   Stable: server-v0.1.0          -> Hexium + GitHub release
+#   Beta:   server-v0.1.0-beta.1   -> Hexium + GitHub prerelease
+# The tag must match <Version> in server/DrakesTestLabServer.csproj, and server/CHANGELOG.md needs a "## <version>" section.
+# Client lab releases keep using v*.*.* tags (release.yml); "server-v..." does not match that pattern.
+
+on:
+  push:
+    tags:
+      - "server-v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      tag: ${{ steps.ver.outputs.tag }}
+      is_prerelease: ${{ steps.ver.outputs.is_prerelease }}
+      zip: ${{ steps.pkg.outputs.zip }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve release version
+        id: ver
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          TAG_VERSION="${TAG#server-v}"
+
+          if [[ "$TAG" =~ ^server-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            IS_PRERELEASE=false
+          elif [[ "$TAG" =~ ^server-v[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta|rc)\.[0-9]+$ ]]; then
+            IS_PRERELEASE=true
+          else
+            echo "::error::Tag ${TAG} must be server-vX.Y.Z (stable) or server-vX.Y.Z-beta.N / -alpha.N / -rc.N (prerelease)." >&2
+            exit 1
+          fi
+
+          PKG_VERSION=$(sed -n 's/.*<Version>\([^<]*\)<\/Version>.*/\1/p' server/DrakesTestLabServer.csproj | head -1 | xargs)
+          if [ -z "$PKG_VERSION" ]; then
+            echo "::error::Could not read <Version> from server/DrakesTestLabServer.csproj" >&2
+            exit 1
+          fi
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag ${TAG} (${TAG_VERSION}) does not match server/DrakesTestLabServer.csproj (${PKG_VERSION}). Tag server-v${PKG_VERSION} or update <Version>." >&2
+            exit 1
+          fi
+          echo "version=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "is_prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "Server release version: $PKG_VERSION (prerelease=$IS_PRERELEASE)"
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      # The server mod only needs BepInEx, Harmony and the Unity core assemblies. The same Pfhoenix reference package
+      # the client release uses carries them; stage it as a fake Valheim install (CorlibPath / BepInExPath).
+      - name: Stage reference DLLs from Pfhoenix package
+        run: |
+          nuget install Pfhoenix.Valheim.ModProjectReferences -Version 1.0.23 -OutputDirectory packages -NonInteractive
+          PFHOENIX_LIB=$(ls -d packages/Pfhoenix.Valheim.ModProjectReferences.*/lib/net46 2>/dev/null | head -1)
+          if [ -z "$PFHOENIX_LIB" ]; then
+            echo "::error::Pfhoenix package not found" >&2; ls packages/ >&2; exit 1
+          fi
+          MANAGED="ci_valheim/valheim_Data/Managed"
+          BEPINEX="ci_valheim/BepInEx/core"
+          mkdir -p "$MANAGED" "$BEPINEX"
+          cp "$PFHOENIX_LIB/"*.dll "$MANAGED/"
+          cp "$PFHOENIX_LIB/0Harmony.dll" "$BEPINEX/"
+          cp "$PFHOENIX_LIB/bepinex.dll"  "$BEPINEX/BepInEx.dll"
+
+      - name: Build
+        run: |
+          CI_ROOT="$(pwd)/ci_valheim"
+          dotnet build server/DrakesTestLabServer.csproj \
+            -c Release \
+            /p:BepInExPath="$CI_ROOT/BepInEx" \
+            /p:CorlibPath="$CI_ROOT/valheim_Data/Managed" \
+            /p:Version="${{ steps.ver.outputs.version }}" \
+            /v:minimal
+
+      # Thunderstore / Hexium layout. The build already staged server/dist/DrakeMods-DrakesTestLabServer/ (the DLL and
+      # the lab world under plugins/ so Gale keeps the folders); stamp the version and zip it.
+      - name: Assemble package
+        id: pkg
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          STAGE="server/dist/DrakeMods-DrakesTestLabServer"
+          ZIP_NAME="DrakeMods-DrakesTestLabServer-${VERSION}.zip"
+
+          cp server/CHANGELOG.md "$STAGE/"
+          sed -i "s/\"version_number\": *\"[^\"]*\"/\"version_number\": \"${VERSION}\"/" "$STAGE/manifest.json"
+          grep -q "\"version_number\": \"${VERSION}\"" "$STAGE/manifest.json" || { echo "::error::manifest.json version not stamped" >&2; exit 1; }
+
+          (cd "$STAGE" && zip -r "$GITHUB_WORKSPACE/$ZIP_NAME" .)
+
+          # Guard: everything the mod needs sits under plugins/ (otherwise Gale / r2modman flatten it), and the
+          # package has exactly one 256x256 icon.png at the root.
+          python3 - "$ZIP_NAME" <<'PY'
+          import struct, sys, zipfile
+          z = zipfile.ZipFile(sys.argv[1])
+          names = [n for n in z.namelist() if not n.endswith("/")]
+          for need in ("plugins/DrakesTestLabServer.dll", "plugins/Assets/LabWorld/_main.1.fwl2",
+                       "plugins/Assets/LabWorld/_manifest.txt", "manifest.json", "README.md", "icon.png"):
+              if need not in names:
+                  raise SystemExit(f"package is missing {need}")
+          loose = [n for n in names if "/" in n and not n.startswith("plugins/")]
+          if loose:
+              raise SystemExit(f"files outside plugins/ would be flattened by mod managers: {loose}")
+          data = z.read("icon.png")
+          if data[:8] != b"\x89PNG\r\n\x1a\n":
+              raise SystemExit("icon.png is not a PNG")
+          w, h = struct.unpack(">II", data[16:24])
+          if (w, h) != (256, 256):
+              raise SystemExit(f"icon.png must be 256x256, got {w}x{h}")
+          print(f"OK package layout, icon {w}x{h}")
+          PY
+
+          echo "zip=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+          ls -lh "$ZIP_NAME"
+
+      - name: Write release notes
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          TAG: ${{ steps.ver.outputs.tag }}
+          IS_PRERELEASE: ${{ steps.ver.outputs.is_prerelease }}
+          REPO: ${{ github.repository }}
+        run: |
+          SECTION=$(awk -v v="## ${VERSION}" '
+            $0 == v { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' server/CHANGELOG.md | sed -e 's/^###/##/')
+          if [ -z "$(printf '%s' "$SECTION" | tr -d '[:space:]')" ]; then
+            echo "::error::server/CHANGELOG.md has no '## ${VERSION}' section (or it is empty)." >&2
+            exit 1
+          fi
+          {
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              echo "> **Beta build.** Please [report bugs](https://github.com/${REPO}/issues) with the server's \`BepInEx/LogOutput.log\`."
+              echo
+            fi
+            printf '%s\n' "$SECTION"
+            echo
+            echo "## Install"
+            echo "- **Server only.** Do not install it on a game client. Hexium: https://valheim.hexium.gg/mods/DrakeMods/DrakesTestLabServer"
+            echo "- **Zip below:** extract into the dedicated server's \`BepInEx/plugins/DrakeMods-DrakesTestLabServer/\` (Docker setups: \`config/bepinex/plugins/\`)."
+            echo "- It replaces the server's world with a fresh lab world on every start (the old one is kept in \`testlab_world_backups\`). Set \`World.Mode\` to \`Off\` or \`CreateIfMissing\` to change that."
+            echo
+            echo "---"
+            echo "Full history: [CHANGELOG.md](https://github.com/${REPO}/blob/${TAG}/server/CHANGELOG.md) | [README](https://github.com/${REPO}/blob/${TAG}/server/README.md)"
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: "DrakesTestLabServer ${{ steps.ver.outputs.version }}${{ steps.ver.outputs.is_prerelease == 'true' && ' (beta)' || '' }}"
+          prerelease: ${{ steps.ver.outputs.is_prerelease == 'true' }}
+          body_path: release-notes.md
+          files: ${{ steps.pkg.outputs.zip }}
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-package-zip
+          path: ${{ steps.pkg.outputs.zip }}
+          if-no-files-found: error
+
+  publish-hexium:
+    needs: build-and-release
+    # Kill switch: repo variable HEXIUM_PUBLISH=false skips the upload (the GitHub release is still made).
+    if: vars.HEXIUM_PUBLISH != 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout publish script
+        uses: actions/checkout@v4
+
+      - name: Download package zip
+        uses: actions/download-artifact@v4
+        with:
+          name: server-package-zip
+          path: dist
+
+      - name: Publish package to Hexium
+        env:
+          HEXIUM_TOKEN: ${{ secrets.HEXIUM_TOKEN }}
+          ZIP_NAME: ${{ needs.build-and-release.outputs.zip }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HEXIUM_TOKEN}" ]; then
+            echo "::error::HEXIUM_TOKEN secret is not set" >&2
+            exit 1
+          fi
+          python3 .github/scripts/publish-hexium.py \
+            --file "dist/${ZIP_NAME}" \
+            --repository "https://valheim.hexium.gg" \
+            --namespace "DrakeMods" \
+            --communities "valheim" \
+            --categories "Server-only,Tools,Valheim 1.0"

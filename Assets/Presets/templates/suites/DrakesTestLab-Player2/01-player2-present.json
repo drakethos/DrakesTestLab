@@ -1,0 +1,8 @@
+// Player 2 is a real second client. The ping goes Player 1 -> server -> Player 2 and the answer comes back the same way.
+{
+  "name": "01-player2-present",
+  "description": "Player 2 is connected and answers a command sent through the server.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120, "timeout": 20 }
+  ]
+}

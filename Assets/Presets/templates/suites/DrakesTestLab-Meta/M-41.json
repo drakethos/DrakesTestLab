@@ -1,0 +1,55 @@
+{
+  "name": "M-41 quiet zone: a wild creature inside it is removed",
+  "description": "Covers the quiet zone: creatures made by the natural spawners are removed when they are inside the zone.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.active",
+      "expect": true,
+      "label": "the quiet zone is on while a test runs"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 6
+      },
+      "label": "make a boar the way a natural spawner would"
+    },
+    {
+      "do": "wait",
+      "seconds": 1.5
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 25
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "the wild boar was removed"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.removed"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "the zone counted the removal"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

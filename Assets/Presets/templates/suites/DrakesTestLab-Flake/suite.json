@@ -1,0 +1,19 @@
+{
+  "name": "DrakesTestLab-Flake",
+  "description": "Flaky situations (wild swarms, wanderers, raids) that must do no harm inside the quiet zone, and controls that prove the trouble is real with the zone off.",
+  "requireMods": [
+    {
+      "guid": "com.drakemods.testlab",
+      "minVersion": "0.5.0"
+    }
+  ],
+  "include": "_lib/valheim.json",
+  "setup": {
+    "timeOfDay": 0.5,
+    "freezeTime": 1,
+    "god": 1,
+    "noBuild": "off",
+    "hideUnlockPopups": 1
+  },
+  "resetBetweenTests": true
+}

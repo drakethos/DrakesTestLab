@@ -1,0 +1,10 @@
+{
+  "name": "Q-02 the server tells the two players apart",
+  "description": "The server lists each player with the role the lab gave it.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "server", "cmd": "znet.peer", "args": { "who": "me" }, "contains": "role=Player1", "label": "Player 1 is Player1 to the server" },
+    { "do": "server", "cmd": "znet.peer", "args": { "who": "Bjornita" }, "contains": "role=Player2", "label": "Bjornita is Player2 to the server" },
+    { "do": "server", "cmd": "znet.peers", "contains": "name=Bjornita", "label": "both are on the list" }
+  ]
+}

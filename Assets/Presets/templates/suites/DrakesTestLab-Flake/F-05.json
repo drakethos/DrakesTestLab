@@ -1,0 +1,59 @@
+{
+  "name": "F-05 a real raid starts but nothing spawns inside the zone",
+  "description": "A real raid (Eikthyr's army) for 25 s. Slow on purpose.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.mark"
+    },
+    {
+      "do": "console",
+      "command": "event army_eikthyr"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.currentEvent"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": "army_eikthyr",
+      "label": "a raid a test starts on purpose still runs"
+    },
+    {
+      "do": "wait",
+      "seconds": 25
+    },
+    {
+      "do": "hook",
+      "name": "quiet.blockedSpawnsSince"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "the raid tried to spawn and was refused"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "",
+        "radius": 80
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "no creature came out of it"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "timeout": 90
+}

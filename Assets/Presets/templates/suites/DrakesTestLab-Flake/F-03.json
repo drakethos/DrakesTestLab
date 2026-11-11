@@ -1,0 +1,68 @@
+{
+  "name": "F-03 a wanderer outside the zone is left alone, then removed when the zone reaches it",
+  "description": "The zone follows the player: a creature that was outside is removed once the player is within the radius of it.",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZoneRadius": "30"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.spawnWild",
+      "args": {
+        "prefab": "Boar",
+        "dist": 60
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 1.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 200
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 1,
+      "label": "outside the zone (30 m) it is left alone"
+    },
+    {
+      "do": "teleport",
+      "dx": 0,
+      "dz": 40
+    },
+    {
+      "do": "wait",
+      "seconds": 2.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 200
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "the zone moved with the player and removed it"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

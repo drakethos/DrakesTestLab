@@ -1,0 +1,10 @@
+{
+  "name": "S-03 the blacklist (banned list)",
+  "description": "An id is banned and unbanned again.",
+  "steps": [
+    { "do": "server", "cmd": "ban.add", "args": { "who": "Steam_76561198000000002" }, "contains": "added" },
+    { "do": "server", "cmd": "ban.list", "contains": "Steam_76561198000000002", "label": "the id is on the blacklist" },
+    { "do": "server", "cmd": "ban.remove", "args": { "who": "Steam_76561198000000002" } },
+    { "do": "server", "cmd": "ban.list", "notContains": "Steam_76561198000000002", "label": "and gone again" }
+  ]
+}

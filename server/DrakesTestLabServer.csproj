@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>DrakesTestLabServer</AssemblyName>
+    <RootNamespace>DrakesTestLabServer</RootNamespace>
+    <!-- Server releases are tagged server-vX.Y.Z; CI passes /p:Version and stamps manifest.json with it. -->
+    <Version>0.1.1</Version>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DebugType>none</DebugType>
+    <PackageName>DrakeMods-DrakesTestLabServer</PackageName>
+    <!-- The lab world is the client lab's own template, so there is a single copy in the repo. -->
+    <LabWorldSource>$(MSBuildProjectDirectory)\..\Assets\Presets\templates\TestLab</LabWorldSource>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <!-- game types for the role relay (ZNet, ZRoutedRpc); the original, not a publicized copy, is enough: they are public -->
+    <Reference Include="assembly_valheim">
+      <HintPath>$(CorlibPath)\assembly_valheim.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine" Condition="Exists('$(CorlibPath)\UnityEngine.dll')">
+      <HintPath>$(CorlibPath)\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(CorlibPath)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Package layout in dist\<PackageName>\ (Thunderstore/Hexium layout; runtime files under plugins/ so Gale keeps the folders). -->
+  <Target Name="StagePackage" AfterTargets="Build">
+    <PropertyGroup>
+      <Dist>$(MSBuildProjectDirectory)\dist\$(PackageName)</Dist>
+    </PropertyGroup>
+    <ItemGroup>
+      <LabWorld Include="$(LabWorldSource)\*" />
+    </ItemGroup>
+    <Error Condition="'@(LabWorld)' == ''" Text="The lab world template is missing: $(LabWorldSource)" />
+    <RemoveDir Directories="$(Dist)" />
+    <MakeDir Directories="$(Dist)\plugins\Assets\LabWorld" />
+    <Copy SourceFiles="$(OutputPath)DrakesTestLabServer.dll" DestinationFolder="$(Dist)\plugins" />
+    <Copy SourceFiles="@(LabWorld)" DestinationFolder="$(Dist)\plugins\Assets\LabWorld" />
+    <Copy SourceFiles="manifest.json;README.md;icon.png" DestinationFolder="$(Dist)" />
+  </Target>
+
+</Project>

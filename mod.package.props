@@ -4,11 +4,11 @@
     <ThunderstoreAuthor>DrakeMods</ThunderstoreAuthor>
     <RootNamespace>DrakesTestLab</RootNamespace>
     <AssemblyName>DrakesTestLab</AssemblyName>
-    <Version>0.3.3</Version>
+    <Version>0.6.0</Version>
     <BepInPluginName>DrakesTestLab</BepInPluginName>
     <BepInGuid>com.drakemods.testlab</BepInGuid>
     <ModInfoClass>TestLabPlugin</ModInfoClass>
-    <Description>QA bench for Valheim modders: launch into a fresh test world as a new character, in a flat arena with a house of every crafting station. F9 toolbox: time, weather, spawns, rules, wards, JSON test cases. Valheim 1.0.</Description>
+    <Description>QA bench for Valheim modders: a fresh test world in a flat arena with every crafting station, an F9 toolbox, JSON test cases, and a server connect mode with a real second player (pairs with DrakesTestLabServer). Valheim 1.0.</Description>
     <WebsiteUrl>https://github.com/drakethos/DrakesTestLab</WebsiteUrl>
   </PropertyGroup>
   <ItemGroup>

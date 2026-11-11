@@ -1,0 +1,67 @@
+{
+  "name": "F-07 the zone catches what was alive when it switched on",
+  "description": "Documents the edge: creatures alive when the zone comes on are treated as wild.",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZone": "Off"
+      }
+    },
+    {
+      "do": "spawn",
+      "prefab": "Boar",
+      "dz": 6
+    },
+    {
+      "do": "wait",
+      "seconds": 1.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 40
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "min": 1,
+      "label": "with the zone off the boar is alive"
+    },
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZone": "Tests"
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 2.0
+    },
+    {
+      "do": "hook",
+      "name": "quiet.creaturesNear",
+      "args": {
+        "prefab": "Boar",
+        "radius": 40
+      }
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "switched on, it counts what is already there as wild and removes it"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

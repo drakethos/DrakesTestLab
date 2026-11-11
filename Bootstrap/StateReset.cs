@@ -66,6 +66,16 @@ internal static class StateReset
                 ZNetScene.instance.Destroy(ward.gameObject);
         }
 
+        // an event (raid) a test started would otherwise carry over into the next test
+        try
+        {
+            RandEventSystem.instance?.ResetRandomEvent();
+        }
+        catch (Exception ex)
+        {
+            TestLabPlugin.Log?.LogDebug($"Could not end the random event: {ex.Message}");
+        }
+
         var env = EnvMan.instance;
         if (env != null)
         {

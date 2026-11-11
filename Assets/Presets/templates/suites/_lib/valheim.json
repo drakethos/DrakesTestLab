@@ -17,6 +17,17 @@
       ]
     },
 
+    "treeAt": {
+      "description": "Adds the tree (or any natural object) a test needs, instead of relying on the landscape: a tree dz metres ahead, tagged so it can be targeted.",
+      "params": [ { "prefab": "Beech1" }, { "dz": 8 }, { "dx": 0 }, { "tag": "tree" } ],
+      "actions": [
+        { "do": "spawn", "prefab": "{{prefab}}", "dx": "{{dx}}", "dz": "{{dz}}", "as": "{{tag}}", "keep": false }
+      ],
+      "asserts": [
+        { "check": "objectNear", "target": "{{tag}}", "radius": 30, "label": "{{prefab}} added" }
+      ]
+    },
+
     "equipAndCheck": {
       "description": "Gives an item, equips it and checks it is equipped.",
       "params": [ "prefab" ],

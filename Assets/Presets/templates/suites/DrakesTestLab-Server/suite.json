@@ -1,0 +1,9 @@
+// The dedicated server's control channel (DrakesTestLabServer, Control.Enabled = true): Player 1 changes the server's conditions
+// from a test. Needs server connect mode as Player 1, and Player 2 connected for S-06. Hand-written.
+{
+  "name": "DrakesTestLab-Server",
+  "description": "Player 1 controls the dedicated server: admin list, whitelist, blacklist, a mod's settings, and who may do it.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" } ],
+  // the server owns the world: never reset or reload it between tests
+  "resetBetweenTests": false
+}

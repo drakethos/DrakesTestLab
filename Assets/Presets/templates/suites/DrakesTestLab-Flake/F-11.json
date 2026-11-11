@@ -1,0 +1,26 @@
+{
+  "name": "F-11 a test with clearArea starts with the area clear",
+  "description": "Needs F-10 before it. The test field clearArea runs after the reset and the setup, before the steps.",
+  "steps": [
+    {
+      "do": "check",
+      "check": "objectNear",
+      "category": "landscape",
+      "radius": 30,
+      "expect": false,
+      "label": "the trees F-10 left behind were cleared before the first step"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "clearArea": {
+    "radius": 30,
+    "what": [
+      "landscape"
+    ]
+  }
+}

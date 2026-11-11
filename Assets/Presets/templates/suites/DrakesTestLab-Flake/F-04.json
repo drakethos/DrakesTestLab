@@ -1,0 +1,48 @@
+{
+  "name": "F-04 the game's raid timer is held",
+  "description": "The same call the game makes when its random-event timer fires.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.mark"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.timerEvent"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.blockedEventsSince"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 3,
+      "label": "the timer tried three times and was refused every time"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.currentEvent"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": "none",
+      "label": "no event is running"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

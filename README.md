@@ -13,6 +13,30 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.5: how long things take
+
+Every test run now says where the time went, how smooth the game was and how much memory it used. It is all in `config/DrakesTestLab/results/` (`latest.html`, `latest.md`, `latest.json`) and in the summary the `Run-TestLabSuites.ps1` runner prints.
+
+- **Timestamps.** Every log line in a test starts with `[+3.2s]`, the seconds since that test began. Each test shows when it started, how long its setup and each step took; the run shows how long the game took to reach it and how long the world took to be ready. The HTML report has a **Timing** section with the slowest tests and the slowest steps.
+- **Mod load times.** How long each mod in your pack took to load, slowest first, so you can see which one slows the start. To time *every* mod (the first one included), install the optional preloader patcher: it ships in the package at `BepInEx/patchers/DrakesTestLab/DrakesTestLab.Preload.dll` and changes nothing in the game. Without it the report lists only the mods that load after DrakesTestLab and says so.
+- **Frame times.** Each test and step reports average fps, the **1% low** fps, the worst frame and the number of **hitches** (frames over 50 ms). The report lists the roughest tests and the steps that had the worst single frames, so a stutter points at the step that caused it.
+- **Memory.** Each test and step reports the managed heap (start, end, peak), total memory, how much it allocated and how many garbage collections ran. The report lists the tests whose heap grew the most (leak suspects) and the ones that allocate the most.
+- **Object census (optional).** Turn on `[Automation] CountObjects` and the lab counts every Unity object before and after each test and names the types that grew. It costs about a second per test, so it is off by default; early tests also see the world still streaming in.
+
+Numbers from the first test of a run include the world finishing its load, so compare tests with each other, not with the first.
+
+## New in 0.4: a dedicated server and a real Player 2
+
+Test your mod on a real dedicated server with two real players.
+
+- **DrakesTestLabServer** (separate package, **server only**) gives the server a fresh lab world on every start and hands out the roles. Install it on the dedicated server, never on a client.
+- **Server connect mode.** In the lab config set `[Bootstrap] Target = Server`, `[Connect] Address = <server public IP>:<port>` and `[Connect] Password`. The lab skips the local world and joins the server. If it cannot connect it writes a failed result and closes the game.
+- **Player 1 runs the tests, Player 2 follows.** Start one client with `[Connect] Role = Player2` (it runs no tests) and the other as `Player1`. In a test case, mark any step `"on": "player2"` to run it on the second client, for example `{ "do": "interact", "on": "player2", "target": "chest" }`. `ping` checks Player 2 is there. The `DrakesTestLab-Player2` suite shows it: Player 2 opens Player 1's chest and is refused a private one.
+- **Same mods everywhere.** The server and both clients need the same game version and the same mods, or the game reports "incompatible version".
+- **Crossplay server.** The server runs with crossplay (PlayFab) on, because a Game Pass / Xbox client only speaks PlayFab. Use the server's **public** IP and port.
+
+Details and the design: [docs/MULTIPLAYER.md](https://github.com/drakethos/DrakesTestLab/blob/main/docs/MULTIPLAYER.md) and the server package's README ([server/README.md](https://github.com/drakethos/DrakesTestLab/blob/main/server/README.md)).
+
 ## New in 0.3
 
 **Record a test by playing it.** Press Record, play the scenario, and every action becomes a test step: crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks, setting changes. A small bar at the top of the screen adds checks while you play (F7: what you look at, Shift+F7: your inventory), pauses and stops.
@@ -47,6 +71,7 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 - **Ward test bench:** spawn a ward and set its owner, on/off and permitted players, or **play as** Alice, Bob, Carol or Bjornita (or any name) to see exactly what a stranger, an owner and a permitted player can do. Ready-made scenarios: stranger's ward, I'm permitted, ward off, overlapping wards.
 - **Player 2:** connect Bjornita as a virtual second client (Wards tab or the `peerJoin` step) to test what happens between two players.
 - **Share the world:** because the game logs straight in, the open / public / password choices come from the config (`[Server]`) and the Session tab, so friends can join the test world through Steam.
+- **Camera aim:** the `face` and `lookAt` steps tilt the view like the mouse (`up`, `down`, `left`, `right`, `pitch`, `yawOffset`), third-person camera included, so a test can look 1.5 m up a trunk or straight down at the floor. Plain `face` stays level.
 - **Fires:** one button refuels every fire and fuel-driven cooking station, or keeps them topped up.
 
 ![Cauldron and mead ketill standing over lit fire pits, cooking spit alongside](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/fire-stations.jpg)
@@ -118,7 +143,7 @@ Eight example cases ship with the mod and are copied into that folder on first r
 
 ## Automated tests
 
-Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report and failure screenshots are written to `config/DrakesTestLab/results/`.
+Suites of tests per mod run from **F9 > Tests**, step by step while you watch, or unattended on launch (`[Automation] RunOnLaunch`, quits with exit code 0/1). A test sets up the world, then does things: spawn, interact, click game buttons, type, press keys, play as another player, call mod code. Then it checks the result: items, owners, windows, log errors, config values, skills, ward access and more. A report (with timings, frame rate and memory per test: see *New in 0.5*) and failure screenshots are written to `config/DrakesTestLab/results/`.
 
 **Record a test instead of writing it:** F9 > Tests > Record, play the scenario, add checks with F7 / Shift+F7 on the lab bar, stop and save. Crafting, building, pressing E, inventory clicks, chest moves, typing, menu clicks and setting changes all become steps, and the test starts from a saved setup of the game as it was. See [Recording tests](https://github.com/drakethos/DrakesTestLab/wiki/Recording-Tests).
 
@@ -138,7 +163,10 @@ Every key, its default and what it does: [Configuration on the wiki](https://git
 - **Fresh character:** on by default; turn off to use the bundled template character instead
 - **Arena:** `Spawn` (level and clear around spawn, keep the standing stones) or `FindFlat`, radius, keep-radius, house offset, build the house on or off
 - **Rules:** no-build zones (`Vanilla` / `Off` / `Scaled`), fall damage, auto-safe falls
+- **Quiet zone** (`[Arena] QuietZone`, `QuietZoneRadius`): a no-fly zone around the arena and you. While tests run (default), nothing wild spawns inside it, wild creatures there are removed and the game's random events (raids) do not start, so a test does not pass or fail on a stray boar. Creatures your tests or your mod make are left alone. `Tests` / `Always` / `Off`.
 - **Dev:** toolbox and overlay hotkeys, UI scale
+- **Automation:** `StepDelay`, `RunOnLaunch`, and `CountObjects` (count Unity objects around each test to find leaks; off by default)
+- **Server connect mode** (`[Bootstrap] Target = Server`, `[Connect]`): `Address` (the server's public `IP:port`), `Password`, `Role` (`Player1` / `Player2`), `TimeoutSeconds`, `Character`, `QuitOnFailure`, `QuitDelaySeconds`
 
 ---
 

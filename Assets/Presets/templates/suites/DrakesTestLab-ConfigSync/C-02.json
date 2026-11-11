@@ -1,0 +1,14 @@
+{
+  "name": "C-02 a number setting set on the server reaches Player 1",
+  "description": "DrakesRenameit NameCharacterLimit is set to 40 then 50 on the server; Player 1 and the server agree each time. (Player 2 has no Renameit in its profile, so this one is Player 1 and the server only. Teams' own settings are admin-only and not re-sent live, so they are not used here.)",
+  "steps": [
+    { "do": "serverConfig", "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit", "value": "40" },
+    { "do": "agree", "timeout": 15, "expect": "40", "equal": true, "label": "NameCharacterLimit is 40 on Player 1 and the server", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit" } } ] },
+    { "do": "serverConfig", "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit", "value": "50" },
+    { "do": "agree", "timeout": 15, "expect": "50", "equal": true, "label": "and back to 50 on both", "reads": [
+      { "party": "player1", "config": { "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit" } },
+      { "party": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.renameit", "section": "08 Limits", "key": "NameCharacterLimit" } } ] }
+  ]
+}

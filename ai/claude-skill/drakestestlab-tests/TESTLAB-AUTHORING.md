@@ -165,6 +165,7 @@ owner check, `as(who, steps)`.
 | `click` / `toggle` / `type` | `button` (+ optional `nth`) / `name`,`value` / `field`,`text`,`submit` (`field: "*"` = the prompt that just opened) | Drive Unity UI and UI Toolkit windows by name or label. Rich text tags are ignored when matching. `nth` (0 = first) picks one of several UI Toolkit elements with the same label (an up arrow on every row). A disabled button fails the step, like a player could not click it |
 | `pressKey` | `button` (Use, Inventory, Jump...) or `key`, `frames` | Fake key press the game reads as real |
 | `teleport`, `face`, `wait` | position or `target` (teleport: `yaw` to face a way); `seconds` or `until` + `timeout` | Movement and timing |
+| `face`, `lookAt` (tilt) | `up`/`down`/`dy` (m above or below the aim point), `left`/`right` (m sideways), `pitch` (degrees, + up), `yawOffset` (degrees, + right), `y` with `x`/`z` | Tilts the view like the mouse, third-person camera included. Plain `face` stays level. `lookAt` with a tilt holds the view instead of waiting for a hover: `{ "do": "lookAt", "target": "tree", "up": 1.5 }` |
 | `invoke` | `method` (`Namespace.Type.Member`), `args` | Calls a static method / reads a static property; result = `lastResult` |
 | `relog` | `timeout` | Persistence: log out and load the same world and character back (no restart); tags re-found |
 | `store` / `take` | `target`, `prefab`, `count`, `index`/`match` | Put an inventory stack into a chest / take items out of one |

@@ -1,0 +1,20 @@
+{
+  "name": "Q-05 when Player 2 opens the chest, all three agree the owner changed",
+  "description": "Player 2 opens Player 1's chest through the real RPCs. The owner becomes Bjornita, as the server, Player 1 and Player 2 each see it, and the server saw the request go past.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "spawn", "prefab": "piece_chest_wood", "dz": 3, "dx": -4, "owner": "me", "as": "chest" },
+    { "do": "wait", "seconds": 3 },
+    { "do": "teleport", "on": "player2", "to": "chest", "distance": 2 },
+    { "do": "wait", "seconds": 2 },
+    { "do": "server", "cmd": "rpc.reset" },
+    { "do": "interact", "on": "player2", "target": "chest" },
+    { "do": "agree", "timeout": 20, "expect": "Bjornita", "equal": true, "label": "Bjornita owns the chest, as all three see it", "reads": [
+      { "party": "player1", "owner": { "prefab": "piece_chest_wood", "radius": 8 } },
+      { "party": "server", "cmd": "zdo.owner", "args": { "prefab": "piece_chest_wood", "near": "me", "radius": 8 } },
+      { "party": "player2", "owner": { "prefab": "piece_chest_wood", "radius": 8 } } ] },
+    { "do": "server", "cmd": "rpc.count", "args": { "method": "RPC_RequestOpen" }, "min": 1, "label": "the server routed the open request" },
+    { "do": "server", "cmd": "rpc.last", "args": { "method": "RPC_RequestOpen" }, "contains": "from=Bjornita", "label": "and it came from Bjornita" },
+    { "do": "closeUi", "on": "player2" }
+  ]
+}

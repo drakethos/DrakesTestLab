@@ -1,0 +1,9 @@
+// Asserts on what the SERVER sees, and three-way asserts that make Player 1, the server and Player 2 agree. Needs server connect mode as
+// Player 1 with Player 2 connected (a second lab client). The server answers queries when Control.Queries is on (the default).
+{
+  "name": "DrakesTestLab-ServerAsserts",
+  "description": "The server's own view (peers, ZDOs, owners, RPC traffic) checked against what Player 1 and Player 2 see.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.4.2" } ],
+  // the server owns the world: never reset or reload it between tests
+  "resetBetweenTests": false
+}

@@ -34,6 +34,9 @@ internal sealed class TestDef
     public List<Dictionary<string, object?>> Asserts = new();
     public bool ManualOnly;
     public float TimeoutSeconds = -1f;
+
+    /// <summary>Clear natural objects (trees, stumps, rocks...) around the player before the steps. Overrides the suite's.</summary>
+    public DrakesTestLab.Bootstrap.ClearSpec? ClearArea;
     /// <summary>A negative test: it passes only when it fails (and, with <see cref="ExpectFailureContains"/>, for that reason).</summary>
     public bool ExpectFailure;
     public string ExpectFailureContains = "";
@@ -67,6 +70,9 @@ internal sealed class SuiteDef
     public List<ConfigOverride> ConfigOverrides = new();
     public TestCase? Setup;
     public bool ResetBetweenTests = true;
+
+    /// <summary>Clear natural objects before every test of the suite (a test may override it).</summary>
+    public DrakesTestLab.Bootstrap.ClearSpec? ClearArea;
     public Dictionary<string, BlockDef> Blocks = new(StringComparer.OrdinalIgnoreCase);
     public List<string> Includes = new();
     public List<TestDef> Tests = new();
@@ -212,6 +218,7 @@ internal static class SuiteLoader
                 suite.Name = d.Str("name", suite.Name);
                 suite.Description = d.Str("description");
                 suite.ResetBetweenTests = d.Bool("resetBetweenTests", true);
+                suite.ClearArea = d.TryGetValue("clearArea", out var suiteClear) ? DrakesTestLab.Bootstrap.ClearSpec.Read(suiteClear) : null;
 
                 // included files first, so the suite's own values win
                 var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { Path.GetFullPath(suiteFile) };
@@ -488,6 +495,7 @@ internal static class SuiteLoader
             test.Description = d.Str("description");
             test.ManualOnly = d.Bool("manualOnly");
             test.TimeoutSeconds = d.Num("timeout", -1f);
+            test.ClearArea = d.TryGetValue("clearArea", out var testClear) ? DrakesTestLab.Bootstrap.ClearSpec.Read(testClear) : null;
             // "expectFailure": true, or the text the failure reason must contain
             if (d.TryGetValue("expectFailure", out var ef) && ef != null)
             {

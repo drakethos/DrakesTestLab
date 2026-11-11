@@ -1,0 +1,36 @@
+{
+  "name": "M-44 quiet zone: its size, and the event timer is held",
+  "description": "The radius (Arena/QuietZoneRadius, default 80 m) and the random-event gate. Events a test starts itself are not blocked.",
+  "steps": [
+    {
+      "do": "hook",
+      "name": "quiet.contains",
+      "args": {
+        "dist": 30
+      },
+      "expect": true,
+      "label": "30 m away is inside"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.contains",
+      "args": {
+        "dist": 500
+      },
+      "expect": false,
+      "label": "500 m away is outside"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.eventsAllowed",
+      "expect": false,
+      "label": "the natural random-event timer is held while a test runs"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

@@ -8,9 +8,27 @@ internal enum ArenaMode
     FindFlat
 }
 
+internal enum BootTarget
+{
+    /// <summary>The classic lab: a throw-away local world and character.</summary>
+    LocalWorld,
+
+    /// <summary>Server connect mode: join the dedicated server (DrakesTestLabServer) instead of making a local world.</summary>
+    Server
+}
+
 internal sealed class TestLabConfig
 {
     public static TestLabConfig Instance { get; private set; } = null!;
+
+    public ConfigEntry<BootTarget> Target { get; private set; } = null!;
+    public ConfigEntry<string> ConnectAddress { get; private set; } = null!;
+    public ConfigEntry<string> ConnectPassword { get; private set; } = null!;
+    public ConfigEntry<float> ConnectTimeout { get; private set; } = null!;
+    public ConfigEntry<string> ConnectCharacter { get; private set; } = null!;
+    public ConfigEntry<string> ConnectRole { get; private set; } = null!;
+    public ConfigEntry<bool> ConnectQuitOnFailure { get; private set; } = null!;
+    public ConfigEntry<float> ConnectQuitDelay { get; private set; } = null!;
 
     public ConfigEntry<bool> BootstrapEnabled { get; private set; } = null!;
     public ConfigEntry<bool> SkipIntro { get; private set; } = null!;
@@ -51,8 +69,12 @@ internal sealed class TestLabConfig
     public ConfigEntry<bool> FallAutoSafe { get; private set; } = null!;
     public ConfigEntry<ArenaMode> ArenaPlacement { get; private set; } = null!;
     public ConfigEntry<float> ArenaRadius { get; private set; } = null!;
+    public ConfigEntry<float> ClearRadius { get; private set; } = null!;
+    public ConfigEntry<QuietZoneMode> QuietZone { get; private set; } = null!;
+    public ConfigEntry<float> QuietZoneRadius { get; private set; } = null!;
     public ConfigEntry<float> KeepRadius { get; private set; } = null!;
     public ConfigEntry<bool> ClearRocks { get; private set; } = null!;
+    public ConfigEntry<bool> LabCoat { get; private set; } = null!;
     public ConfigEntry<bool> BuildHouse { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetX { get; private set; } = null!;
     public ConfigEntry<float> HouseOffsetZ { get; private set; } = null!;
@@ -105,6 +127,20 @@ internal sealed class TestLabConfig
         var c = Instance;
 
         c.BootstrapEnabled = config.Bind("Bootstrap", "Enabled", true, "Auto-skip menu and load test world/character.");
+        c.Target = config.Bind("Bootstrap", "Target", BootTarget.LocalWorld,
+            "LocalWorld = the classic throw-away local test world. Server = server connect mode: join the dedicated test server (see the [Connect] section) and run tests against it. If the server cannot be reached the run fails with a failed assert.");
+        c.ConnectAddress = config.Bind("Connect", "Address", "127.0.0.1:2456",
+            "Server connect mode: the server's address as host:port. A server on the crossplay (PlayFab) backend is found through its public IP, which the server prints at start (\"serverIP used to register the server\").");
+        c.ConnectPassword = config.Bind("Connect", "Password", "", "Server connect mode: the server's password (empty = none).");
+        c.ConnectTimeout = config.Bind("Connect", "TimeoutSeconds", 90f, "Server connect mode: seconds to wait for the connection and the spawn before the connect check fails.");
+        c.ConnectCharacter = config.Bind("Connect", "Character", PresetDeployer.DefaultEphemeralCharacterName,
+            "Server connect mode: the fresh character file used on the server (recreated on every launch so each run starts with a clean character).");
+        c.ConnectRole = config.Bind("Connect", "Role", "Player1",
+            "Server connect mode: Player1 runs the test cases (and sends steps marked \"on\": \"player2\" to the second client); Player2 runs no tests and only does what Player 1 sends. The server gives each role to one client.");
+        c.ConnectQuitOnFailure = config.Bind("Connect", "QuitOnFailure", true,
+            "Server connect mode: when the server cannot be reached, write the failed result and close the game. False = bring the main menu back and stay there (you can quit from it).");
+        c.ConnectQuitDelay = config.Bind("Connect", "QuitDelaySeconds", 10f,
+            "Server connect mode: seconds the failure notice stays up before the game closes (an unattended -testlab-run closes after 1 second).");
         c.SkipIntro = config.Bind("Bootstrap", "SkipIntro", true, "Try to skip intro logos when bootstrapping.");
         c.FailOpenToMenu = config.Bind("Bootstrap", "FailOpenToMenu", true, "If fast boot fails, leave the main menu available.");
 
@@ -161,10 +197,18 @@ internal sealed class TestLabConfig
         c.FallAutoSafe = config.Bind("Rules", "FallAutoSafe", true, "With a raised jump multiplier, falls up to the height you can jump do no damage.");
         c.ArenaPlacement = config.Bind("Arena", "Placement", ArenaMode.Spawn,
             "Spawn = level and clear the area around where you spawn (standing stones kept). FindFlat = search for naturally flat meadow and teleport there.");
+        c.QuietZone = config.Bind("Arena", "QuietZone", QuietZoneMode.Tests,
+            "No-fly zone against flaky tests. Inside it nothing wild spawns, wild creatures that are there or wander in are removed, and the game's random events (raids) do not start. Creatures a test or a mod makes itself are never removed. Tests = while the lab runs tests (default), Always = also when you play by hand, Off = never.");
+        c.QuietZoneRadius = config.Bind("Arena", "QuietZoneRadius", 80f,
+            "Radius of the quiet zone in metres, around the arena and around you. Wider than the arena so creatures cannot aggro from just outside it.");
+        c.ClearRadius = config.Bind("Arena", "ClearRadius", 70f,
+            "Radius in metres around the arena that is cleared of trees, stumps, logs, bushes, plants and rocks (at start-up and again once the world has loaded). Wider than the levelled arena, so a test never finds a stray tree or stump in reach. Tests add the trees they need themselves. 0 = only the arena Radius.");
         c.ArenaRadius = config.Bind("Arena", "Radius", 40f, "Radius of the levelled, cleared test area in metres.");
         c.KeepRadius = config.Bind("Arena", "KeepRadius", 20f,
             "Spawn mode: nothing within this many metres of the spawn point is removed (keeps the spawn standing stones).");
         c.ClearRocks = config.Bind("Arena", "ClearRocks", true, "Also remove boulders and mineable rocks from the test area (outside KeepRadius).");
+        c.LabCoat = config.Bind("Experimental", "LabCoat", false,
+            "EXPERIMENTAL, work in progress: adds the Drake_LabCoat chest item (a white lab coat built from the vanilla tunic; spawn it by name). Off by default; takes effect on the next game start.");
         c.BuildHouse = config.Bind("Arena", "BuildHouse", true, "Build the test house with all crafting stations in the arena.");
         c.HouseOffsetX = config.Bind("Arena", "HouseOffsetX", 0f, "Spawn mode: east/west offset of the test house from the spawn point.");
         c.HouseOffsetZ = config.Bind("Arena", "HouseOffsetZ", 26f, "Spawn mode: north/south offset of the test house from the spawn point.");

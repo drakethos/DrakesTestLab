@@ -1,0 +1,10 @@
+{
+  "name": "S-04 a mod's setting is read and changed on the server",
+  "description": "A setting of the server mod itself is read, changed, read back and put back.",
+  "steps": [
+    { "do": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.testlab.server", "section": "World", "key": "KeepBackups" }, "expect": "3", "label": "starts at 3" },
+    { "do": "server", "cmd": "config.set", "args": { "guid": "com.drakemods.testlab.server", "section": "World", "key": "KeepBackups", "value": "4" }, "expect": "4" },
+    { "do": "server", "cmd": "config.get", "args": { "guid": "com.drakemods.testlab.server", "section": "World", "key": "KeepBackups" }, "expect": "4", "label": "reads back 4" },
+    { "do": "server", "cmd": "config.set", "args": { "guid": "com.drakemods.testlab.server", "section": "World", "key": "KeepBackups", "value": "3" }, "expect": "3" }
+  ]
+}

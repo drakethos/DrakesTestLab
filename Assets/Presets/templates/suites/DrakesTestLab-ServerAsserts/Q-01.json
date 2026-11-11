@@ -1,0 +1,11 @@
+{
+  "name": "Q-01 the server knows its game and its players",
+  "description": "The server reports its version and that exactly two players are connected.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "server", "cmd": "server.info", "contains": "version=", "label": "the server reports its version" },
+    { "do": "server", "cmd": "server.info", "contains": "peers=2", "label": "and two peers" },
+    { "do": "server", "cmd": "znet.count", "expect": "2", "label": "two players are connected" },
+    { "do": "server", "cmd": "world.zdocount", "min": 1, "label": "the world has objects" }
+  ]
+}

@@ -77,6 +77,10 @@ internal sealed class RunContext
 
     public object? LastResult;
 
+    /// <summary>A step sent to Player 2 names its object by prefab plus the spot Player 1 has it at ("around"): the nearest
+    /// object of that prefab to this spot is the one meant, not the nearest to Player 2.</summary>
+    public Vector3? AroundHint;
+
     public bool TimedOut => Time.realtimeSinceStartup > Deadline;
 
     /// <summary>Adds a log line stamped with the seconds since the test started, e.g. "[+3.2s] step 2/5: ...".</summary>
@@ -115,7 +119,7 @@ internal static class Targets
             return tagged;
 
         var player = Player.m_localPlayer;
-        var origin = around ?? (player != null ? player.transform.position : Vector3.zero);
+        var origin = around ?? ctx.AroundHint ?? (player != null ? player.transform.position : Vector3.zero);
         GameObject? best = null;
         var bestD = range;
         foreach (var v in AllViews())

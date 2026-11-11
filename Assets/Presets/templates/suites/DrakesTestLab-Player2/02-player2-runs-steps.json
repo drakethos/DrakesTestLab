@@ -1,0 +1,16 @@
+// Player 2 runs the same steps as Player 1 would, on its own character. Player 1 is not affected.
+{
+  "name": "02-player2-runs-steps",
+  "description": "Player 2 gives itself a hammer and some wood and checks it has them; Player 1 still has neither.",
+  "steps": [
+    { "do": "ping", "on": "player2", "connectTimeout": 120 },
+    { "do": "give", "on": "player2", "prefab": "Hammer" },
+    { "do": "give", "on": "player2", "prefab": "Wood", "count": 5 },
+    { "do": "check", "on": "player2", "check": "hasItem", "prefab": "Hammer", "label": "Player 2 has the hammer" },
+    { "do": "check", "on": "player2", "check": "hasItem", "prefab": "Wood", "label": "Player 2 has the wood" }
+  ],
+  "asserts": [
+    { "check": "noItem", "prefab": "Hammer" },
+    { "check": "noItem", "prefab": "Wood" }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "name": "M-36 face tilts the view: pitch, up/down and a level default (camera included)",
+  "description": "face keeps its old level behaviour; pitch / up / down / left / right / yawOffset tilt the view like the mouse.",
+  "steps": [
+    {
+      "do": "place",
+      "prefab": "piece_workbench",
+      "dz": 5,
+      "as": "bench"
+    },
+    {
+      "do": "face",
+      "target": "bench"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.cameraPitch",
+      "args": {
+        "pitch": 0
+      },
+      "contains": "near",
+      "label": "plain face stays level"
+    },
+    {
+      "do": "face",
+      "pitch": 30
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.cameraPitch",
+      "args": {
+        "pitch": 30
+      },
+      "contains": "near",
+      "label": "pitch 30 tilts the camera up"
+    },
+    {
+      "do": "face",
+      "pitch": -20
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.cameraPitch",
+      "args": {
+        "pitch": -20
+      },
+      "contains": "near",
+      "label": "pitch -20 tilts it down"
+    },
+    {
+      "do": "face",
+      "target": "bench",
+      "up": 6
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.cameraPitch",
+      "args": {
+        "pitch": 35,
+        "tolerance": 25
+      },
+      "contains": "near",
+      "label": "up: 6 aims clearly above the bench (10 to 60 degrees up)"
+    },
+    {
+      "do": "face",
+      "target": "bench"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.5
+    },
+    {
+      "do": "hook",
+      "name": "testlab.cameraPitch",
+      "args": {
+        "pitch": 0
+      },
+      "contains": "near",
+      "label": "face with no tilt levels the view again"
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ]
+}

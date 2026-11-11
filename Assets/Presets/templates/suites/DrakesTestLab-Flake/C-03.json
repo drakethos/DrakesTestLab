@@ -1,0 +1,49 @@
+{
+  "name": "C-03 control: with the zone off a raid is not refused its spawns",
+  "description": "Slow on purpose. Proves the raid spawner runs when the zone is off.",
+  "steps": [
+    {
+      "do": "setConfig",
+      "guid": "com.drakemods.testlab",
+      "values": {
+        "Arena/QuietZone": "Off"
+      }
+    },
+    {
+      "do": "hook",
+      "name": "quiet.mark"
+    },
+    {
+      "do": "console",
+      "command": "event army_eikthyr"
+    },
+    {
+      "do": "wait",
+      "seconds": 25
+    },
+    {
+      "do": "hook",
+      "name": "quiet.blockedSpawnsSince"
+    },
+    {
+      "do": "check",
+      "check": "lastResult",
+      "equals": 0,
+      "label": "no spawn was refused"
+    },
+    {
+      "do": "hook",
+      "name": "quiet.clearCreatures",
+      "args": {
+        "radius": 80
+      }
+    }
+  ],
+  "asserts": [
+    {
+      "check": "noErrors",
+      "source": "DrakesTestLab"
+    }
+  ],
+  "timeout": 90
+}

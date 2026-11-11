@@ -33,7 +33,7 @@ def wait(s=0.3):
 suite = {
     'name': 'DrakesTestLab-Meta',
     'description': "Tests the tester: every step and check against plain Valheim, and negative tests proving broken tests are caught.",
-    'requireMods': [{'guid': GUID, 'minVersion': '0.2.0'}],
+    'requireMods': [{'guid': GUID, 'minVersion': '0.5.0'}],
     'configOverrides': [{'guid': GUID, 'section': 'Rules', 'key': 'FallDamageMultiplier', 'value': '0.25'}],
     'include': '_lib/valheim.json',
     'setup': {'timeOfDay': 0.5, 'freezeTime': 1, 'god': 1, 'noBuild': 'off', 'hideUnlockPopups': 1},
@@ -466,6 +466,25 @@ T('M-35', 'feature showcase: a real recording, a saved case, Player 2, the manua
     {'do': 'hook', 'name': 'testlab.showCheckpoint', 'args': {'clear': True}},
 ], desc='Pictures of the 0.3 features in use, for the README and the wiki.')
 
+T('M-36', 'face tilts the view: pitch, up/down and a level default (camera included)', [
+    {'do': 'place', 'prefab': 'piece_workbench', 'dz': 5, 'as': 'bench'},
+    {'do': 'face', 'target': 'bench'},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'plain face stays level'},
+    {'do': 'face', 'pitch': 30},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 30}, 'contains': 'near', 'label': 'pitch 30 tilts the camera up'},
+    {'do': 'face', 'pitch': -20},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': -20}, 'contains': 'near', 'label': 'pitch -20 tilts it down'},
+    {'do': 'face', 'target': 'bench', 'up': 6},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 35, 'tolerance': 25}, 'contains': 'near', 'label': 'up: 6 aims clearly above the bench (10 to 60 degrees up)'},
+    {'do': 'face', 'target': 'bench'},
+    wait(0.5),
+    {'do': 'hook', 'name': 'testlab.cameraPitch', 'args': {'pitch': 0}, 'contains': 'near', 'label': 'face with no tilt levels the view again'},
+], desc='face keeps its old level behaviour; pitch / up / down / left / right / yawOffset tilt the view like the mouse.')
+
 # ---------------------------------------------------------------- timing: stamped logs, timed steps, mod load times
 T('M-38', 'timing: stamped log lines, timed steps and run, mod load times', [
     {'do': 'log', 'message': 'first step'},
@@ -500,6 +519,48 @@ T('M-40', 'memory: heap and total sampled per test and step, with an object cens
     {'do': 'hook', 'name': 'testlab.objectCount'},
     chk('lastResult', 'the object census counted Unity objects', min=1000),
 ], desc='Covers the memory profiler: heap, total, peak and GC counts per test and step, and the Unity object census before and after each test.')
+
+T('M-41', 'quiet zone: a wild creature inside it is removed', [
+    {'do': 'hook', 'name': 'quiet.active', 'expect': True, 'label': 'the quiet zone is on while a test runs'},
+    {'do': 'hook', 'name': 'quiet.spawnWild', 'args': {'prefab': 'Boar', 'dist': 6}, 'label': 'make a boar the way a natural spawner would'},
+    wait(1.5),
+    {'do': 'hook', 'name': 'quiet.creaturesNear', 'args': {'prefab': 'Boar', 'radius': 25}},
+    chk('lastResult', 'the wild boar was removed', equals=0),
+    {'do': 'hook', 'name': 'quiet.removed'},
+    chk('lastResult', 'the zone counted the removal', min=1),
+], desc='Covers the quiet zone: creatures made by the natural spawners are removed when they are inside the zone.')
+
+T('M-42', 'quiet zone: a creature the test made stays', [
+    {'do': 'spawn', 'prefab': 'Boar', 'dz': 6, 'as': 'boar'},
+    wait(1.5),
+    chk('objectNear', 'the boar the test spawned is still there', target='Boar', radius=10),
+], desc='The zone only removes wild creatures, so a suite that spawns its own monsters works the same with it on.')
+
+T('M-43', 'quiet zone: switched off, a wild creature stays', [
+    {'do': 'setConfig', 'guid': GUID, 'values': {'Arena/QuietZone': 'Off'}},
+    {'do': 'hook', 'name': 'quiet.active', 'expect': False, 'label': 'the zone is off'},
+    {'do': 'hook', 'name': 'quiet.eventsAllowed', 'expect': True, 'label': 'with the zone off the game event timer is not held'},
+    {'do': 'hook', 'name': 'quiet.spawnWild', 'args': {'prefab': 'Boar', 'dist': 6}},
+    wait(1.5),
+    {'do': 'hook', 'name': 'quiet.creaturesNear', 'args': {'prefab': 'Boar', 'radius': 25}},
+    chk('lastResult', 'the wild boar is still there', min=1),
+    {'do': 'hook', 'name': 'quiet.clearCreatures', 'args': {'radius': 40}, 'label': 'clean up'},
+], desc='QuietZone = Off (set for this test only) leaves wild creatures alone.')
+
+T('M-44', 'quiet zone: its size, and the event timer is held', [
+    {'do': 'hook', 'name': 'quiet.contains', 'args': {'dist': 30}, 'expect': True, 'label': '30 m away is inside'},
+    {'do': 'hook', 'name': 'quiet.contains', 'args': {'dist': 500}, 'expect': False, 'label': '500 m away is outside'},
+    {'do': 'hook', 'name': 'quiet.eventsAllowed', 'expect': False, 'label': 'the natural random-event timer is held while a test runs'},
+], desc='The radius (Arena/QuietZoneRadius, default 80 m) and the random-event gate. Events a test starts itself are not blocked.')
+
+T('M-45', 'quiet zone: the natural spawners are held back over time (slow)', [
+    wait(45),
+    {'do': 'hook', 'name': 'quiet.blockedSpawns'},
+    chk('lastResult', 'the game tried to spawn inside the zone and was refused', min=1),
+    {'do': 'hook', 'name': 'quiet.creaturesNear', 'args': {'prefab': 'Boar', 'radius': 80}},
+    chk('lastResult', 'no boar came in', equals=0),
+], setup={'timeOfDay': 0.0, 'freezeTime': 1, 'god': 1, 'noBuild': 'off', 'hideUnlockPopups': 1}, timeout=90,
+  desc='Runs the real game spawners for 45 s at night and checks they were refused inside the zone. Slow, so run it on purpose (-Suites DrakesTestLab-Meta/M-45).')
 
 # ---------------------------------------------------------------- negative tests: the runner must catch these
 T('N-01', 'a failing check fails the test', [

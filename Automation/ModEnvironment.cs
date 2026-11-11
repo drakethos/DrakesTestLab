@@ -45,6 +45,14 @@ internal static class ModEnvironment
         return System.Version.TryParse(core, out version!);
     }
 
+    /// <summary>
+    /// The value a setting actually has right now. Not <c>GetSerializedValue()</c>: the config sync that mods bundle (ServerSync) patches
+    /// that to return the player's own LOCAL value, so the file keeps what the player chose, while the value the server pushed (the one the
+    /// game really uses) sits in <c>BoxedValue</c>. For a setting that is not synced the two are the same.
+    /// </summary>
+    public static string EffectiveValue(ConfigEntryBase entry) =>
+        BepInEx.Configuration.TomlTypeConverter.ConvertToString(entry.BoxedValue, entry.SettingType);
+
     public static ConfigEntryBase? FindEntry(string guid, string section, string key)
     {
         if (!Chainloader.PluginInfos.TryGetValue(guid, out var info) || info.Instance == null)
@@ -56,7 +64,10 @@ internal static class ModEnvironment
     }
 
     /// <summary>Sets a config value and remembers the old one so <see cref="RestoreAll"/> can put it back.</summary>
-    public static string Set(string guid, string section, string key, string value)
+    /// <param name="asPlayer">Change the value the way a player does in the game's settings screen (by setting the value itself),
+    /// not the way a config file reload does. On a client of a synced setting the two differ: a file-style set only changes the player's
+    /// local copy, while a player's edit changes the value in effect, which the sync then sends to the server only if the player is an admin.</param>
+    public static string Set(string guid, string section, string key, string value, bool asPlayer = false)
     {
         var entry = FindEntry(guid, section, key);
         if (entry == null)
@@ -66,7 +77,10 @@ internal static class ModEnvironment
             Applied.Add(new Saved { Entry = entry, OldValue = entry.GetSerializedValue() });
         if (TestScope && !TestApplied.Exists(s => ReferenceEquals(s.Entry, entry)))
             TestApplied.Add(new Saved { Entry = entry, OldValue = entry.GetSerializedValue() });
-        entry.SetSerializedValue(value);
+        if (asPlayer)
+            entry.BoxedValue = BepInEx.Configuration.TomlTypeConverter.ConvertToValue(value, entry.SettingType);
+        else
+            entry.SetSerializedValue(value);
         return "";
     }
 

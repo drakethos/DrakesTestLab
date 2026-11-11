@@ -102,8 +102,6 @@ internal static class LabCoat
         // Coat mesh material: the tunic's own (Custom/Creature) with our atlas; no shine from the tunic's gloss map.
         var coatMaterial = new Material(_donorCoatMaterial) { name = "LabCoat_mat" };
         coatMaterial.mainTexture = atlas;
-        if (coatMaterial.HasProperty("_Color"))
-            coatMaterial.SetColor("_Color", new Color(0.80f, 0.80f, 0.80f, 1f)); // pure white blows out in daylight; keeps seams and buttons readable
         SetTex(coatMaterial, "_BumpMap", atlasBump);
         SetTex(coatMaterial, "_MetallicGlossMap", null);
         SetFloat(coatMaterial, "_Metallic", 0f);
@@ -230,258 +228,19 @@ internal static class LabCoat
                 (triangles[t + 1], triangles[t + 2]) = (triangles[t + 2], triangles[t + 1]);
 
         var skinned = new Mesh { name = "LabCoat" };
+        skinned.vertices = meshVertices;
+        skinned.normals = meshNormals;
         skinned.uv = uvs;
+        skinned.triangles = triangles;
 
-        // The standard way to fit clothes to a skinned character: put the garment in the body's own bind space, copy the
-        // body's bone weights from the nearest skin (so cloth and skin bend together in every pose), and push any cloth
-        // vertex that sits inside the skin back out along the skin normal. VisEquipment binds attach_skin to the body's
-        // bones array, so the body's bind poses are exactly the ones the coat must use.
-        var fit = FitToBody(tunic, vertices, normals, rootToMesh);
-        if (fit != null)
-        {
-            skinned.vertices = fit.Value.vertices;
-            skinned.normals = fit.Value.normals;
-            var tris = (int[])json.triangles.Clone();
-            if (fit.Value.mirrored)
-                for (var t = 0; t + 2 < tris.Length; t += 3)
-                    (tris[t + 1], tris[t + 2]) = (tris[t + 2], tris[t + 1]);
-            skinned.triangles = tris;
-            skinned.bindposes = fit.Value.bindposes;
-            skinned.boneWeights = fit.Value.weights;
-        }
-        else
-        {
-            // No readable body: fall back to the height-based spine weights in the tunic's own space.
-            skinned.vertices = meshVertices;
-            skinned.normals = meshNormals;
-            skinned.triangles = triangles;
-            var bind = tunic.sharedMesh.bindposes;
-            skinned.bindposes = bind;
-            skinned.boneWeights = Weigh(vertices, tunic.bones, bind, rootToMesh.inverse);
-        }
-
-        _fitted = fit != null;
+        // Same bone list and bind poses as the tunic, so VisEquipment re-binds it to the player's skeleton unchanged.
+        var bones = tunic.bones;
+        var bind = tunic.sharedMesh.bindposes;
+        skinned.bindposes = bind;
+        skinned.boneWeights = Weigh(vertices, bones, bind, rootToMesh.inverse);
         skinned.RecalculateBounds();
-        TestLabPlugin.Log?.LogInfo($"Lab coat: {count} verts, fit={(fit != null ? fit.Value.note : "height weights (no body)")}; mesh-space bounds {skinned.bounds.min:F2}..{skinned.bounds.max:F2}.");
+        TestLabPlugin.Log?.LogInfo($"Lab coat: {count} verts, {bones.Length} bones; mesh-space bounds {skinned.bounds.min:F2}..{skinned.bounds.max:F2}; tunic mesh bounds {tunic.sharedMesh.bounds.min:F2}..{tunic.sharedMesh.bounds.max:F2}.");
         return (skinned, flat);
-    }
-
-    /// <summary>Minimum gap between skin and cloth in the bind pose (metres).</summary>
-    private const float SkinGap = 0.009f;
-
-    /// <summary>Largest push-out the fit applies (metres).</summary>
-    private const float MaxPush = 0.05f;
-
-    /// <summary>Body vertices sampled for each coat vertex (weights and push-out are blended over them).</summary>
-    private const int Neighbours = 6;
-
-    private static SkinnedMeshRenderer? _bodySource;
-    private static bool _fitted;
-
-    /// <summary>The player body every coat is fitted to: the Player prefab's VisEquipment body model.</summary>
-    private static SkinnedMeshRenderer? BodySource()
-    {
-        if (_bodySource != null)
-            return _bodySource;
-        var player = ZNetScene.instance != null ? ZNetScene.instance.GetPrefab("Player") : null;
-        _bodySource = player != null ? player.GetComponent<VisEquipment>()?.m_bodyModel : null;
-        return _bodySource;
-    }
-
-    internal static void SetBodySource(GameObject? playerPrefab)
-    {
-        if (_bodySource == null && playerPrefab != null)
-            _bodySource = playerPrefab.GetComponent<VisEquipment>()?.m_bodyModel;
-    }
-
-    private struct Fit
-    {
-        public Vector3[] vertices;
-        public Vector3[] normals;
-        public Matrix4x4[] bindposes;
-        public BoneWeight[] weights;
-        public string note;
-        public bool mirrored;
-    }
-
-    private static Fit? FitToBody(SkinnedMeshRenderer tunic, Vector3[] rootVerts, Vector3[] rootNormals, Matrix4x4 rootToMesh)
-    {
-        var body = BodySource();
-        var bodyMesh = body != null ? body.sharedMesh : null;
-        if (body == null || bodyMesh == null)
-            return null;
-        if (!bodyMesh.isReadable)
-        {
-            TestLabPlugin.Log?.LogWarning("Lab coat: the player body mesh is not readable; using height weights.");
-            return null;
-        }
-
-        var bodyVerts = bodyMesh.vertices;
-        var bodyNormals = bodyMesh.normals;
-        var bodyWeights = bodyMesh.boneWeights;
-        var bodyBind = bodyMesh.bindposes;
-        var bodyBones = body.bones;
-        if (bodyVerts.Length == 0 || bodyWeights.Length != bodyVerts.Length || bodyBones.Length != bodyBind.Length)
-            return null;
-
-        // Tunic mesh space -> body mesh space through a bone both rigs share (bind poses map mesh space to bone space).
-        var tunicBones = tunic.bones;
-        var tunicBind = tunic.sharedMesh.bindposes;
-        int IndexOf(Transform[] list, string name)
-        {
-            for (var i = 0; i < list.Length; i++)
-                if (list[i] != null && list[i].name == name)
-                    return i;
-            return -1;
-        }
-        var th = IndexOf(tunicBones, "Hips");
-        var bh = IndexOf(bodyBones, "Hips");
-        if (th < 0 || bh < 0 || th >= tunicBind.Length)
-            return null;
-
-        // Art (prefab root space, metres) -> body mesh space. Two ways to get there; keep the one where the coat lies on
-        // the skin (the art was fitted to the body exported from the Player prefab, so the right one is ~2 cm away).
-        var viaBind = bodyBind[bh].inverse * tunicBind[th] * rootToMesh;
-        var viaPlayer = body.transform.worldToLocalMatrix * body.transform.root.localToWorldMatrix;
-        float Median(Matrix4x4 m)
-        {
-            var scale = m.MultiplyVector(Vector3.up).magnitude;
-            var list = new List<float>();
-            for (var i = 0; i < rootVerts.Length; i += Mathf.Max(1, rootVerts.Length / 200))
-            {
-                var p = m.MultiplyPoint3x4(rootVerts[i]);
-                var best = float.MaxValue;
-                foreach (var b in bodyVerts)
-                    best = Mathf.Min(best, (b - p).sqrMagnitude);
-                list.Add(Mathf.Sqrt(best) / scale);
-            }
-            list.Sort();
-            return list[list.Count / 2];
-        }
-        var dBind = Median(viaBind);
-        var dPlayer = Median(viaPlayer);
-        var toBody = dPlayer <= dBind ? viaPlayer : viaBind;
-        var mapping = $"{(dPlayer <= dBind ? "player" : "bind")} space (median skin distance: player {dPlayer * 100f:F1} cm, bind {dBind * 100f:F1} cm)";
-
-        // One root-space metre measured in body mesh units.
-        var unitsPerMetre = toBody.MultiplyVector(Vector3.up).magnitude;
-        var gap = SkinGap * unitsPerMetre;
-        var normalMatrix = toBody.inverse.transpose;
-        var tunicVerts = rootVerts;
-        var tunicNormals = rootNormals;
-
-        var count = tunicVerts.Length;
-        var outVerts = new Vector3[count];
-        var outNormals = new Vector3[count];
-        var weights = new BoneWeight[count];
-        var cache = new Dictionary<Vector3, (Vector3 pos, BoneWeight w)>();
-        var nearIdx = new int[Neighbours];
-        var nearD = new float[Neighbours];
-        var acc = new Dictionary<int, float>();
-        float pushed = 0f, worst = 0f;
-        var pushedCount = 0;
-
-        for (var v = 0; v < count; v++)
-        {
-            var p = toBody.MultiplyPoint3x4(tunicVerts[v]);
-            var n = normalMatrix.MultiplyVector(tunicNormals[v]).normalized;
-            outNormals[v] = n;
-            var key = new Vector3(Mathf.Round(p.x * 1e4f), Mathf.Round(p.y * 1e4f), Mathf.Round(p.z * 1e4f));
-            if (cache.TryGetValue(key, out var hit))
-            {
-                outVerts[v] = hit.pos;
-                weights[v] = hit.w;
-                continue;
-            }
-
-            // k nearest skin vertices that face the same way as the cloth (keeps the torso from grabbing arm skin).
-            for (var k = 0; k < Neighbours; k++) { nearIdx[k] = -1; nearD[k] = float.MaxValue; }
-            for (var b = 0; b < bodyVerts.Length; b++)
-            {
-                var d = (bodyVerts[b] - p).sqrMagnitude;
-                if (d >= nearD[Neighbours - 1] || Vector3.Dot(bodyNormals[b], n) < 0.2f)
-                    continue;
-                var k = Neighbours - 1;
-                while (k > 0 && nearD[k - 1] > d) { nearD[k] = nearD[k - 1]; nearIdx[k] = nearIdx[k - 1]; k--; }
-                nearD[k] = d; nearIdx[k] = b;
-            }
-
-            if (nearIdx[0] < 0)
-            {
-                outVerts[v] = p;
-                weights[v] = new BoneWeight { boneIndex0 = bh, weight0 = 1f };
-                cache[key] = (p, weights[v]);
-                continue;
-            }
-
-            // Inverse-distance blend of the neighbours' weights, normal and position.
-            acc.Clear();
-            var skinPos = Vector3.zero;
-            var skinNormal = Vector3.zero;
-            var total = 0f;
-            for (var k = 0; k < Neighbours && nearIdx[k] >= 0; k++)
-            {
-                var w = 1f / (Mathf.Sqrt(nearD[k]) + 0.002f * unitsPerMetre);
-                total += w;
-                skinPos += bodyVerts[nearIdx[k]] * w;
-                skinNormal += bodyNormals[nearIdx[k]] * w;
-                var bw = bodyWeights[nearIdx[k]];
-                Add(acc, bw.boneIndex0, bw.weight0 * w);
-                Add(acc, bw.boneIndex1, bw.weight1 * w);
-                Add(acc, bw.boneIndex2, bw.weight2 * w);
-                Add(acc, bw.boneIndex3, bw.weight3 * w);
-            }
-            skinPos /= total;
-            skinNormal = skinNormal.normalized;
-
-            // Push out of the skin: the cloth must sit at least `gap` above the nearest skin vertex's tangent plane (on a
-            // low-poly body the flat triangles lie under that plane, so this is the safe side). Moves beyond MaxPush mean
-            // the neighbour is the wrong piece of skin (a hand, the other leg): leave those alone.
-            var nearest = bodyVerts[nearIdx[0]];
-            var nearestNormal = bodyNormals[nearIdx[0]];
-            var height = Vector3.Dot(p - nearest, nearestNormal);
-            if (height < gap && gap - height < MaxPush * unitsPerMetre)
-            {
-                var move = gap - height;
-                skinNormal = nearestNormal;
-                p += skinNormal * move;
-                pushed += move; pushedCount++;
-                worst = Mathf.Max(worst, move);
-            }
-
-            weights[v] = TopFour(acc);
-            outVerts[v] = p;
-            cache[key] = (p, weights[v]);
-        }
-
-        // Push-outs move single vertices; neighbours that share a position already moved together through the cache.
-        var note = $"body weights, {mapping} ({bodyVerts.Length} skin verts, {cache.Count} cloth points, pushed {pushedCount} out of the skin, worst {worst / unitsPerMetre * 100f:F1} cm, avg {(pushedCount > 0 ? pushed / pushedCount / unitsPerMetre * 100f : 0f):F1} cm)";
-        return new Fit { vertices = outVerts, normals = outNormals, bindposes = bodyBind, weights = weights, note = note, mirrored = toBody.determinant < 0f };
-    }
-
-    private static void Add(Dictionary<int, float> acc, int bone, float weight)
-    {
-        if (weight <= 0f)
-            return;
-        acc.TryGetValue(bone, out var have);
-        acc[bone] = have + weight;
-    }
-
-    private static BoneWeight TopFour(Dictionary<int, float> acc)
-    {
-        var list = new List<KeyValuePair<int, float>>(acc);
-        list.Sort((a, b) => b.Value.CompareTo(a.Value));
-        var sum = 0f;
-        for (var i = 0; i < list.Count && i < 4; i++)
-            sum += list[i].Value;
-        var bw = new BoneWeight();
-        float W(int i) => i < list.Count ? list[i].Value / sum : 0f;
-        int I(int i) => i < list.Count ? list[i].Key : 0;
-        bw.boneIndex0 = I(0); bw.weight0 = W(0);
-        bw.boneIndex1 = I(1); bw.weight1 = W(1);
-        bw.boneIndex2 = I(2); bw.weight2 = W(2);
-        bw.boneIndex3 = I(3); bw.weight3 = W(3);
-        return bw;
     }
 
     /// <summary>Height of the coat's hem in the art (prefab root space, metres): below the knee.</summary>
@@ -634,9 +393,12 @@ internal static class LabCoat
 
     // ---- registration (no Jotunn): ObjectDB for the item, ZNetScene so it can be spawned and synced ----
 
+    /// <summary>[Experimental] LabCoat (default off): the coat is a work in progress.</summary>
+    private static bool Enabled => Bootstrap.TestLabConfig.Instance?.LabCoat?.Value == true;
+
     internal static void RegisterIn(ObjectDB db)
     {
-        if (db == null || db.m_items == null || db.m_items.Count == 0)
+        if (!Enabled || db == null || db.m_items == null || db.m_items.Count == 0)
             return;
         var prefab = EnsurePrefab(db.m_items.Find(p => p != null && p.name == DonorName));
         if (prefab == null)
@@ -650,14 +412,11 @@ internal static class LabCoat
 
     internal static void RegisterIn(ZNetScene scene)
     {
-        if (scene == null || scene.m_prefabs == null || scene.m_prefabs.Count == 0)
+        if (!Enabled || scene == null || scene.m_prefabs == null || scene.m_prefabs.Count == 0)
             return;
-        SetBodySource(scene.m_prefabs.Find(p => p != null && p.name == "Player"));
         var prefab = EnsurePrefab(scene.m_prefabs.Find(p => p != null && p.name == DonorName));
         if (prefab == null)
             return;
-        if (!_fitted && _bodySource != null)
-            Dress(prefab); // built earlier (ObjectDB first) without the body: fit it now
         if (!scene.m_prefabs.Contains(prefab))
             scene.m_prefabs.Add(prefab);
         if (AccessTools.Field(typeof(ZNetScene), "m_namedPrefabs")?.GetValue(scene) is Dictionary<int, GameObject> named)
