@@ -44,8 +44,15 @@ public partial class TestLabPlugin : BaseUnityPlugin
         Logger.LogInfo($"{ModName} {Version} loaded — Phase 1 QA boot.");
     }
 
-    // Start runs after every plugin's Awake: the last plugin's load time ends here
-    private void Start() => Util.ModLoadTimer.Close();
+    // Start runs after every plugin's Awake: the last plugin's load time ends here.
+    // Every other plugin's assembly is guaranteed loaded by now, unlike at our own Awake() above —
+    // Automation.ModMessageCard_Patch.Ready gates on that for the same reason (see its own comment).
+    private void Start()
+    {
+        Util.ModLoadTimer.Close();
+        Automation.ModMessageCard_Patch.Ready = true;
+        _harmony.CreateClassProcessor(typeof(Automation.ModMessageCard_Patch)).Patch();
+    }
 
     private void OnDestroy()
     {

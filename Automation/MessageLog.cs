@@ -93,36 +93,64 @@ internal static class MessageHud_ShowMessage_Patch
 [HarmonyPatch]
 internal static class ModMessageCard_Patch
 {
+    /// <summary>
+    /// False until <see cref="TestLabPlugin.Start"/> (which BepInEx/Unity only calls after every plugin's
+    /// own <c>Awake</c> has run). <see cref="Prepare"/> gates on this so the eager <c>PatchAll()</c> call in
+    /// <see cref="TestLabPlugin.Awake"/> skips this class instead of scanning <see cref="AppDomain.CurrentDomain"/>
+    /// too early — a mod loaded after DrakesTestLab (alphabetically or otherwise) would not be in the assembly
+    /// list yet, and a type this class never found at that first scan would never get found later, since Harmony
+    /// only calls <see cref="TargetMethods"/> once per patch application.
+    /// </summary>
+    internal static bool Ready;
+
     private static readonly string[] Targets = { "DrakeModsLibs.UI.DrakeMessage" };
 
     private static IEnumerable<MethodBase> TargetMethods()
     {
         foreach (var typeName in Targets)
         {
-            var type = FindType(typeName);
-            if (type == null)
-                continue;
-            foreach (var m in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+            foreach (var type in FindAllTypes(typeName))
             {
-                var ps = m.GetParameters();
-                if (m.Name == "Show" && ps.Length >= 1 && ps[0].ParameterType == typeof(string))
-                    yield return m;
+                foreach (var m in type.GetMethods(BindingFlags.Public | BindingFlags.Static))
+                {
+                    var ps = m.GetParameters();
+                    if (m.Name == "Show" && ps.Length >= 1 && ps[0].ParameterType == typeof(string))
+                        yield return m;
+                }
             }
         }
     }
 
-    /// <summary>The first namespace segment is the assembly name; asking that assembly directly avoids AccessTools.TypeByName, which scans every type of every assembly.</summary>
-    private static Type? FindType(string fullName)
+    /// <summary>
+    /// A standalone fork can vendor this same type under its own assembly name (so the namespace's first
+    /// segment no longer matches any loaded assembly). Scan every loaded assembly for the full type name
+    /// instead of assuming assembly name == namespace prefix, so both a real DrakeModsLibs install and a
+    /// vendored fork get patched (and both at once, if somehow co-loaded).
+    /// </summary>
+    private static IEnumerable<Type> FindAllTypes(string fullName)
     {
-        var assemblyName = fullName.Split('.')[0];
         foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-            if (a.GetName().Name == assemblyName)
-                return a.GetType(fullName, false);
-        return null;
+        {
+            Type? t;
+            try
+            {
+                t = a.GetType(fullName, false);
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (t != null)
+                yield return t;
+        }
     }
 
     private static bool Prepare()
     {
+        if (!Ready)
+            return false;
+
         foreach (var _ in TargetMethods())
             return true;
         return false;
