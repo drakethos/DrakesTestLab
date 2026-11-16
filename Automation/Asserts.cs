@@ -186,7 +186,13 @@ internal static class Asserts
                     "eitr" => p.GetEitr(),
                     "weight" => p.GetInventory().GetTotalWeight(),
                     "carryweight" => p.GetMaxCarryWeight(),
-                    _ => throw new InvalidOperationException($"unknown stat '{name}' (health, maxHealth, stamina, maxStamina, eitr, weight, carryWeight)")
+                    // Humanoid fields, not computed getters — direct reads. jumpForceForward/jumpForceTiredFactor
+                    // exist too but aren't common enough to need their own stat name yet; a modlet testing those
+                    // can use the generic "hook" check (omniconfig.field or any mod's own field-reading hook).
+                    "jumpforce" => p.m_jumpForce,
+                    "runstaminadrain" => p.m_runStaminaDrain,
+                    "autopickuprange" => p.m_autoPickupRange,
+                    _ => throw new InvalidOperationException($"unknown stat '{name}' (health, maxHealth, stamina, maxStamina, eitr, weight, carryWeight, jumpForce, runStaminaDrain, autoPickupRange)")
                 };
                 return (InRange(value, a), $"{name} is {value:0.##}");
             }
