@@ -27,6 +27,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<float> ConnectTimeout { get; private set; } = null!;
     public ConfigEntry<string> ConnectCharacter { get; private set; } = null!;
     public ConfigEntry<string> ConnectRole { get; private set; } = null!;
+    public ConfigEntry<bool> ConnectForceDirectJoin { get; private set; } = null!;
     public ConfigEntry<bool> ConnectQuitOnFailure { get; private set; } = null!;
     public ConfigEntry<float> ConnectQuitDelay { get; private set; } = null!;
 
@@ -142,6 +143,8 @@ internal sealed class TestLabConfig
             "Server connect mode: the fresh character file used on the server (recreated on every launch so each run starts with a clean character).");
         c.ConnectRole = config.Bind("Connect", "Role", "Player1",
             "Server connect mode: Player1 runs the test cases (and sends steps marked \"on\": \"player2\" to the second client); Player2 runs no tests and only does what Player 1 sends. The server gives each role to one client.");
+        c.ConnectForceDirectJoin = config.Bind("Connect", "ForceDirectJoin", false,
+            "Server connect mode: skip the PlayFab lookup and join Address directly, the way the game's own Join IP screen does. PlayFab only finds a server that registered itself there (crossplay on); a Steam-only / LAN / non-crossplay server never will, so the normal PlayFab-first join fails with \"EndPointNotOnInternet\" even though the server is reachable. Turn this on for that case.");
         c.ConnectQuitOnFailure = config.Bind("Connect", "QuitOnFailure", true,
             "Server connect mode: when the server cannot be reached, write the failed result and close the game. False = bring the main menu back and stay there (you can quit from it).");
         c.ConnectQuitDelay = config.Bind("Connect", "QuitDelaySeconds", 10f,

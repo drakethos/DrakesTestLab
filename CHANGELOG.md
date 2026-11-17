@@ -1,6 +1,13 @@
 # DrakesTestLab
 
-## Unreleased
+## 0.6.1
+
+- Server connect mode: `[Connect] ForceDirectJoin` (default off) skips the PlayFab lookup and joins
+  `Address` directly, the way the game's own Join IP screen does. PlayFab join only works for a server
+  that registered itself there (crossplay on); a Steam-only / LAN / non-crossplay dedicated server never
+  will, so the normal PlayFab-first join failed with `EndPointNotOnInternet` even though the server was
+  reachable. Found while cross-GUID-testing DrakesOmniConfig's server sync against a non-crossplay
+  dedicated server.
 
 - `spawn` step: a piece whose origin is not its bottom (an archery target, a table) used to come out half buried. Spawned pieces now stand on the ground, like the build tool places them. `"sink": true` keeps the old behaviour (origin on the ground) and `"dy"` lifts a spawn by that many meters.
 - Case `pieces` now stand on the terrain under them, so on a slope they no longer come out buried or floating. `"dy"` lifts a piece from there when `"ground": true`. A piece that names a `"dy"` without `"ground"` (every saved build does) keeps its height relative to you as before; `"ground": false` forces that.

@@ -178,15 +178,17 @@ internal static class FejdStartupBridge
 
     /// <summary>Server connect mode: pick the character, then join the dedicated server the way the Join IP screen does.
     /// False when the menu is not ready yet (the caller retries next frame).</summary>
-    public static bool TryJoinServer(FejdStartup fejd, string characterSaveName, string address, string password)
+    public static bool TryJoinServer(FejdStartup fejd, string characterSaveName, string address, string password, bool forceDirectJoin = false)
     {
         try
         {
             if (fejd == null || !IsObjectDbReady() || !CharacterExists(characterSaveName))
                 return false;
 
-            // the PlayFab lookup needs the PlayFab login, which finishes shortly after start
-            var viaPlayFab = PlayFabJoin.Available;
+            // the PlayFab lookup needs the PlayFab login, which finishes shortly after start. forceDirectJoin skips
+            // it entirely: PlayFab only finds a server that registered itself there (crossplay on), so it can never
+            // reach a Steam-only / LAN / non-crossplay server even though a direct IP join would work fine.
+            var viaPlayFab = PlayFabJoin.Available && !forceDirectJoin;
             if (viaPlayFab && !PlayFabJoin.LoggedIn)
                 return false;
 

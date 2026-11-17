@@ -57,7 +57,7 @@ internal static class ServerConnect
         var joining = false;
         while (!joining && Time.realtimeSinceStartup < deadline)
         {
-            joining = FejdStartupBridge.TryJoinServer(fejd, character, address, cfg.ConnectPassword.Value);
+            joining = FejdStartupBridge.TryJoinServer(fejd, character, address, cfg.ConnectPassword.Value, cfg.ConnectForceDirectJoin.Value);
             if (!joining)
                 yield return null;
         }
