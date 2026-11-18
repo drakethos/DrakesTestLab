@@ -30,25 +30,39 @@ internal static class GearMeshes
         return b.Build();
     }
 
-    /// <summary>Glasses in their own space: origin between the eyes, x right, y up, z forward (away from the face).</summary>
-    public static Mesh Glasses()
+    // glasses sizing shared by the frame and the lenses, scaled up ~25% from the first pass so they read on the face
+    // instead of vanishing into beard/hair shadow (found in-game review, 2026-11-18)
+    private const float GlassesFrameW = 0.06f, GlassesFrameH = 0.04f, GlassesBar = 0.006f, GlassesDepth = 0.007f, GlassesEye = 0.0365f;
+
+    /// <summary>Glasses frame + temples only, no lenses: origin between the eyes, x right, y up, z forward (away from the face).</summary>
+    public static Mesh GlassesFrame()
     {
-        var b = new Builder("Drake_LabGlasses");
-        const float frameW = 0.048f, frameH = 0.032f, bar = 0.005f, depth = 0.006f, eye = 0.0325f;
+        var b = new Builder("Drake_LabGlasses_Frame");
         foreach (var side in new[] { -1f, 1f })
         {
-            var cx = side * eye;
-            b.Box(new Vector3(cx, frameH / 2f, 0f), new Vector3(frameW, bar, depth), Black);
-            b.Box(new Vector3(cx, -frameH / 2f, 0f), new Vector3(frameW, bar, depth), Black);
-            b.Box(new Vector3(cx - frameW / 2f, 0f, 0f), new Vector3(bar, frameH, depth), Black);
-            b.Box(new Vector3(cx + frameW / 2f, 0f, 0f), new Vector3(bar, frameH, depth), Black);
-            b.Box(new Vector3(cx, 0f, -0.0005f), new Vector3(frameW - bar, frameH - bar, 0.002f), Lens);
+            var cx = side * GlassesEye;
+            b.Box(new Vector3(cx, GlassesFrameH / 2f, 0f), new Vector3(GlassesFrameW, GlassesBar, GlassesDepth), Black);
+            b.Box(new Vector3(cx, -GlassesFrameH / 2f, 0f), new Vector3(GlassesFrameW, GlassesBar, GlassesDepth), Black);
+            b.Box(new Vector3(cx - GlassesFrameW / 2f, 0f, 0f), new Vector3(GlassesBar, GlassesFrameH, GlassesDepth), Black);
+            b.Box(new Vector3(cx + GlassesFrameW / 2f, 0f, 0f), new Vector3(GlassesBar, GlassesFrameH, GlassesDepth), Black);
             // temple: from the outer hinge straight back along the head, with a hook down behind the ear
-            var hinge = side * (eye + frameW / 2f + 0.0015f);
+            var hinge = side * (GlassesEye + GlassesFrameW / 2f + 0.0015f);
             b.Box(new Vector3(hinge, 0.006f, -0.064f), new Vector3(0.004f, 0.006f, 0.128f), Black);
             b.Box(new Vector3(hinge, -0.004f, -0.127f), new Vector3(0.003f, 0.022f, 0.003f), Black);
         }
-        b.Box(new Vector3(0f, 0.006f, 0f), new Vector3(eye * 2f - frameW + 0.002f, bar, bar), Black);
+        b.Box(new Vector3(0f, 0.006f, 0f), new Vector3(GlassesEye * 2f - GlassesFrameW + 0.002f, GlassesBar, GlassesBar), Black);
+        return b.Build();
+    }
+
+    /// <summary>The two lenses alone, slightly proud of the frame's front so they read as a lit panel, not a flat dark square.</summary>
+    public static Mesh GlassesLens()
+    {
+        var b = new Builder("Drake_LabGlasses_Lens");
+        foreach (var side in new[] { -1f, 1f })
+        {
+            var cx = side * GlassesEye;
+            b.Box(new Vector3(cx, 0f, 0.0004f), new Vector3(GlassesFrameW - GlassesBar, GlassesFrameH - GlassesBar, 0.0024f), Lens);
+        }
         return b.Build();
     }
 

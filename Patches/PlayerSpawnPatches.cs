@@ -19,6 +19,12 @@ internal static class Player_OnSpawned_Patch
         PlayerItemRepair.RepairLocalPlayer();
         InitialConditionsApplier.ApplyIfReady();
 
+        // the lab gear is built and placed once at ZNetScene.Awake, before any real player exists (ReadPlayerJoints
+        // there reads ZNetScene's "Player" prefab template, not the spawned character); re-seat it now that the real
+        // local player (and VisEquipment.m_helmet/Player.m_eye on it) actually exist - found in game, 2026-11-18, the
+        // glasses sat using data read from that template the whole session and never visually appeared.
+        Gear.LabGear.Reload();
+
         if (TestLabConfig.Instance.SkipIntro.Value && __instance.InIntro())
         {
             try

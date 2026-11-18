@@ -173,8 +173,10 @@ internal sealed class GearHost : MonoBehaviour
         }, source);
         TestHooks.Register("testlab.gear.reload", _ => LabGear.Reload(), source);
         TestHooks.Register("testlab.gear.describe", _ => LabGear.Describe(), source);
+        TestHooks.Register("testlab.gear.diagnoseScale", _ => LabGear.DiagnoseScale(), source);
         TestHooks.Register("testlab.gear.materials", _ => LabGear.DumpMaterials(), source);
         TestHooks.Register("testlab.gear.probe", args => LabGear.Probe(args.TryGetValue("clear", out var c) && c is true), source);
+        TestHooks.Register("testlab.gear.probeGlasses", args => LabGear.ProbeGlasses(args.TryGetValue("clear", out var c) && c is true), source);
         // place a model by hand for tuning: {"item": "clipboard"|"glasses", "pos": [x,y,z], "rot": [x,y,z], "scale": 1}
         TestHooks.Register("testlab.gear.fit", args =>
         {

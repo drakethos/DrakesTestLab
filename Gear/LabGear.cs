@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using DrakesTestLab.Bootstrap;
 using DrakesTestLab.Util;
@@ -40,8 +41,10 @@ internal static class LabGear
     private static GameObject? _clipboard;
     private static GameObject? _glasses;
     private static bool _failed;
-    private static Material? _material;
-    private static Material? _creatureMaterial;
+    private static Material? _material;          // the clipboard board/clip, from the hammer's own piece material
+    private static Material? _glassesMaterial;    // the glasses frame, from the glasses donor's own material (not the hammer's)
+    private static Material? _lensMaterial;       // the lenses: _glassesMaterial with emission re-enabled so they read as lit
+    private static Material? _creatureMaterial;   // diagnostics only (Probe/DumpMaterials): the hammer's creature-shader twin
     private static Material? _donorPiece;
     private static Material? _donorCreature;
     private static readonly List<GameObject> _probes = new();
@@ -194,8 +197,21 @@ internal static class LabGear
         var clone = UnityEngine.Object.Instantiate(donor, _root!.transform, false);
         clone.name = GlassesPrefab;
         var drop = clone.GetComponent<ItemDrop>() ?? throw new InvalidOperationException("donor has no ItemDrop");
-        _material ??= MakeMaterial(FirstMaterial(clone));
-        _creatureMaterial ??= _material;
+        // the glasses' own material, built fresh (not reusing or being skipped by the clipboard's _material/_creatureMaterial,
+        // which are already set by the time this runs - BuildClipboard goes first). Based on the same Custom/Piece shader as
+        // the clipboard: the belt donor's own Custom/Creature material rendered invisible on this mesh (found in-game,
+        // 2026-11-18) the same way the clipboard's did before switching to Piece; a separate Material instance still lets
+        // the glasses be tinted differently from the board.
+        _glassesMaterial ??= MakeMaterial(_donorPiece);
+        _lensMaterial ??= MakeLensMaterial(_donorPiece);
+        // VisEquipment attaches "attach_<joint>" by instantiating it onto the bone with world scale preserved (see
+        // AttachArmor); the Head bone's own scale can carry a mirror, which flips our mesh's winding there and makes
+        // Unity's back-face culling discard every triangle - found in-game, 2026-11-18 (the glasses built, sat at a
+        // sane position and size, but never actually rendered). Double-sided removes the dependency on getting that
+        // winding right under a bone we don't control.
+        foreach (var m in new[] { _glassesMaterial, _lensMaterial })
+            if (m.HasProperty("_Cull"))
+                m.SetFloat("_Cull", 0f);
         StripModel(clone, keepAttach: null);
         var shared = drop.m_itemData.m_shared;
         shared.m_name = GlassesName;
@@ -314,6 +330,26 @@ internal static class LabGear
         return m;
     }
 
+    /// <summary>
+    /// The lenses: the frame material with emission turned back on (MakeMaterial zeroes it for everything else) so the
+    /// lenses catch the eye as a lit panel instead of reading as more dark frame. A cool cyan "readout" tint, since these
+    /// are the item that shows data, not plain sunglasses.
+    /// </summary>
+    private static Material MakeLensMaterial(Material? donor)
+    {
+        var m = MakeMaterial(donor);
+        m.name = "LabGear_lens_mat";
+        var glow = new Color(0.25f, 0.95f, 0.9f);
+        if (m.HasProperty("_EmissionColor"))
+        {
+            m.SetColor("_EmissionColor", glow);
+            m.EnableKeyword("_EMISSION");
+        }
+        if (m.HasProperty("_Color"))
+            m.SetColor("_Color", Color.Lerp(Color.white, glow, 0.5f));
+        return m;
+    }
+
     private static Bounds? LocalBounds(Transform space)
     {
         Bounds? total = null;
@@ -351,7 +387,7 @@ internal static class LabGear
         var model = AddModel(attach, "clipboard", mesh, pos, rot, ClipboardFit);
         model.SetActive(true);
         // the dropped item: the board lying face up
-        AddDropModel(prefab, mesh, new Vector3(0f, 0.02f, 0f), Quaternion.Euler(-90f, 0f, 0f));
+        AddDropModel(prefab, "model", mesh, new Vector3(0f, 0.02f, 0f), Quaternion.Euler(-90f, 0f, 0f), _material);
         FitCollider(prefab, new Vector3(0.24f, 0.05f, 0.33f));
         _fittedToPlayer = _playerRoot != null;
     }
@@ -363,11 +399,14 @@ internal static class LabGear
                 UnityEngine.Object.DestroyImmediate(child.gameObject);
         var attach = new GameObject("attach_" + HeadJoint);
         attach.transform.SetParent(prefab.transform, false);
-        var mesh = GearMeshes.Glasses();
+        var frameMesh = GearMeshes.GlassesFrame();
+        var lensMesh = GearMeshes.GlassesLens();
         var (pos, rot) = GlassesSeat();
-        var model = AddModel(attach.transform, "glasses", mesh, pos, rot, GlassesFit, _creatureMaterial);
-        model.SetActive(true);
-        AddDropModel(prefab, mesh, new Vector3(0f, 0.02f, 0f), Quaternion.Euler(-90f, 0f, 0f));
+        // two renderers so the lens can glow without the frame glowing with it
+        AddModel(attach.transform, "glasses_frame", frameMesh, pos, rot, GlassesFit, _glassesMaterial).SetActive(true);
+        AddModel(attach.transform, "glasses_lens", lensMesh, pos, rot, GlassesFit, _lensMaterial).SetActive(true);
+        AddDropModel(prefab, "model_frame", frameMesh, new Vector3(0f, 0.02f, 0f), Quaternion.Euler(-90f, 0f, 0f), _glassesMaterial);
+        AddDropModel(prefab, "model_lens", lensMesh, new Vector3(0f, 0.02f, 0f), Quaternion.Euler(-90f, 0f, 0f), _lensMaterial);
         FitCollider(prefab, new Vector3(0.15f, 0.05f, 0.15f));
         _fittedToPlayer = _playerRoot != null;
     }
@@ -388,17 +427,17 @@ internal static class LabGear
         return go;
     }
 
-    private static void AddDropModel(GameObject prefab, Mesh mesh, Vector3 pos, Quaternion rot)
+    private static void AddDropModel(GameObject prefab, string name, Mesh mesh, Vector3 pos, Quaternion rot, Material? material)
     {
-        var old = prefab.transform.Find("model");
+        var old = prefab.transform.Find(name);
         if (old != null)
             UnityEngine.Object.DestroyImmediate(old.gameObject);
-        var go = new GameObject("model");
+        var go = new GameObject(name);
         go.transform.SetParent(prefab.transform, false);
         go.transform.localPosition = pos;
         go.transform.localRotation = rot;
         go.AddComponent<MeshFilter>().sharedMesh = mesh;
-        go.AddComponent<MeshRenderer>().sharedMaterial = _material;
+        go.AddComponent<MeshRenderer>().sharedMaterial = material ?? _material;
     }
 
     private static void FitCollider(GameObject prefab, Vector3 size)
@@ -428,11 +467,18 @@ internal static class LabGear
         _playerRoot = player.transform;
         var vis = player.GetComponent<VisEquipment>();
         _rightHand = vis != null ? vis.m_rightHand : null;
-        _head = FindChild(player.transform, HeadJoint);
+        // VisEquipment.m_helmet is the real, guaranteed-correct head attach point (what helmets/hair/beard use via
+        // AttachArmor -> Utils.FindChild(m_visual.transform, "Head")). A plain name search over the whole player
+        // object can find an unrelated transform also named "Head" (confirmed in game, 2026-11-18: our old search and
+        // m_helmet were two different transforms, ~1.5 m apart) - go straight to the field VisEquipment itself uses.
+        _head = vis != null ? vis.m_helmet : null;
         _eye = AccessTools.Field(typeof(Player), "m_eye")?.GetValue(player.GetComponent<Player>()) as Transform;
         if (_rightHand == null) _rightHand = FindChild(player.transform, "RightHand");
         if (_head == null)
-            TestLabPlugin.Log?.LogWarning($"Lab gear: the Player prefab has no '{HeadJoint}' joint; the glasses will hang at the joint origin.");
+        {
+            _head = FindChild(player.transform, HeadJoint);
+            TestLabPlugin.Log?.LogWarning($"Lab gear: VisEquipment.m_helmet is unset; falling back to a name search for '{HeadJoint}', which may not be the real head bone.");
+        }
     }
 
     private static Transform? FindChild(Transform t, string name)
@@ -448,20 +494,28 @@ internal static class LabGear
         return null;
     }
 
-    /// <summary>Default seat of the glasses in Head-joint space: a little above and in front of the joint, facing the way the player faces.</summary>
+    /// <summary>
+    /// Glasses seat, in the attach object's own local space (VisEquipment's worldPositionStays reparent onto the real
+    /// head bone already compensates for whatever rotation/scale that bone carries, so this needs no extra rotation -
+    /// identity - and the offset applies directly). Reads the live local player's own root/helmet/eye each call rather
+    /// than the cached prefab-template fields: those are read once from ZNetScene's "Player" prefab entry (a template,
+    /// not the spawned character) and can carry a transform that merely SHARES A NAME with the real one while sitting
+    /// at a completely different position - confirmed in game, 2026-11-18 (our cached "_head", named "Helmet_attach"
+    /// like the real one, sat metres away from VisEquipment.m_helmet read fresh off the live player).
+    /// </summary>
     private static (Vector3 pos, Quaternion rot) GlassesSeat()
     {
-        if (_playerRoot == null || _head == null)
+        var player = Player.m_localPlayer;
+        var root = player != null ? player.transform : _playerRoot;
+        var head = player != null ? player.GetComponent<VisEquipment>()?.m_helmet : _head;
+        var eye = player != null ? AccessTools.Field(typeof(Player), "m_eye")?.GetValue(player) as Transform : _eye;
+        if (root == null || head == null)
             return (new Vector3(0f, 0.06f, 0.09f), Quaternion.identity);
-        // The game parents the attach object to the joint keeping world scale 1 (the joints themselves are scaled), so the
-        // offset is only turned into the joint's frame, never scaled: metres in, metres out.
-        var headInRoot = Quaternion.Inverse(_playerRoot.rotation) * _head.rotation;
-        var toHead = Quaternion.Inverse(headInRoot);
-        // the player's own eye point when the prefab has one (Player.m_eye), else a guess above and in front of the joint
+        // the player's own eye point when there is one (Player.m_eye), else a guess above and in front of the joint
         var offset = new Vector3(0f, 0.05f, 0.14f);
-        if (_eye != null)
-            offset = _playerRoot.InverseTransformPoint(_eye.position) - _playerRoot.InverseTransformPoint(_head.position) + new Vector3(0f, 0.005f, 0.075f);
-        return (toHead * offset, toHead);
+        if (eye != null)
+            offset = root.InverseTransformPoint(eye.position) - root.InverseTransformPoint(head.position) + new Vector3(0f, 0.01f, 0.13f);
+        return (offset, Quaternion.identity);
     }
 
     /// <summary>
@@ -522,10 +576,9 @@ internal static class LabGear
             return "lab gear not built";
         LoadTuning();
         var atlas = GearArt.LoadTexture("gear_atlas.png");
-        if (_material != null)
-            _material.mainTexture = atlas;
-        if (_creatureMaterial != null)
-            _creatureMaterial.mainTexture = atlas;
+        foreach (var m in new[] { _material, _glassesMaterial, _lensMaterial, _creatureMaterial })
+            if (m != null)
+                m.mainTexture = atlas;
         DressAll();
         RefreshWorn();
         var note = $"Lab gear: reloaded (clipboard {ClipboardFit}; glasses {GlassesFit}; dev folder {GearArt.DevFolder}).";
@@ -569,7 +622,7 @@ internal static class LabGear
         {
             var worn = new List<string>();
             foreach (var r in player.GetComponentsInChildren<MeshRenderer>())
-                if (r.sharedMaterial == _material || r.sharedMaterial == _creatureMaterial)
+                if (r.sharedMaterial == _material || r.sharedMaterial == _glassesMaterial || r.sharedMaterial == _lensMaterial || r.sharedMaterial == _creatureMaterial)
                 {
                     var m = r.sharedMaterial;
                     var tex = m != null ? m.mainTexture : null;
@@ -584,6 +637,53 @@ internal static class LabGear
             var m = r != null ? r.sharedMaterial : null;
             sb.Append($" | prefab model: {(r != null ? r.name : "none")} shader={(m != null ? m.shader.name : "none")} tex={(m != null && m.mainTexture != null ? $"{m.mainTexture.name}#{m.mainTexture.GetInstanceID()} {m.mainTexture.width}x{m.mainTexture.height}" : "null")} keywords=[{string.Join(" ", m != null ? m.shaderKeywords : Array.Empty<string>())}]");
         }
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Hard numbers instead of more screenshots: the player's own position/facing/scale, the main camera's position/
+    /// facing/FOV, and where a 2.5 m "in front of the player" probe origin actually lands relative to both. 2026-11-18,
+    /// chasing why every probe renders as a speck instead of a recognisable object at the expected distance.
+    /// </summary>
+    public static string DiagnoseScale()
+    {
+        var player = Player.m_localPlayer;
+        if (player == null)
+            return "no player";
+        var cam = Camera.main;
+        var sb = new StringBuilder();
+        sb.Append($"player pos {player.transform.position:F3} forward {player.transform.forward:F3} lossyScale {player.transform.lossyScale:F3} localScale {player.transform.localScale:F3}");
+        if (cam != null)
+        {
+            var origin = player.transform.position + player.transform.forward * 2.5f + Vector3.up * 1.4f;
+            var toProbe = origin - cam.transform.position;
+            sb.Append($" | camera pos {cam.transform.position:F3} forward {cam.transform.forward:F3} fov {cam.fieldOfView:F1} near {cam.nearClipPlane:F3} far {cam.farClipPlane:F1}");
+            sb.Append($" | probe origin {origin:F3} distance-from-camera {toProbe.magnitude:F3} distance-from-player {(origin - player.transform.position).magnitude:F3}");
+            var screen = cam.WorldToScreenPoint(origin);
+            sb.Append($" | probe origin on screen {screen:F1} (screen is {Screen.width}x{Screen.height})");
+        }
+        else
+        {
+            sb.Append(" | no Camera.main");
+        }
+        if (cam != null)
+        {
+            var frame = player.GetComponentsInChildren<MeshRenderer>().FirstOrDefault(r => r.sharedMaterial == _glassesMaterial);
+            if (frame != null)
+            {
+                var screen = cam.WorldToScreenPoint(frame.transform.position);
+                var toCam = Vector3.Dot(frame.transform.position - cam.transform.position, cam.transform.forward);
+                sb.Append($" | glasses_frame world pos {frame.transform.position:F3} on screen {screen:F1} inFrontOfCamera={toCam > 0f} boundsSize {frame.bounds.size:F3} layer={frame.gameObject.layer}({LayerMask.LayerToName(frame.gameObject.layer)}) cullingMask-includes-layer={(cam.cullingMask & (1 << frame.gameObject.layer)) != 0}");
+            }
+            else
+            {
+                sb.Append(" | glasses_frame renderer not found under the player");
+            }
+        }
+        // VisEquipment's own helmet/hair/beard attach point, for comparison with our own Head-joint search
+        var vis = player.GetComponent<VisEquipment>();
+        var helmetT = AccessTools.Field(typeof(VisEquipment), "m_helmet")?.GetValue(vis) as Transform;
+        sb.Append($" | VisEquipment.m_helmet={(helmetT != null ? helmetT.name : "null")} at {(helmetT != null ? helmetT.position.ToString("F3") : "n/a")} | our _head={(_head != null ? _head.name : "null")} at {(_head != null ? _head.position.ToString("F3") : "n/a")} sameTransform={_head == helmetT}");
         return sb.ToString();
     }
 
@@ -621,6 +721,40 @@ internal static class LabGear
     /// creature material, the untouched donor piece material, the untouched donor creature material, and our piece material
     /// with the donor's own texture. clear = remove them again.
     /// </summary>
+    /// <summary>
+    /// A free-standing pair of glasses 1.5 m in front of the player, bypassing VisEquipment's head-bone attach entirely -
+    /// isolates whether the mesh/material render at all (they do; the head-bone attach is the actual problem, found
+    /// 2026-11-18). clear = remove it again.
+    /// </summary>
+    public static string ProbeGlasses(bool clear)
+    {
+        foreach (var go in _probes)
+            if (go != null) UnityEngine.Object.Destroy(go);
+        _probes.Clear();
+        if (clear)
+            return "cleared";
+        var player = Player.m_localPlayer;
+        if (player == null || _glassesMaterial == null)
+            return "no player or material";
+        var origin = player.transform.position + player.transform.forward * 1.5f + Vector3.up * 1.6f;
+        // the lens's local +Z is its "out of the frame, toward whoever's looking at it" normal, so it must face back
+        // toward the player/camera, not the same way the player faces
+        var rot = Quaternion.LookRotation(-player.transform.forward, Vector3.up);
+        var frame = new GameObject("GlassesProbe_frame");
+        frame.transform.position = origin;
+        frame.transform.rotation = rot;
+        frame.AddComponent<MeshFilter>().sharedMesh = GearMeshes.GlassesFrame();
+        frame.AddComponent<MeshRenderer>().sharedMaterial = _glassesMaterial;
+        _probes.Add(frame);
+        var lens = new GameObject("GlassesProbe_lens");
+        lens.transform.position = origin;
+        lens.transform.rotation = rot;
+        lens.AddComponent<MeshFilter>().sharedMesh = GearMeshes.GlassesLens();
+        lens.AddComponent<MeshRenderer>().sharedMaterial = _lensMaterial;
+        _probes.Add(lens);
+        return $"{_probes.Count} probes at {origin:F2}";
+    }
+
     public static string Probe(bool clear)
     {
         foreach (var go in _probes)

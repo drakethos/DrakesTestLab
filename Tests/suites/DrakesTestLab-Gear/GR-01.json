@@ -1,6 +1,6 @@
 {
   "name": "GR-01 lab gear: craft the clipboard and glasses, read a wall, note it, open the clipboard, photograph both",
-  "timeout": 240,
+  "timeout": 400,
   "steps": [
     {
       "do": "invoke",
@@ -106,6 +106,26 @@
       "do": "screenshot",
       "name": "gear-probe",
       "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.probeGlasses"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.8
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-probe-glasses",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.probeGlasses",
+      "args": {
+        "clear": true
+      }
     },
     {
       "do": "hook",
@@ -361,6 +381,54 @@
       "do": "screenshot",
       "name": "gear-back",
       "clean": true
+    },
+    {
+      "do": "teleport",
+      "dx": 0.01,
+      "dz": 0,
+      "yaw": 180
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        0,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-glasses-closeup",
+      "clean": true
+    },
+    {
+      "do": "invoke",
+      "method": "DrakesTestLab.Util.OrbitCamera.View",
+      "args": [
+        35,
+        1.5,
+        1.8,
+        4
+      ]
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "screenshot",
+      "name": "gear-face-glasses-angle",
+      "clean": true
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.describe"
     },
     {
       "do": "hook",
