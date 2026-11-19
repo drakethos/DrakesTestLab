@@ -186,6 +186,56 @@
     },
     {
       "do": "hook",
+      "name": "testlab.gear.fields",
+      "contains": "health=",
+      "label": "the clipboard lists the wall's editable health"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.set",
+      "args": {
+        "field": "health",
+        "value": "123"
+      },
+      "expect": "123",
+      "label": "the clipboard sets the wall's health"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.readout",
+      "contains": "123/",
+      "label": "the glasses see the edited health"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.copy",
+      "min": 1,
+      "label": "copying the wall takes its values"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.set",
+      "args": {
+        "field": "health",
+        "value": "50"
+      },
+      "expect": "50",
+      "label": "the wall's health changes again"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.paste",
+      "min": 1,
+      "label": "pasting the copy writes its values back"
+    },
+    {
+      "do": "hook",
+      "name": "testlab.gear.fields",
+      "contains": "health=123",
+      "label": "the paste restored the copied health"
+    },
+    {
+      "do": "hook",
       "name": "testlab.gear.menu",
       "args": {
         "open": true

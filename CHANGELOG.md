@@ -1,5 +1,30 @@
 # DrakesTestLab
 
+## 0.6.2
+
+- **Version:** the DLL's assembly and file version now come from the package version (they were stuck at 0.1.0.0), and a local
+  build rewrites the dev profile's `manifest.json`, so the mod manager no longer shows the version first installed.
+- **Lab glasses are visible on your face.** The game seats a utility item's model on the head *bone* with that bone's own axes;
+  0.6.1 placed the glasses as if on the helmet point with the player's axes, so they sat inside the head and never showed.
+  The seat is now computed in the bone's frame from the player's rest pose: on the nose at eye height, facing forward, for
+  every player that wears them. `testlab.gear describe` reports the head bone it used.
+- **The clipboard edits; the glasses read.** Holding the clipboard alone shows a short tag, not a second readout. Its clicks:
+  - **Left click copies** what you look at: the note now carries every value the object saves (its ZDO data).
+  - **Shift + left click pastes** the newest copy onto what you look at.
+  - **Right click opens the editor:** health, max health, level, tamed and name, stack, quality, durability, variant, crafter,
+    sign text, fuel, door state, ward on/off, picked, position and rotation, each editable in place (Set / Set all changed /
+    Undo edits); a raw data view of every ZDO value with a filter, editable by type; Copy values, Paste, Spawn another,
+    Go there, Spawn tab, Repair / Heal, Hurt 50%, Destroy.
+  - **Copies:** Paste here, **Spawn copy** (a new object with the copied values: a chest with the same contents, a creature
+    with the same level and health), Go there, Copy text (every value spelled out), remove; copy all, save as text, clear.
+  - Hooks: `testlab.gear.fields`, `testlab.gear.set` (`{"field", "value"}`), `testlab.gear.copy`, `testlab.gear.paste`.
+    GR-01 now edits a wall's health, copies it, changes it and pastes it back.
+- Building on Linux: the optional preloader patcher finds BepInEx and Valheim in their Linux locations, so packaging no longer fails.
+- **No more endless loading screen when the world has no start temple the game can find.** The fresh test character has no
+  saved spawn point, so the game waited for the temple forever. After 3 s it now spawns at the world centre
+  (`[Bootstrap] SpawnFallback`, on by default). `SkipIntro` now drops the Valkyrie intro before it starts, instead of
+  after a spawn that may never come.
+
 ## 0.6.1
 
 - Server connect mode: `[Connect] ForceDirectJoin` (default off) skips the PlayFab lookup and joins

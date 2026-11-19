@@ -11,8 +11,13 @@
     <DebugType>none</DebugType>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <!-- compile against a profile's BepInEx core folder (override with /p:BepInExCore=...) -->
-    <BepInExCore Condition="'$(BepInExCore)' == ''">$(APPDATA)\com.kesomannen.gale\valheim\profiles\drakeTest\BepInEx\core</BepInExCore>
-    <ManagedDir Condition="'$(ManagedDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</ManagedDir>
+    <!-- Gale keeps its data in %APPDATA% on Windows and ~/.local/share on Linux; Steam's default library differs the same way -->
+    <GaleData Condition="'$(GaleData)' == '' and '$(OS)' == 'Windows_NT'">$(APPDATA)\com.kesomannen.gale</GaleData>
+    <GaleData Condition="'$(GaleData)' == ''">$(HOME)/.local/share/com.kesomannen.gale</GaleData>
+    <BepInExCore Condition="'$(BepInExCore)' == ''">$(GaleData)\valheim\profiles\drakeTest\BepInEx\core</BepInExCore>
+    <ManagedDir Condition="'$(ManagedDir)' == '' and '$(OS)' == 'Windows_NT'">C:\Program Files (x86)\Steam\steamapps\common\Valheim\valheim_Data\Managed</ManagedDir>
+    <ManagedDir Condition="'$(ManagedDir)' == '' and Exists('$(HOME)/.steam/debian-installation/steamapps/common/Valheim/valheim_Data/Managed')">$(HOME)/.steam/debian-installation/steamapps/common/Valheim/valheim_Data/Managed</ManagedDir>
+    <ManagedDir Condition="'$(ManagedDir)' == ''">$(HOME)/.steam/steam/steamapps/common/Valheim/valheim_Data/Managed</ManagedDir>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PreloadPatcher.cs" />
@@ -26,7 +31,7 @@
   <!-- deploy next to the other test profiles' patchers -->
   <Target Name="DeployPatcher" AfterTargets="Build">
     <ItemGroup>
-      <_Profile Include="$(APPDATA)\com.kesomannen.gale\valheim\profiles\drakeTest\BepInEx" />
+      <_Profile Include="$(GaleData)\valheim\profiles\drakeTest\BepInEx" />
     </ItemGroup>
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="%(_Profile.FullPath)\patchers\DrakesTestLab" Condition="Exists('%(_Profile.FullPath)')" />
   </Target>

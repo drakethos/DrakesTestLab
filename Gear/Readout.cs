@@ -72,6 +72,17 @@ internal static class Readout
         return t;
     }
 
+    /// <summary>A target for an object you have in hand rather than under the crosshair (a spawned copy, a test's object).</summary>
+    public static Target FromObject(GameObject go, Player? player)
+    {
+        var t = new Target { Root = go, View = go.GetComponent<ZNetView>(), Point = go.transform.position };
+        t.Distance = player != null ? Vector3.Distance(player.transform.position, t.Point) : 0f;
+        t.Prefab = PrefabName(go);
+        t.Kind = KindOf(t);
+        t.Title = TitleOf(t);
+        return t;
+    }
+
     public static string PrefabName(GameObject go)
     {
         var name = go.name;

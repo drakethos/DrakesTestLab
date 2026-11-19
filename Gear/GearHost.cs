@@ -12,7 +12,9 @@ namespace DrakesTestLab.Gear;
 
 /// <summary>
 /// Runs the lab gear every frame: finds what the crosshair is on while the clipboard is held or the glasses are worn, reads the
-/// clipboard's clicks (left = note it, right = the clipboard window), and draws the readout card by the crosshair and the window.
+/// clipboard's clicks (left = copy its values, shift + left = paste the newest copy onto it, right = the clipboard editor), and
+/// draws the card by the crosshair and the window. The two items do different jobs: the glasses READ (the full readout of
+/// anything in sight, hands free), the clipboard WRITES (edit, copy, paste, spawn copies); holding it alone shows only a short tag.
 /// </summary>
 internal sealed class GearHost : MonoBehaviour
 {
@@ -69,9 +71,22 @@ internal sealed class GearHost : MonoBehaviour
         if (!TakeInput())
             return;
         if (Input.GetMouseButtonDown(0) && Current != null)
-            Clipboard.Add(Current);
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                var copy = Clipboard.LatestCopy();
+                if (copy == null) Clipboard.Say("Nothing copied yet: left click on something first");
+                else Clipboard.Paste(copy, Current);
+            }
+            else
+            {
+                Clipboard.Add(Current);
+            }
+        }
         else if (Input.GetMouseButtonDown(1))
+        {
             ClipboardMenu.Open(Current);
+        }
     }
 
     private static bool TakeInput()
@@ -104,12 +119,15 @@ internal sealed class GearHost : MonoBehaviour
         GUI.skin = oldSkin;
     }
 
-    /// <summary>The readout card to the right of the crosshair: the glasses show everything, the clipboard alone a short version.</summary>
+    /// <summary>
+    /// The card to the right of the crosshair. Glasses: the full readout. Clipboard alone: a short tag (name, prefab) and what
+    /// its buttons do there, since its job is editing, not reading.
+    /// </summary>
     private static void DrawCard(float scale)
     {
         var t = Current!;
         var full = Clipboard.Worn;
-        var width = full ? 380f : 300f;
+        var width = full ? 380f : 280f;
         var x = Screen.width / scale / 2f + 36f;
         var y = Screen.height / scale / 2f - 16f;
         var oldBg = GUI.backgroundColor;
@@ -121,10 +139,24 @@ internal sealed class GearHost : MonoBehaviour
         GUILayout.FlexibleSpace();
         GUILayout.Label(t.Kind, Ui.Chip);
         GUILayout.EndHorizontal();
-        foreach (var line in Readout.Lines(t, full))
-            GUILayout.Label($"<color={Ui.Html(Ui.Muted)}>{line.Key}</color>   {line.Value}");
+        if (full)
+        {
+            foreach (var line in Readout.Lines(t, true))
+                GUILayout.Label($"<color={Ui.Html(Ui.Muted)}>{line.Key}</color>   {line.Value}");
+        }
+        else
+        {
+            GUILayout.Label($"<color={Ui.Html(Ui.Muted)}>{t.Prefab}</color>", Ui.HintStyle);
+        }
         if (Clipboard.Held)
-            GUILayout.Label($"<color={Ui.Html(Ui.Muted)}>LMB</color> note it     <color={Ui.Html(Ui.Muted)}>RMB</color> clipboard", Ui.HintStyle);
+        {
+            var copy = t.Kind is "Terrain" or "Player" ? null : Clipboard.LatestCopy();
+            var m = Ui.Html(Ui.Muted);
+            var hint = t.Kind == "Terrain" ? $"<color={m}>LMB</color> note the spot" : $"<color={m}>LMB</color> copy values";
+            if (copy != null) hint += $"   <color={m}>Shift+LMB</color> paste {copy.Name}";
+            hint += $"   <color={m}>RMB</color> edit";
+            GUILayout.Label(hint, Ui.HintStyle);
+        }
         GUILayout.EndVertical();
         GUILayout.EndArea();
         GUI.backgroundColor = oldBg;
@@ -162,6 +194,46 @@ internal sealed class GearHost : MonoBehaviour
             return Clipboard.Notes.Count;
         }, source);
         TestHooks.Register("testlab.gear.notes", _ => { Clipboard.Load(); return Clipboard.Notes.Count; }, source);
+        // the clipboard editor: {"field": "health"} reads, {"field": "health", "value": "10"} sets (fields of what the crosshair is on)
+        TestHooks.Register("testlab.gear.fields", _ =>
+        {
+            Look();
+            if (Current == null)
+                return "";
+            var parts = new List<string>();
+            foreach (var f in ObjectEditor.Fields(Current))
+                parts.Add($"{f.Id}={f.Get()}");
+            return string.Join(" | ", parts);
+        }, source);
+        TestHooks.Register("testlab.gear.set", args =>
+        {
+            Look();
+            if (Current == null)
+                throw new InvalidOperationException("nothing under the crosshair to edit");
+            var field = args.TryGetValue("field", out var f) ? Convert.ToString(f, CultureInfo.InvariantCulture) ?? "" : "";
+            var value = args.TryGetValue("value", out var v) ? Convert.ToString(v, CultureInfo.InvariantCulture) ?? "" : "";
+            var error = ObjectEditor.SetField(Current, field, value);
+            if (error != null)
+                throw new InvalidOperationException(error);
+            foreach (var x in ObjectEditor.Fields(Current))
+                if (x.Id == field) return x.Get();
+            return value;
+        }, source);
+        TestHooks.Register("testlab.gear.copy", _ =>
+        {
+            Look();
+            if (Current == null)
+                throw new InvalidOperationException("nothing under the crosshair to copy");
+            return Clipboard.Add(Current).Values.Count;
+        }, source);
+        TestHooks.Register("testlab.gear.paste", _ =>
+        {
+            Look();
+            if (Current == null)
+                throw new InvalidOperationException("nothing under the crosshair to paste onto");
+            var copy = Clipboard.LatestCopy() ?? throw new InvalidOperationException("nothing copied");
+            return Clipboard.Paste(copy, Current);
+        }, source);
         TestHooks.Register("testlab.gear.lastNote", _ => { Clipboard.Load(); return Clipboard.Notes.Count > 0 ? Clipboard.Notes[0].Line : ""; }, source);
         TestHooks.Register("testlab.gear.clear", _ => { Clipboard.Clear(); return true; }, source);
         TestHooks.Register("testlab.gear.menu", args =>

@@ -186,6 +186,7 @@
     <Compile Include="Patches\MenuHijackPatches.cs" />
 
     <Compile Include="Patches\PlayerSpawnPatches.cs" />
+    <Compile Include="Patches\BootSpawnPatches.cs" />
 
     <Compile Include="Bootstrap\TestRules.cs" />
 
@@ -319,6 +320,7 @@
     <Compile Include="Gear\GearMeshes.cs" />
     <Compile Include="Gear\LabGear.cs" />
     <Compile Include="Gear\Readout.cs" />
+    <Compile Include="Gear\ObjectEditor.cs" />
     <Compile Include="Gear\Clipboard.cs" />
     <Compile Include="Gear\ClipboardMenu.cs" />
     <Compile Include="Gear\GearHost.cs" />

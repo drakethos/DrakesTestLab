@@ -8,4 +8,23 @@
   <PropertyGroup Condition="'$(CI_SKIP_POST_BUILD)' != ''">
     <SkipPackageMod>true</SkipPackageMod>
   </PropertyGroup>
+  <!-- Stamp the DLL with the package version (mod.package.props <Version>), so file properties, BepInEx and the
+       Thunderstore manifest all agree. A pre-release suffix (1.2.3-beta.1) is kept only in the informational version. -->
+  <Target Name="GenerateTestLabAssemblyVersion" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild;PrepareModPackageMetadata">
+    <PropertyGroup>
+      <_TestLabNumericVersion>$(Version.Split('-')[0])</_TestLabNumericVersion>
+      <_TestLabVersionFile>$(MSBuildProjectDirectory)/obj/AssemblyVersion.g.cs</_TestLabVersionFile>
+      <_TestLabVersionContent>// &lt;auto-generated /&gt;%0a[assembly: System.Reflection.AssemblyVersion("$(_TestLabNumericVersion).0")]%0a[assembly: System.Reflection.AssemblyFileVersion("$(_TestLabNumericVersion).0")]%0a[assembly: System.Reflection.AssemblyInformationalVersion("$(Version)")]</_TestLabVersionContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_TestLabVersionFile)" Lines="$(_TestLabVersionContent)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(_TestLabVersionFile)" />
+    </ItemGroup>
+  </Target>
+  <!-- A local deploy copies the DLL into the profile but used to leave the profile's manifest.json at whatever version was
+       first installed, so the mod manager showed a stale version. Rewrite it with the current one after every deploy. -->
+  <Target Name="SyncTestLabProfileManifest" AfterTargets="CopyToGaleProfile;CopyToR2Profile" Condition="'$(CI_SKIP_POST_BUILD)' == ''">
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="WriteThunderstoreManifest" Properties="ThunderstoreManifestDir=$(GaleModDeployPath);Configuration=$(Configuration)" Condition="'$(GaleModDeployPath)' != '' and Exists('$(GaleModDeployPath)')" />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="WriteThunderstoreManifest" Properties="ThunderstoreManifestDir=$(R2ModDeployPath);Configuration=$(Configuration)" Condition="'$(R2ModDeployPath)' != '' and Exists('$(R2ModDeployPath)')" />
+  </Target>
 </Project>

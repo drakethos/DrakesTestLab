@@ -20,12 +20,20 @@ internal sealed class Note
     public Vector3 Pos;
     public string Zdo = "";
     public string When = "";
+    /// <summary>The object's copied values (raw ZDO data by "type:hash", see ObjectEditor.Copy): what Paste and Spawn copy write back.</summary>
+    public Dictionary<string, string> Values = new(StringComparer.Ordinal);
 
-    public Dictionary<string, object?> ToJson() => new()
+    public Dictionary<string, object?> ToJson()
     {
-        ["prefab"] = Prefab, ["name"] = Name, ["kind"] = Kind, ["info"] = Info,
-        ["x"] = Pos.x, ["y"] = Pos.y, ["z"] = Pos.z, ["zdo"] = Zdo, ["when"] = When
-    };
+        var values = new Dictionary<string, object?>();
+        foreach (var kv in Values)
+            values[kv.Key] = kv.Value;
+        return new Dictionary<string, object?>
+        {
+            ["prefab"] = Prefab, ["name"] = Name, ["kind"] = Kind, ["info"] = Info,
+            ["x"] = Pos.x, ["y"] = Pos.y, ["z"] = Pos.z, ["zdo"] = Zdo, ["when"] = When, ["values"] = values
+        };
+    }
 
     public static Note? FromJson(Dictionary<string, object?> d)
     {
@@ -34,10 +42,28 @@ internal sealed class Note
         var prefab = S("prefab");
         if (prefab.Length == 0)
             return null;
-        return new Note { Prefab = prefab, Name = S("name"), Kind = S("kind"), Info = S("info"), Pos = new Vector3(F("x"), F("y"), F("z")), Zdo = S("zdo"), When = S("when") };
+        var note = new Note { Prefab = prefab, Name = S("name"), Kind = S("kind"), Info = S("info"), Pos = new Vector3(F("x"), F("y"), F("z")), Zdo = S("zdo"), When = S("when") };
+        if (d.TryGetValue("values", out var raw) && raw is Dictionary<string, object?> values)
+            foreach (var kv in values)
+                if (kv.Value != null)
+                    note.Values[kv.Key] = Convert.ToString(kv.Value, CultureInfo.InvariantCulture) ?? "";
+        return note;
     }
 
     public string Line => $"{Kind,-8} {Prefab,-28} {Name,-24} {Pos.x:0.#},{Pos.y:0.#},{Pos.z:0.#}  {Info}";
+
+    /// <summary>The note with every copied value spelled out, one per line, for the system clipboard or a text file.</summary>
+    public string Detail()
+    {
+        var sb = new StringBuilder(Line).AppendLine();
+        foreach (var kv in Values)
+        {
+            var name = kv.Key.Length > 2 && int.TryParse(kv.Key.Substring(2), NumberStyles.Integer, CultureInfo.InvariantCulture, out var h) ? ObjectEditor.NameOf(h) : kv.Key;
+            var v = kv.Key.StartsWith("b:", StringComparison.Ordinal) ? $"<{kv.Value.Length * 3 / 4} bytes>" : kv.Value;
+            sb.Append("    ").Append(name).Append(" = ").AppendLine(v);
+        }
+        return sb.ToString();
+    }
 }
 
 /// <summary>
@@ -90,10 +116,39 @@ internal static class Clipboard
             Zdo = t.View != null && t.View.IsValid() ? t.View.GetZDO().m_uid.ToString() : "",
             When = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
         };
+        try { note.Values = ObjectEditor.Copy(t); }
+        catch (Exception ex) { TestLabPlugin.Log?.LogWarning($"Clipboard: values of {t.Prefab} not copied ({ex.Message})."); }
         Notes.Insert(0, note);
         Save();
-        Say($"Noted: {note.Name} ({note.Prefab})");
+        Say(note.Values.Count > 0 ? $"Copied {note.Name} ({note.Values.Count} values)" : $"Noted: {note.Name} ({note.Prefab})");
         return note;
+    }
+
+    /// <summary>The newest note that carries values (what shift + left click pastes).</summary>
+    public static Note? LatestCopy()
+    {
+        Load();
+        foreach (var n in Notes)
+            if (n.Values.Count > 0)
+                return n;
+        return null;
+    }
+
+    /// <summary>Writes a note's copied values onto the target.</summary>
+    public static int Paste(Note note, Target t)
+    {
+        var n = ObjectEditor.Paste(t, note.Values, out var error);
+        Say(n > 0 ? $"Pasted {n} value(s) from {note.Name} onto {Readout.StripTags(t.Title)}" + (error != null ? $" ({error})" : "") : $"Nothing pasted: {error ?? "no values"}");
+        return n;
+    }
+
+    /// <summary>Spawns a new copy of what a note describes, with its values.</summary>
+    public static void SpawnCopy(Note note)
+    {
+        if (note.Kind == "Terrain")
+            return;
+        var go = ObjectEditor.SpawnCopy(note);
+        Say(go != null ? $"Spawned a copy of {note.Name}" : $"Could not spawn {note.Prefab}");
     }
 
     public static void Remove(Note note)
@@ -112,7 +167,7 @@ internal static class Clipboard
     {
         var sb = new StringBuilder();
         foreach (var n in Notes)
-            sb.AppendLine(n.Line);
+            sb.Append(n.Detail());
         return sb.ToString();
     }
 

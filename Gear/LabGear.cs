@@ -55,6 +55,7 @@ internal static class LabGear
     private static Transform? _playerRoot;
     private static Transform? _rightHand;
     private static Transform? _head;
+    private static Transform? _headBone;   // the bone VisEquipment.AttachArmor parents "attach_Head" to (FindChild(Visual, "Head"))
     private static Transform? _eye;
     private static Bounds? _hammerBounds;
     private static bool _fittedToPlayer;
@@ -179,7 +180,7 @@ internal static class LabGear
         StripModel(clone, keepAttach: "attach");
         var shared = drop.m_itemData.m_shared;
         shared.m_name = ClipboardName;
-        shared.m_description = "Lab clipboard. Hold it: left click notes down what you look at (its prefab, id and state), right click opens the clipboard: notes, spawn, go to, copy, repair, destroy.";
+        shared.m_description = "Lab clipboard: edits what you look at. Left click copies its values, shift + left click pastes the newest copy onto it, right click opens the editor: change health, level, stack, text, fuel, position or any raw value, paste copies, spawn copies.";
         shared.m_buildPieces = null;
         shared.m_useDurability = false;
         shared.m_toolTier = 0;
@@ -215,7 +216,7 @@ internal static class LabGear
         StripModel(clone, keepAttach: null);
         var shared = drop.m_itemData.m_shared;
         shared.m_name = GlassesName;
-        shared.m_description = "Black lab glasses. Worn in the utility slot they show a readout of whatever you look at: prefab, id, owner, health, contents, data.";
+        shared.m_description = "Black lab glasses, worn on the face (utility slot). Hands-free readout of whatever you look at: prefab, id, owner, health, contents, data.";
         shared.m_itemType = ItemDrop.ItemData.ItemType.Utility;
         shared.m_useDurability = false;
         shared.m_equipStatusEffect = null;
@@ -473,6 +474,11 @@ internal static class LabGear
         // m_helmet were two different transforms, ~1.5 m apart) - go straight to the field VisEquipment itself uses.
         _head = vis != null ? vis.m_helmet : null;
         _eye = AccessTools.Field(typeof(Player), "m_eye")?.GetValue(player.GetComponent<Player>()) as Transform;
+        // The game seats a utility item's "attach_Head" child on Utils.FindChild(Visual, "Head") with identity local
+        // rotation (VisEquipment.AttachArmor). That is the skeleton's head BONE, not m_helmet (Helmet_attach), and its axes
+        // are the rig's, not the player's: the seat is computed in that bone's own frame (GlassesSeat).
+        var visual = player.transform.Find("Visual") ?? player.transform;
+        _headBone = Utils.FindChild(visual, HeadJoint);
         if (_rightHand == null) _rightHand = FindChild(player.transform, "RightHand");
         if (_head == null)
         {
@@ -495,28 +501,35 @@ internal static class LabGear
     }
 
     /// <summary>
-    /// Glasses seat, in the attach object's own local space (VisEquipment's worldPositionStays reparent onto the real
-    /// head bone already compensates for whatever rotation/scale that bone carries, so this needs no extra rotation -
-    /// identity - and the offset applies directly). Reads the live local player's own root/helmet/eye each call rather
-    /// than the cached prefab-template fields: those are read once from ZNetScene's "Player" prefab entry (a template,
-    /// not the spawned character) and can carry a transform that merely SHARES A NAME with the real one while sitting
-    /// at a completely different position - confirmed in game, 2026-11-18 (our cached "_head", named "Helmet_attach"
-    /// like the real one, sat metres away from VisEquipment.m_helmet read fresh off the live player).
+    /// Glasses seat in the frame the game gives "attach_Head": VisEquipment.AttachArmor instantiates it under the head BONE
+    /// (Utils.FindChild(Visual, "Head")) keeping world scale, then sets localPosition = 0 and localRotation = identity. So the
+    /// attach object carries the bone's rotation (the rig's axes, not the player's x right / y up / z forward) at unit scale.
+    /// The seat is computed from the Player prefab's rest pose: where the eyes are in player space, and the rotation that turns
+    /// the bone's frame back to the player's, so the glasses face forward on the nose whatever the rig's bone axes are.
+    /// (0.6.1 placed them from m_helmet with no rotation: a different transform with different axes, so they sat inside or
+    /// behind the head and never showed.)
     /// </summary>
     private static (Vector3 pos, Quaternion rot) GlassesSeat()
     {
-        var player = Player.m_localPlayer;
-        var root = player != null ? player.transform : _playerRoot;
-        var head = player != null ? player.GetComponent<VisEquipment>()?.m_helmet : _head;
-        var eye = player != null ? AccessTools.Field(typeof(Player), "m_eye")?.GetValue(player) as Transform : _eye;
-        if (root == null || head == null)
+        var root = _playerRoot;
+        var bone = _headBone;
+        if (root == null || bone == null)
             return (new Vector3(0f, 0.06f, 0.09f), Quaternion.identity);
-        // the player's own eye point when there is one (Player.m_eye), else a guess above and in front of the joint
-        var offset = new Vector3(0f, 0.05f, 0.14f);
-        if (eye != null)
-            offset = root.InverseTransformPoint(eye.position) - root.InverseTransformPoint(head.position) + new Vector3(0f, 0.01f, 0.13f);
-        return (offset, Quaternion.identity);
+        // the bone's rest orientation in player space, and the inverse that brings player axes into the bone's frame
+        var boneRot = Quaternion.Inverse(root.rotation) * bone.rotation;
+        var toBone = Quaternion.Inverse(boneRot);
+        var bonePos = root.InverseTransformPoint(bone.position);
+        // on the nose: the eye line (Player.m_eye's height when there is one, else a head's height above the bone), centred,
+        // a little in front of the bone, which sits at the middle of the head
+        var eyeY = _eye != null ? root.InverseTransformPoint(_eye.position).y : bonePos.y + 0.1f;
+        if (eyeY < bonePos.y || eyeY > bonePos.y + 0.3f)
+            eyeY = bonePos.y + 0.1f; // m_eye is the camera point on some rigs: keep the glasses on the head
+        var seat = new Vector3(0f, eyeY + GlassesLift, bonePos.z + GlassesForward);
+        return (toBone * (seat - bonePos), toBone);
     }
+
+    /// <summary>How far in front of the head bone and above the eye line the glasses sit (metres, player space).</summary>
+    private const float GlassesForward = 0.115f, GlassesLift = 0.005f;
 
     /// <summary>
     /// Default grip of the clipboard in right-hand space. Verified in game (orbit screenshots + a rotation sweep, 2026-11-11):
@@ -603,7 +616,9 @@ internal static class LabGear
         var sb = new StringBuilder();
         sb.Append(_clipboard != null ? "clipboard built" : "clipboard missing").Append(" | ");
         sb.Append(_glasses != null ? "glasses built" : "glasses missing").Append(" | ");
-        sb.Append($"player joints: hand={(_rightHand != null ? _rightHand.name : "none")} head={(_head != null ? _head.name : "none")}");
+        sb.Append($"player joints: hand={(_rightHand != null ? _rightHand.name : "none")} head={(_head != null ? _head.name : "none")} headBone={(_headBone != null ? _headBone.name : "none")}");
+        if (_playerRoot != null && _headBone != null)
+            sb.Append($" headBone in root {_playerRoot.InverseTransformPoint(_headBone.position):F3} rot {(Quaternion.Inverse(_playerRoot.rotation) * _headBone.rotation).eulerAngles:F0} lossy {_headBone.lossyScale:F3}");
         if (_playerRoot != null && _head != null)
             sb.Append($" head in root {_playerRoot.InverseTransformPoint(_head.position):F3} scale {_head.lossyScale:F3} rot {(Quaternion.Inverse(_playerRoot.rotation) * _head.rotation).eulerAngles:F0}");
         if (_playerRoot != null && _eye != null)

@@ -33,6 +33,7 @@ internal sealed class TestLabConfig
 
     public ConfigEntry<bool> BootstrapEnabled { get; private set; } = null!;
     public ConfigEntry<bool> SkipIntro { get; private set; } = null!;
+    public ConfigEntry<bool> SpawnFallback { get; private set; } = null!;
     public ConfigEntry<bool> FailOpenToMenu { get; private set; } = null!;
 
     public ConfigEntry<SaveModeKind> SaveMode { get; private set; } = null!;
@@ -150,6 +151,7 @@ internal sealed class TestLabConfig
         c.ConnectQuitDelay = config.Bind("Connect", "QuitDelaySeconds", 10f,
             "Server connect mode: seconds the failure notice stays up before the game closes (an unattended -testlab-run closes after 1 second).");
         c.SkipIntro = config.Bind("Bootstrap", "SkipIntro", true, "Try to skip intro logos when bootstrapping.");
+        c.SpawnFallback = config.Bind("Bootstrap", "SpawnFallback", true, "When the test world has no start temple the game can find, spawn the fresh test character at the world centre instead of waiting on the loading screen forever.");
         c.FailOpenToMenu = config.Bind("Bootstrap", "FailOpenToMenu", true, "If fast boot fails, leave the main menu available.");
 
         c.SaveMode = config.Bind("Save", "Mode", SaveModeKind.EphemeralFresh,
@@ -222,7 +224,7 @@ internal sealed class TestLabConfig
         c.LabCoatOnSpawn = config.Bind("Experimental", "GiveOnSpawn", true,
             "Put the lab coat in the inventory when the test character spawns (needs [Experimental] LabCoat on). On by default; set to false to leave it out of the starting kit without disabling the item.");
         c.LabGear = config.Bind("Gear", "LabGear", true,
-            "Adds the lab gear items: Drake_Clipboard (a tool: left click notes what you look at, right click opens the clipboard) and Drake_LabGlasses (utility slot: a readout of anything you look at). Both are free to craft by hand; the Player tab and 'testlab.gear' hand them out. On by default; set to false to exclude them entirely. Takes effect on the next game start.");
+            "Adds the lab gear items: Drake_Clipboard (a tool that edits what you look at: left click copies its values, shift + left click pastes them, right click opens the editor) and Drake_LabGlasses (worn on the face, utility slot: a hands-free readout of anything you look at). Both are free to craft by hand; the Player tab and 'testlab.gear' hand them out. On by default; set to false to exclude them entirely. Takes effect on the next game start.");
         c.LabGearOnSpawn = config.Bind("Gear", "GiveOnSpawn", true,
             "Put the clipboard and the glasses in the inventory when the test character spawns. On by default; set to false to leave them out of the starting kit without disabling the items.");
         c.GlassesRange = config.Bind("Gear", "GlassesRange", 60f, new ConfigDescription("How far the glasses read (metres). The clipboard alone reads to 12 m.", new AcceptableValueRange<float>(5f, 300f)));
