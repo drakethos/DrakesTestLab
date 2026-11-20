@@ -27,7 +27,7 @@ internal static class StepNames
     {
         "teleport", "face", "wait", "spawn", "give", "craft", "clearInventory", "console", "playAs", "interact", "click", "toggle",
         "type", "pressKey", "closeUi", "invoke", "hook", "check", "checkpoint", "screenshot", "log", "case", "setConfig", "reset", "relog", "destroy", "holdKey", "releaseKeys", "itemClick", "uiHover", "uiRelease", "lookAt", "setLanguage", "drop", "place", "store", "take", "use",
-        "clearArea", "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "ping", "server", "serverConfig", "agree", "read"
+        "clearArea", "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "peerMirror", "peerPose", "peerEquip", "chat", "peerChat", "peerEmote", "peerPing", "chatClear", "pvp", "peerPvp", "attack", "peerAttack", "peerHealth", "ping", "server", "serverConfig", "agree", "read"
     };
 }
 

@@ -1,0 +1,32 @@
+{
+  "name": "CH-01 chat both ways: say, shout, whisper, ping and emotes between player 1 and player 2",
+  "description": "Player 2 (Bjornita) is a virtual client 3 m away. Each line goes through the messages real clients send; chatSeen reads what reached player 1's chat, peerHeard what reached player 2.",
+  "timeout": 180,
+  "steps": [
+    { "do": "teleport", "dx": 0.01, "dz": 0, "yaw": 0 },
+    { "do": "peerJoin", "name": "Bjornita", "dx": 0, "dz": 3, "as": "bjornita" },
+    { "do": "chatClear" },
+
+    { "do": "peerChat", "peer": "Bjornita", "text": "hello there" },
+    { "do": "check", "check": "chatSeen", "from": "Bjornita", "type": "say", "contains": "hello there", "label": "player 2 says hello: player 1 reads it" },
+    { "do": "peerChat", "peer": "Bjornita", "text": "/s CAN YOU HEAR ME" },
+    { "do": "check", "check": "chatSeen", "from": "Bjornita", "type": "shout", "contains": "CAN YOU HEAR ME", "label": "player 2 shouts with /s" },
+    { "do": "peerChat", "peer": "Bjornita", "text": "/w psst" },
+    { "do": "check", "check": "chatSeen", "from": "Bjornita", "type": "whisper", "contains": "psst", "label": "player 2 whispers with /w (in range)" },
+    { "do": "peerPing", "peer": "Bjornita", "dx": 5, "dz": 5 },
+    { "do": "check", "check": "chatSeen", "from": "Bjornita", "type": "ping", "label": "player 2's map ping arrives" },
+    { "do": "screenshot", "name": "chat-p2-lines", "clean": false },
+
+    { "do": "chat", "text": "/s hi Bjornita" },
+    { "do": "check", "check": "chatSeen", "from": "me", "type": "shout", "contains": "hi Bjornita", "label": "player 1 shouts with /s: in their own chat" },
+    { "do": "check", "check": "peerHeard", "peer": "Bjornita", "from": "me", "type": "shout", "contains": "hi Bjornita", "label": "player 2 hears player 1's shout" },
+    { "do": "chat", "text": "just talking" },
+    { "do": "check", "check": "peerHeard", "peer": "Bjornita", "from": "me", "type": "say", "contains": "just talking", "label": "player 2 hears player 1 say" },
+
+    { "do": "peerChat", "peer": "Bjornita", "text": "/wave" },
+    { "do": "check", "check": "emote", "who": "Bjornita", "expect": "wave", "label": "player 2 waves with /wave" },
+    { "do": "chat", "text": "/cheer" },
+    { "do": "check", "check": "emote", "who": "me", "expect": "cheer", "label": "player 1 cheers with /cheer" },
+    { "do": "peerLeave", "peer": "Bjornita" }
+  ]
+}

@@ -10,17 +10,20 @@ namespace DrakesTestLab.Automation;
 
 /// <summary>
 /// Steps and checks for virtual players (<see cref="VirtualPeers"/>): another "client" connected to the test world that a
-/// test controls. Steps: peerJoin, peerLeave, peerMove, peerRpc, peerOwn, peerSet, peerClear.
-/// Checks: peerReceived, peerConnected, zdoOwner.
+/// test controls. Steps: peerJoin, peerLeave, peerMove, peerRpc, peerOwn, peerSet, peerClear, peerMirror, peerPose, peerEquip.
+/// Checks: peerReceived, peerConnected, zdoOwner, peerAnim. Chat (<see cref="ChatSteps"/>): chat, peerChat, peerEmote,
+/// peerPing, chatClear; checks chatSeen, peerHeard, emote.
 /// </summary>
 internal static class PeerSteps
 {
-    public static readonly string[] StepNames = { "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear" };
-    public static readonly string[] CheckNames = { "peerReceived", "peerConnected", "zdoOwner" };
+    public static readonly string[] StepNames = { "peerJoin", "peerLeave", "peerMove", "peerRpc", "peerOwn", "peerSet", "peerClear", "peerMirror", "peerPose", "peerEquip" };
+    public static readonly string[] CheckNames = { "peerReceived", "peerConnected", "zdoOwner", "peerAnim" };
 
     private static Player P => Player.m_localPlayer ?? throw new StepFailed("no player");
 
-    public static bool Handles(string action) => StepNames.Any(n => n.Equals(action, StringComparison.OrdinalIgnoreCase));
+    public static bool Handles(string action) =>
+        StepNames.Any(n => n.Equals(action, StringComparison.OrdinalIgnoreCase)) || ChatSteps.StepNames.Any(n => n.Equals(action, StringComparison.OrdinalIgnoreCase))
+        || PvpSteps.StepNames.Any(n => n.Equals(action, StringComparison.OrdinalIgnoreCase));
 
     public static IEnumerator? Execute(string action, Dictionary<string, object?> step, RunContext ctx)
     {
@@ -69,6 +72,97 @@ internal static class PeerSteps
             case "peerset":
                 PeerSet(step, ctx);
                 return Frames(1);
+            case "peermirror":
+            {
+                // her character copies yours every frame (pose, equipment, facing) until "on": false; "face": same / me / degrees
+                var vp = Need(step.First("peer", "name"));
+                if (step.Bool("on", true))
+                {
+                    PeerPose.StartMirror(vp, step.Str("face", "same"), step.Bool("equipment", true));
+                    ctx.Log($"  {vp.Name} mirrors you (face {step.Str("face", "same")})");
+                }
+                else
+                {
+                    PeerPose.StopMirror(vp);
+                    ctx.Log($"  {vp.Name} stopped mirroring");
+                }
+                return Frames((int)step.Num("frames", 3f));
+            }
+            case "peerpose":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {vp.Name} pose: {PeerPose.Pose(vp, step)}");
+                return Frames((int)step.Num("frames", 3f));
+            }
+            case "chat":
+            {
+                // you type into chat and press Enter: "/s hi", "/w hi", "/wave", a mod's command, or plain text
+                var text = step.First("text", "say");
+                ChatSteps.Type(text);
+                ctx.Log($"  you: {text}");
+                return Frames((int)step.Num("frames", 5f));
+            }
+            case "peerchat":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {vp.Name}: {ChatSteps.PeerType(vp, step.First("text", "say"))}");
+                return Frames((int)step.Num("frames", 5f));
+            }
+            case "peeremote":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {vp.Name}: {ChatSteps.Emote(vp, step.First("emote", "name"), step.Bool("stop"))}");
+                return Frames((int)step.Num("frames", 5f));
+            }
+            case "peerping":
+            {
+                var vp = Need(step.First("peer", "name"));
+                var target = step.First("to", "target");
+                var at = target.Length > 0
+                    ? (Targets.Find(ctx, target) ?? throw new StepFailed($"'{target}' not found")).transform.position
+                    : Targets.PointFrom(step, P.transform.position);
+                ctx.Log($"  {vp.Name}: {ChatSteps.Ping(vp, at)}");
+                return Frames((int)step.Num("frames", 5f));
+            }
+            case "pvp":
+                ctx.Log($"  {PvpSteps.SetMine(step.Bool("on", true))}");
+                return Frames(3);
+            case "peerpvp":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {PvpSteps.SetHers(vp, step.Bool("on", true))}");
+                return Frames(3);
+            }
+            case "attack":
+                // you swing at "target": a tag, an object, or a virtual player's name (default: player 2)
+                return PvpSteps.Attack(step, ctx, AttackTarget(step.First("target", "peer"), ctx));
+            case "peerattack":
+            {
+                var vp = Need(step.First("peer", "name"));
+                var t = step.First("target", "at");
+                var target = t.Length == 0 || t.Equals("me", StringComparison.OrdinalIgnoreCase) ? P.gameObject : AttackTarget(t, ctx);
+                ctx.Log($"  {vp.Name} {PvpSteps.PeerAttack(vp, step, target)}");
+                return Wait(step.Num("wait", 0.3f) + vp.ClientSocket.Latency * 2f, ctx);
+            }
+            case "peerhealth":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {PvpSteps.SetHealth(vp, step)}");
+                return Frames(3);
+            }
+            case "chatclear":
+            {
+                ChatSteps.Log.Clear();
+                foreach (var vp in VirtualPeers.All)
+                    vp.Inbox.Clear();
+                return null;
+            }
+            case "peerequip":
+            {
+                var vp = Need(step.First("peer", "name"));
+                ctx.Log($"  {vp.Name} equips: {PeerPose.Equip(vp, step)}");
+                return Frames((int)step.Num("frames", 3f));
+            }
             case "peerclear":
             {
                 var name = step.First("peer", "name");
@@ -83,6 +177,23 @@ internal static class PeerSteps
         }
 
         throw new StepFailed($"unknown peer step '{action}'");
+    }
+
+    private static GameObject AttackTarget(string name, RunContext ctx)
+    {
+        if (name.Length == 0)
+            name = TestLabConfig.Instance.Player2.Value;
+        if (VirtualPeers.Find(name) is { } vp)
+            return vp.Puppet ?? throw new StepFailed($"{vp.Name}'s character is not in the world");
+        return Targets.Find(ctx, name) ?? throw new StepFailed($"'{name}' not found");
+    }
+
+    private static IEnumerator Wait(float seconds, RunContext ctx)
+    {
+        var until = Time.realtimeSinceStartup + seconds;
+        yield return null;
+        while (Time.realtimeSinceStartup < until && !ctx.TimedOut)
+            yield return null;
     }
 
     private static IEnumerator Frames(int n)
@@ -176,12 +287,26 @@ internal static class PeerSteps
 
     // ------------------------------------------------------------------ checks
 
-    public static bool HandlesCheck(string kind) => CheckNames.Any(n => n.Equals(kind, StringComparison.OrdinalIgnoreCase));
+    public static bool HandlesCheck(string kind) =>
+        CheckNames.Any(n => n.Equals(kind, StringComparison.OrdinalIgnoreCase)) || ChatSteps.CheckNames.Any(n => n.Equals(kind, StringComparison.OrdinalIgnoreCase))
+        || PvpSteps.CheckNames.Any(n => n.Equals(kind, StringComparison.OrdinalIgnoreCase));
 
     public static (bool, string) Check(string kind, Dictionary<string, object?> a, RunContext ctx)
     {
         switch (kind.ToLowerInvariant())
         {
+            case "pvp":
+                return PvpSteps.PvpCheck(a);
+            case "health":
+                return PvpSteps.HealthCheck(a);
+            case "chatseen":
+                return ChatSteps.Seen(a);
+            case "peerheard":
+                return ChatSteps.Heard(Need(a.First("peer", "name")), a);
+            case "emote":
+                return ChatSteps.EmoteCheck(a);
+            case "peeranim":
+                return PeerPose.Check(Need(a.First("peer", "name")), a);
             case "peerconnected":
             {
                 var name = a.First("peer", "name");

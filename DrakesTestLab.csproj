@@ -251,6 +251,9 @@
     <Compile Include="Automation\VirtualPeers.cs" />
 
     <Compile Include="Automation\PeerSteps.cs" />
+    <Compile Include="Automation\PeerPose.cs" />
+    <Compile Include="Automation\ChatSteps.cs" />
+    <Compile Include="Automation\PvpSteps.cs" />
 
     <Compile Include="Automation\Asserts.cs" />
 

@@ -26,6 +26,12 @@ internal sealed class LoopSocket : ISocket
     /// <summary>What GetSendQueueSize reports. A large value stops the server streaming world data (ZDOs) to this end.</summary>
     public int ReportedQueueSize;
 
+    /// <summary>
+    /// What GetHostName reports: for a real connection, the platform user id the server lists the player under
+    /// (ZNet.UpdatePlayerList). Without a valid one, the game refuses to send that player chat ("Failed to send chat message").
+    /// </summary>
+    public string HostName = "";
+
     private LoopSocket(string name) => _name = name;
 
     public static (LoopSocket Server, LoopSocket Client) Pair(string name)
@@ -82,7 +88,7 @@ internal sealed class LoopSocket : ISocket
     public ISocket? Accept() => null;
     public int GetHostPort() => 0;
     public bool Flush() => true;
-    public string GetHostName() => _name;
+    public string GetHostName() => HostName.Length > 0 ? HostName : _name;
     public void VersionMatch() { }
 }
 
@@ -115,6 +121,10 @@ internal sealed class VirtualPeer
     public ZRpc ClientRpc = null!;
     public ZDO? PuppetZdo;
     public readonly List<PeerMessage> Inbox = new();
+    /// <summary>Killed (recorded instead of played out: her death would run on this game). peerHealth clears it.</summary>
+    public bool Downed;
+    /// <summary>ZDO keys peerPose wrote on the puppet (what "clear" removes).</summary>
+    public readonly HashSet<int> PoseKeys = new();
 
     /// <summary>
     /// Answer like a second client: RPCs routed to this player for objects they own run through the same mod code here,
@@ -217,7 +227,13 @@ internal static class VirtualPeers
             ProxiedZdo = zdo;
             HandedTo = null;
             if (puppet != null)
+            {
                 Player.m_localPlayer = puppet;
+                // state her own client keeps on its Player object, not read back from the ZDO while it owns her
+                // (Player.IsPVPEnabled returns m_pvp for the owner): take it from her character's ZDO
+                if (vp.PuppetZdo != null)
+                    PuppetPvp?.SetValue(puppet, vp.PuppetZdo.GetBool(ZDOVars.s_pvp));
+            }
             zdo.SetOwnerInternal(local); // IsOwner() is true for their client (no owner revision: nothing really changed hands)
             data.m_parameters.SetPos(0);
             view.HandleRoutedRPC(data);
@@ -262,6 +278,7 @@ internal static class VirtualPeers
         serverSocket.DropRate = drop;
         clientSocket.DropRate = drop;
         serverSocket.ReportedQueueSize = streamWorld ? 0 : 100000;
+        serverSocket.HostName = PlatformHostName(who.Id);
 
         var peer = new ZNetPeer(serverSocket, false);
         OnNewConnection.Invoke(ZNet.instance, new object[] { peer });
@@ -281,6 +298,8 @@ internal static class VirtualPeers
         // what ZNet.RPC_PeerInfo sets for a client that passed the version/password checks
         peer.m_uid = vp.Uid;
         peer.m_playerName = who.Name;
+        // what a real client's server-synced data carries: the name the player list shows for them
+        peer.m_serverSyncedPlayerData["platformDisplayName"] = who.Name;
         PeerPlayerId?.SetValue(peer, who.Id); // newer games only
         peer.m_refPos = pos;
 
@@ -315,7 +334,9 @@ internal static class VirtualPeers
             pos.y = ZoneSystem.instance.GetGroundHeight(pos);
         var hash = "Player".GetStableHashCode();
         var prefab = ZNetScene.instance.GetPrefab(hash) ?? throw new StepFailed("no Player prefab");
-        var zdo = ZDOMan.instance.CreateNewZDO(pos, hash);
+        // under her own user id, like a character her client created: the game addresses a player's chat and other
+        // per-player messages to the user id inside their character's ZDOID (PlayerInfo.m_characterID.UserID)
+        var zdo = CreateOwnZdo(vp.Uid, pos, hash);
         // what ZNetView.Awake would set for the owner (CreateNewZDO leaves the prefab empty: the game deletes such ZDOs)
         var view = prefab.GetComponent<ZNetView>();
         zdo.SetPrefab(hash);
@@ -340,6 +361,36 @@ internal static class VirtualPeers
         return zdo;
     }
 
+    /// <summary>A Steam id for a virtual player (a fixed offset from Steam's base id plus their player id), unique per name.</summary>
+    public static ulong SteamIdOf(long playerId) => 76561197960265728UL + (ulong)Math.Abs(playerId);
+
+    private static readonly FieldInfo? PuppetPvp = AccessTools.Field(typeof(Player), "m_pvp");
+
+    private static readonly FieldInfo? OnlineBackendField = AccessTools.Field(typeof(ZNet), "m_onlineBackend");
+
+    /// <summary>The host name a real connection of this backend reports: a bare Steam id (Steamworks) or "Steam_id" (PlayFab).</summary>
+    private static string PlatformHostName(long playerId)
+    {
+        var id = SteamIdOf(playerId).ToString(CultureInfo.InvariantCulture);
+        var backend = ZNet.instance != null ? OnlineBackendField?.GetValue(ZNet.instance)?.ToString() ?? "" : "";
+        return backend == "PlayFab" ? "Steam_" + id : id;
+    }
+
+    private static readonly MethodInfo? CreateZdoById = AccessTools.Method(typeof(ZDOMan), "CreateNewZDO", new[] { typeof(ZDOID), typeof(Vector3), typeof(int) });
+
+    private static ZDO CreateOwnZdo(long user, Vector3 pos, int prefabHash)
+    {
+        if (CreateZdoById == null)
+            return ZDOMan.instance.CreateNewZDO(pos, prefabHash); // older game: falls back to a host id (her chat then reaches only the host)
+        for (uint n = 1; n < 100000; n++)
+        {
+            var id = new ZDOID(user, n);
+            if (ZDOMan.instance.GetZDO(id) == null)
+                return (ZDO)CreateZdoById.Invoke(ZDOMan.instance, new object[] { id, pos, prefabHash });
+        }
+        throw new StepFailed("no free ZDO id for the virtual player's character");
+    }
+
     public static void Move(VirtualPeer vp, Vector3 pos)
     {
         if (ZoneSystem.instance != null)
@@ -358,6 +409,7 @@ internal static class VirtualPeers
     public static void Leave(VirtualPeer vp, bool removePuppet = true)
     {
         All.Remove(vp);
+        PeerPose.Forget(vp);
         try
         {
             if (ZNet.instance != null && ZNet.instance.GetPeers().Contains(vp.ServerPeer))
@@ -410,6 +462,13 @@ internal static class VirtualPeers
                     All.RemoveAt(i);
                 }
             }
+        }
+
+        // after the game's own updates: a mirroring puppet takes this frame's state of your character
+        private void LateUpdate()
+        {
+            PeerPose.Tick();
+            PvpSteps.WatchDeaths();
         }
     }
 

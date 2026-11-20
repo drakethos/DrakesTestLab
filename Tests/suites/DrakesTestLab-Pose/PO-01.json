@@ -1,0 +1,175 @@
+{
+  "name": "PO-01 two-client poses: player 2 posed, equipped and emoting, then player 2 mirroring player 1's emote",
+  "description": "What one client sees of the other's pose, without a second game. Player 2 (Bjornita) is a virtual client: peerPose / peerEquip drive her character, peerMirror makes her copy player 1 so player 1's pose can be seen from outside, as another client renders it.",
+  "timeout": 180,
+  "steps": [
+    {
+      "do": "clearInventory"
+    },
+    {
+      "do": "teleport",
+      "dx": 0.01,
+      "dz": 0,
+      "yaw": 0
+    },
+    {
+      "do": "peerJoin",
+      "name": "Bjornita",
+      "dx": 0,
+      "dz": 3,
+      "as": "bjornita"
+    },
+    {
+      "do": "check",
+      "check": "peerConnected",
+      "peer": "Bjornita",
+      "label": "player 2 is connected"
+    },
+    {
+      "do": "peerEquip",
+      "peer": "Bjornita",
+      "right": "Club",
+      "left": "ShieldWood"
+    },
+    {
+      "do": "peerPose",
+      "peer": "Bjornita",
+      "bool": {
+        "blocking": true
+      }
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "blocking",
+      "expect": true,
+      "label": "player 2's block pose reaches player 1"
+    },
+    {
+      "do": "screenshot",
+      "name": "pose-p2-blocking",
+      "clean": true
+    },
+    {
+      "do": "peerPose",
+      "peer": "Bjornita",
+      "clear": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.4
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "blocking",
+      "expect": false,
+      "label": "clearing the pose returns player 2 to idle"
+    },
+    {
+      "do": "peerEquip",
+      "peer": "Bjornita",
+      "right": "",
+      "left": ""
+    },
+    {
+      "do": "peerEmote",
+      "peer": "Bjornita",
+      "emote": "sit"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.8
+    },
+    {
+      "do": "check",
+      "check": "emote",
+      "who": "Bjornita",
+      "expect": "sit",
+      "label": "player 2 sits (her emote is synced)"
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "emote_sit",
+      "expect": true,
+      "label": "player 1 sees player 2 sitting"
+    },
+    {
+      "do": "screenshot",
+      "name": "pose-p2-sit",
+      "clean": true
+    },
+    {
+      "do": "peerEmote",
+      "peer": "Bjornita",
+      "stop": true
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "emote_sit",
+      "expect": false,
+      "label": "player 2 stands up"
+    },
+    {
+      "do": "give",
+      "prefab": "SwordBronze",
+      "equip": true
+    },
+    {
+      "do": "peerMirror",
+      "peer": "Bjornita",
+      "face": "me"
+    },
+    {
+      "do": "chat",
+      "text": "/sit"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.8
+    },
+    {
+      "do": "check",
+      "check": "emote",
+      "who": "me",
+      "expect": "sit",
+      "label": "player 1 sits from the chat command"
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "emote_sit",
+      "expect": true,
+      "label": "player 1's sit is seen on the mirror"
+    },
+    {
+      "do": "screenshot",
+      "name": "pose-p1-mirrored-sit",
+      "clean": true
+    },
+    {
+      "do": "peerMirror",
+      "peer": "Bjornita",
+      "on": false
+    },
+    {
+      "do": "peerLeave",
+      "peer": "Bjornita"
+    }
+  ]
+}

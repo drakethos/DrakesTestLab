@@ -1,0 +1,37 @@
+{
+  "name": "PV-01 PvP: hits between player 1 and player 2 only land when both have PvP on",
+  "description": "Player 2 (Bjornita) is a virtual client 1.6 m in front of you. Your attacks use the game's attack code with a real weapon; hers send what her client's attack would send. The receiving character applies the game's PvP rule.",
+  "timeout": 200,
+  "steps": [
+    { "do": "clearInventory" },
+    { "do": "teleport", "dx": 0.01, "dz": 0, "yaw": 0 },
+    { "do": "peerJoin", "name": "Bjornita", "dx": 0, "dz": 1.6, "as": "bjornita" },
+    { "do": "peerHealth", "peer": "Bjornita", "max": 200, "health": 200 },
+    { "do": "pvp", "on": false },
+    { "do": "peerPvp", "peer": "Bjornita", "on": false },
+    { "do": "check", "check": "pvp", "who": "me", "expect": false, "label": "player 1 PvP off" },
+    { "do": "check", "check": "pvp", "who": "Bjornita", "expect": false, "label": "player 2 PvP off" },
+
+    { "do": "attack", "target": "Bjornita", "weapon": "Club" },
+    { "do": "check", "check": "health", "who": "Bjornita", "hurt": false, "label": "PvP off: player 1's club does not hurt player 2" },
+    { "do": "peerAttack", "peer": "Bjornita", "weapon": "Club" },
+    { "do": "check", "check": "health", "who": "me", "hurt": false, "label": "PvP off: player 2's club does not hurt player 1" },
+
+    { "do": "pvp", "on": true },
+    { "do": "peerPvp", "peer": "Bjornita", "on": true },
+    { "do": "check", "check": "pvp", "who": "Bjornita", "expect": true, "label": "player 2 PvP on" },
+    { "do": "wait", "seconds": 1.2 },
+    { "do": "attack", "target": "Bjornita", "weapon": "Club" },
+    { "do": "check", "check": "health", "who": "Bjornita", "hurt": true, "label": "PvP on: player 1's club hurts player 2" },
+    { "do": "screenshot", "name": "pvp-p1-hits-p2", "clean": true },
+    { "do": "peerAttack", "peer": "Bjornita", "weapon": "Club" },
+    { "do": "check", "check": "health", "who": "me", "hurt": true, "label": "PvP on: player 2's club hurts player 1" },
+
+    { "do": "peerHealth", "peer": "Bjornita", "health": 5 },
+    { "do": "attack", "target": "Bjornita", "weapon": "Club" },
+    { "do": "check", "check": "health", "who": "Bjornita", "downed": true, "label": "a lethal hit downs player 2 (recorded, the game is not respawned)" },
+    { "do": "check", "check": "health", "who": "me", "min": 1, "label": "player 1 is still alive" },
+    { "do": "pvp", "on": false },
+    { "do": "peerLeave", "peer": "Bjornita" }
+  ]
+}

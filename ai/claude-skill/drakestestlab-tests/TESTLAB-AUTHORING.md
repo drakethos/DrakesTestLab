@@ -155,7 +155,7 @@ owner check, `as(who, steps)`.
 | `give` | `prefab`, `count`, `quality`, `equip`, `crafter`; or `materialsFor` (+ `count`, `quality`) | Adds items. Without `crafter` they are unowned (like loot). `materialsFor` gives an item recipe's or a building piece's cost (pair with `craft` `"free": false`) |
 | `spawn` | `prefab`, `dx`/`dz` or `x`/`z`, `owner`, `as` (tag), `count`, `level`, `yaw`, `keep`; wards: `enabled`, `permitted`, `radius` | Places pieces (with owner), creatures, wards |
 | `playAs` | `who`: `me`, `Alice`, `Amy`, `Bob`, `Carol`, `Bjornita`, any name, `Name:12345` | Become another player (player id + name change; ownership and wards follow) |
-| `peerJoin`, `peerRpc`, `peerOwn`, `peerSet`, `peerMove`, `peerClear`, `peerLeave` | see [Virtual players](#virtual-players-a-second-client) | A second client (Bjornita) next to you |
+| `peerJoin`, `peerRpc`, `peerOwn`, `peerSet`, `peerMove`, `peerClear`, `peerLeave`, `peerMirror`, `peerPose`, `peerEquip`, `chat`, `peerChat`, `peerEmote`, `peerPing`, `chatClear`, `pvp`, `peerPvp`, `attack`, `peerAttack`, `peerHealth` | see [Virtual players](#virtual-players-a-second-client) | A second client (Bjornita) next to you |
 | `setConfig` | `values`: `{ "Section/Key": value }` (guid defaults to the suite's first required mod) or `guid`,`section`,`key`,`value` | Changes config **for this test only** |
 | `case` | `name` | Applies a case file from `cases/` (reuse complex starting states) |
 | `use` | `block`, `args` (or the args straight on the step) | Runs a block's or function's steps in place ([Blocks](#blocks-reusable-steps)); a function can also be called by its own name |
@@ -204,9 +204,26 @@ owner round trips complete.
 | `peerOwn` | `peer` (`me` = back), `target` | She owns the object, as if her client claimed it |
 | `peerSet` | `peer`, `target`, `key`, `value`, `type`, `keepOwner` | Her client writes a ZDO value (mods that write straight onto objects) |
 | `peerMove`, `peerClear`, `peerLeave` | position or `to` / - / `name` or `"*"` | Move her; forget her inbox; disconnect her (as a real client leaves) |
+| `peerMirror` | `peer`, `on` (default true), `face` (`same` / `me` / degrees), `equipment` | Her character copies yours every frame (pose, emotes, gear, facing, mod data on your player): see your own pose as another client renders it |
+| `peerPose` | `peer`, `bool` / `float` / `int` (`{"param": value}`), `trigger` / `triggers`, `speed`, `clear` | Her animator values, synced the way her client would |
+| `peerEquip` | `peer`, `right`, `left`, `chest`, `legs`, `helmet`, `shoulder`, `utility`, `trinket`, `rightBack`, `leftBack` (`""` empties) | Items in her hands and armour slots |
+| `chat` | `text` | You type into chat and press Enter: `"/s hi"`, `"/w hi"`, `"/wave"`, a mod's command, or plain text |
+| `peerChat` | `peer`, `text` | She types: plain text, `/s` `/shout`, `/w` `/whisper`, `/say`, or an emote (`/wave`, `/sit`, ...) |
+| `peerEmote`, `peerPing`, `chatClear` | `peer`, `emote` or `stop` / `peer`, position or `to` / - | Her emote; her map ping; forget the chat record and inboxes |
+| `pvp`, `peerPvp` | `on` / `peer`, `on` | Your PvP; hers (what her client's SetPVP writes) |
+| `attack` | `target` (her name, a tag), `weapon` (give + equip), `secondary` | You swing with the game's attack code; the hit goes to her client, which applies the PvP rule |
+| `peerAttack` | `peer`, `target` (default `me`), `weapon` or `damage` + `type`, `ignorePvp` | She hits: the RPC_Damage her client's attack sends |
+| `peerHealth` | `peer`, `health`, `max` | Her health (a downed player 2 is brought back) |
 
 Checks: `peerReceived` (`method`, `target`, `args` + `types` with `"*"`, `count` at least / `max`; `"max": 0` = must not
 arrive), `peerConnected`, `zdoOwner` (`me`, a virtual player, `none`: which client owns it, not who built it).
+
+Pose and chat checks: `peerAnim` (`peer`, then `param` + `expect` / `min` / `max`, or `state`, or `clip` text: what her
+animator is really doing), `chatSeen` (what reached YOUR chat: `from` me / her name / any, `type` say / shout / whisper /
+ping, `contains`, `count` / `max`), `peerHeard` (what reached HER, same fields), `emote` (`who` me / her name, `expect` an
+emote or `none`).
+PvP checks: `pvp` (`who` me / her name, `expect`), `health` (`who`, then `expect` / `min` / `max` in HP, `hurt` true/false,
+or `downed`: player 2 reached 0 HP. Her death is recorded, not played out, since it would run on this game).
 
 Good network tests:
 - the owner refuses a stranger's request;

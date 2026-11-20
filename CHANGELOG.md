@@ -24,6 +24,20 @@
   saved spawn point, so the game waited for the temple forever. After 3 s it now spawns at the world centre
   (`[Bootstrap] SpawnFallback`, on by default). `SkipIntro` now drops the Valkyrie intro before it starts, instead of
   after a spawn that may never come.
+- **Two-client poses without a second game.** Player 2's character used to stand idle: no client wrote her animator
+  state or gear. `peerMirror` makes her copy player 1 every frame (pose, emotes, equipment, facing, mod data on the
+  player) so you see your own pose as another client renders it; `peerPose` / `peerEquip` drive her animator and gear;
+  check `peerAnim` asserts what her animator really does (parameter, state or clip). Suite `DrakesTestLab-Pose` (PO-01).
+- **Chat both ways.** `chat` types into your chat like pressing Enter (`/s`, `/w`, emotes, any mod's command), `peerChat`
+  makes player 2 say, shout (`/s`), whisper (`/w`) or emote through the same messages a real client sends, plus
+  `peerEmote`, `peerPing` and `chatClear`. Checks `chatSeen` (your chat), `peerHeard` (hers) and `emote`. Player 2's
+  character is now created under her own user id and her connection reports a platform id, as a real client's does:
+  before, the game sent your chat back to you and refused to address her. Suite `DrakesTestLab-Chat` (CH-01).
+- **PvP between player 1 and player 2.** `pvp` / `peerPvp` toggle each side; `attack` swings your weapon with the game's
+  attack code at her, `peerAttack` makes her hit you (or anything) the way her client's attack would; `peerHealth` sets
+  her health. Checks `pvp` and `health` (`hurt`, HP range, `downed`). Her PvP flag is now taken from her character
+  before her client handles a hit (the owner's PvP answer comes from Player.m_pvp, which only her client would set), and
+  her death is recorded instead of played out on this game. Suite `DrakesTestLab-Pvp` (PV-01).
 
 ## 0.6.1
 
