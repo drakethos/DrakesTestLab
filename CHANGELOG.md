@@ -38,6 +38,11 @@
   her health. Checks `pvp` and `health` (`hurt`, HP range, `downed`). Her PvP flag is now taken from her character
   before her client handles a hit (the owner's PvP answer comes from Player.m_pvp, which only her client would set), and
   her death is recorded instead of played out on this game. Suite `DrakesTestLab-Pvp` (PV-01).
+- The state reset between tests now also stands you up (ends an emote or crouch), turns PvP off and clears the chat
+  record, so a pose or PvP left by one test no longer blocks the next one's moves and attacks.
+- Config hot reload runs on the main thread: the file watcher's event comes from a background thread, and reloading
+  there threw (`Config reload failed: NullReferenceException`) whenever a suite's config overrides were written, which
+  failed SelfTest 11's no-errors check.
 
 ## 0.6.1
 

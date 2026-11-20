@@ -10,6 +10,23 @@ namespace DrakesTestLab.Bootstrap;
 /// </summary>
 internal static class StateReset
 {
+    private static readonly System.Reflection.MethodInfo? StopEmoteMethod = HarmonyLib.AccessTools.Method(typeof(Player), "StopEmote");
+    private static readonly System.Reflection.MethodInfo? SetCrouchMethod = HarmonyLib.AccessTools.Method(typeof(Player), "SetCrouch");
+
+    /// <summary>Stands the player up: ends an emote (Player.StopEmote, protected) and a crouch.</summary>
+    private static void StopPose(Player player)
+    {
+        try
+        {
+            StopEmoteMethod?.Invoke(player, null);
+            SetCrouchMethod?.Invoke(player, new object[] { false });
+        }
+        catch (Exception ex)
+        {
+            TestLabPlugin.Log?.LogDebug($"Could not stand the player up: {ex.InnerException?.Message ?? ex.Message}");
+        }
+    }
+
     public static void Run()
     {
         var player = Player.m_localPlayer;
@@ -41,6 +58,11 @@ internal static class StateReset
         Off(player.NoCostCheat(), "nocost");
         if (TestLabConfig.Instance.CreaturesHostile.Value)
             TestControlsApplier.ToggleHostile();
+
+        // a pose, a held emote (sit) or PvP left on by the last test would block the next one's moves and attacks
+        StopPose(player);
+        player.SetPVP(false);
+        Automation.ChatSteps.Log.Clear();
 
         // body and belongings
         player.UnequipAllItems();

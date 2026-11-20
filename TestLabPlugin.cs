@@ -54,6 +54,9 @@ public partial class TestLabPlugin : BaseUnityPlugin
         _harmony.CreateClassProcessor(typeof(Automation.ModMessageCard_Patch)).Patch();
     }
 
+    // a config file change seen by the hot-reload watcher (off the main thread) is applied here
+    private void Update() => ConfigHotReload.RunPending();
+
     private void OnDestroy()
     {
         _hotReload?.Dispose();

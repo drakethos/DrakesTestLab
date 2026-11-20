@@ -39,6 +39,19 @@ internal sealed class ConfigHotReload : IDisposable
             return;
 
         _lastReload = now;
+        // FileSystemWatcher raises this on a thread-pool thread; the reload touches Unity and game objects (the player,
+        // the controls), which only the main thread may: hand it to the main thread (TestLabPlugin.Update)
+        _pending = true;
+    }
+
+    private static volatile bool _pending;
+
+    /// <summary>Runs a reload the watcher asked for, on the main thread. Called every frame by the plugin.</summary>
+    public static void RunPending()
+    {
+        if (!_pending)
+            return;
+        _pending = false;
         ReloadNow();
     }
 

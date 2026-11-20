@@ -163,6 +163,28 @@
       "clean": true
     },
     {
+      "do": "reset"
+    },
+    {
+      "do": "wait",
+      "seconds": 0.6
+    },
+    {
+      "do": "check",
+      "check": "emote",
+      "who": "me",
+      "expect": "none",
+      "label": "player 1 stands up again"
+    },
+    {
+      "do": "check",
+      "check": "peerAnim",
+      "peer": "Bjornita",
+      "param": "emote_sit",
+      "expect": false,
+      "label": "the mirror stands up with player 1"
+    },
+    {
       "do": "peerMirror",
       "peer": "Bjornita",
       "on": false
