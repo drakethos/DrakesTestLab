@@ -52,6 +52,9 @@ pose and animate, mirror you, chat, emote, ping and fight, all through the messa
   `"finish": false` to return mid-swing so a check can catch the animation while it plays.
 - Local builds copy the shipped templates (example suites, cases, the test world) into the dev profile, so a new example
   suite shows up without installing the Thunderstore zip.
+- The release build compiles against the pre-1.0 stub references again: the clipboard and player 2 read raw ZDO data
+  (ZDOExtraData.GetData), newer ZDO keys and ItemDrop.SaveToZDO by reflection or by the live game's key names, so the
+  release DLL has no reference the live game lacks (caught by the new cross-platform pre-release check).
 
 ## 0.6.1
 

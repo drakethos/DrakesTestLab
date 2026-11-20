@@ -46,10 +46,10 @@ internal static class PeerPose
 
     private static readonly HashSet<int> EquipmentKeys = new()
     {
-        ZDOVars.s_rightItem, ZDOVars.s_rightItemQuality, ZDOVars.s_leftItem, ZDOVars.s_leftItemVariant, ZDOVars.s_leftItemQuality,
-        ZDOVars.s_rightBackItem, ZDOVars.s_rightBackItemQuality, ZDOVars.s_leftBackItem, ZDOVars.s_leftBackItemVariant,
-        ZDOVars.s_leftBackItemQuality, ZDOVars.s_chestItem, ZDOVars.s_legItem, ZDOVars.s_helmetItem, ZDOVars.s_shoulderItem,
-        ZDOVars.s_shoulderItemVariant, ZDOVars.s_shoulderItemQuality, ZDOVars.s_utilityItem, ZDOVars.s_trinketItem
+        ZDOVars.s_rightItem, Gear.ZdoKey.RightItemQuality, ZDOVars.s_leftItem, ZDOVars.s_leftItemVariant, Gear.ZdoKey.LeftItemQuality,
+        ZDOVars.s_rightBackItem, Gear.ZdoKey.RightBackItemQuality, ZDOVars.s_leftBackItem, ZDOVars.s_leftBackItemVariant,
+        Gear.ZdoKey.LeftBackItemQuality, ZDOVars.s_chestItem, ZDOVars.s_legItem, ZDOVars.s_helmetItem, ZDOVars.s_shoulderItem,
+        ZDOVars.s_shoulderItemVariant, Gear.ZdoKey.ShoulderItemQuality, ZDOVars.s_utilityItem, Gear.ZdoKey.TrinketItem
     };
 
     public static bool IsMirroring(VirtualPeer vp) => Mirrors.ContainsKey(vp);
@@ -100,7 +100,8 @@ internal static class PeerPose
 
     private static void Copy(ZDO src, ZDO dst, bool equipment)
     {
-        ZDOExtraData.GetData(src.m_uid, out var floats, out var vecs, out var quats, out var ints, out var longs, out var strings, out _, out _);
+        var raw = Gear.ZdoRaw.Get(src.m_uid);
+        var (floats, vecs, quats, ints, longs, strings) = (raw.Floats, raw.Vecs, raw.Quats, raw.Ints, raw.Longs, raw.Strings);
         bool Skip(int h) => KeepOwn.Contains(h) || (!equipment && EquipmentKeys.Contains(h));
         if (floats != null) foreach (var p in floats) if (!Skip(p.Key)) dst.Set(p.Key, p.Value);
         if (ints != null) foreach (var p in ints) if (!Skip(p.Key)) dst.Set(p.Key, p.Value);
@@ -154,8 +155,7 @@ internal static class PeerPose
             {
                 foreach (var key in vp.PoseKeys)
                 {
-                    ZDOExtraData.RemoveInt(zdo.m_uid, key);
-                    ZDOExtraData.RemoveFloat(zdo.m_uid, key);
+                    Gear.ZdoRaw.RemoveNumber(zdo.m_uid, key);
                 }
                 done.Add($"cleared {vp.PoseKeys.Count}");
                 vp.PoseKeys.Clear();
@@ -184,7 +184,7 @@ internal static class PeerPose
         }
         if (step.Has("speed"))
         {
-            zdo.Set(ZDOVars.s_animationSpeed, step.Num("speed", 1f));
+            zdo.Set(Gear.ZdoKey.AnimationSpeed, step.Num("speed", 1f));
             done.Add($"speed={step.Num("speed", 1f)}");
         }
         var triggers = new List<string>();
@@ -205,7 +205,7 @@ internal static class PeerPose
     {
         ("right", ZDOVars.s_rightItem), ("left", ZDOVars.s_leftItem), ("rightBack", ZDOVars.s_rightBackItem), ("leftBack", ZDOVars.s_leftBackItem),
         ("chest", ZDOVars.s_chestItem), ("legs", ZDOVars.s_legItem), ("helmet", ZDOVars.s_helmetItem), ("shoulder", ZDOVars.s_shoulderItem),
-        ("utility", ZDOVars.s_utilityItem), ("trinket", ZDOVars.s_trinketItem)
+        ("utility", ZDOVars.s_utilityItem), ("trinket", Gear.ZdoKey.TrinketItem)
     };
 
     /// <summary>{ "right": "prefab", "left": "", "chest": ..., "legs", "helmet", "shoulder", "utility", "trinket", "rightBack", "leftBack" }: "" or null empties a slot.</summary>
@@ -224,7 +224,7 @@ internal static class PeerPose
             done.Add($"{slot}={(prefab.Length > 0 ? prefab : "(empty)")}");
         }
         if (step.Has("quality"))
-            zdo.Set(ZDOVars.s_rightItemQuality, (int)step.Num("quality", 1f));
+            zdo.Set(Gear.ZdoKey.RightItemQuality, (int)step.Num("quality", 1f));
         return done.Count > 0 ? string.Join(", ", done) : "no slots named";
     }
 

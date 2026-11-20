@@ -20,6 +20,66 @@ internal sealed class EditField
     public bool ReadOnly => Set == null;
 }
 
+/// <summary>
+/// ZDO keys newer than the pre-1.0 stub references the release build compiles against (ZDOVars has them in the live
+/// game): each is the live game's name hashed the way ZDOVars does.
+/// </summary>
+internal static class ZdoKey
+{
+    public static readonly int AnimationSpeed = "animation_speed".GetStableHashCode();
+    public static readonly int LeftBackItemQuality = "LeftBackItemQuality".GetStableHashCode();
+    public static readonly int LeftItemQuality = "LeftItemQuality".GetStableHashCode();
+    public static readonly int RightBackItemQuality = "RightBackItemQuality".GetStableHashCode();
+    public static readonly int RightItemQuality = "RightItemQuality".GetStableHashCode();
+    public static readonly int ShoulderItemQuality = "ShoulderItemQuality".GetStableHashCode();
+    public static readonly int TrinketItem = "TrinketItem".GetStableHashCode();
+}
+
+/// <summary>
+/// A ZDO's raw values (ZDOExtraData.GetData / Remove*). Called by reflection: the pre-1.0 stub references the release
+/// build compiles against do not have these, the live game does.
+/// </summary>
+internal static class ZdoRaw
+{
+    private static readonly System.Reflection.MethodInfo? GetDataMethod = AccessTools.Method(typeof(ZDOExtraData), "GetData");
+
+    public sealed class Data
+    {
+        public List<KeyValuePair<int, float>>? Floats;
+        public List<KeyValuePair<int, Vector3>>? Vecs;
+        public List<KeyValuePair<int, Quaternion>>? Quats;
+        public List<KeyValuePair<int, int>>? Ints;
+        public List<KeyValuePair<int, long>>? Longs;
+        public List<KeyValuePair<int, string>>? Strings;
+        public List<KeyValuePair<int, byte[]>>? Bytes;
+    }
+
+    public static Data Get(ZDOID id)
+    {
+        var d = new Data();
+        if (GetDataMethod == null)
+            return d;
+        var args = new object?[GetDataMethod.GetParameters().Length];
+        args[0] = id;
+        GetDataMethod.Invoke(null, args);
+        d.Floats = args[1] as List<KeyValuePair<int, float>>;
+        d.Vecs = args[2] as List<KeyValuePair<int, Vector3>>;
+        d.Quats = args[3] as List<KeyValuePair<int, Quaternion>>;
+        d.Ints = args[4] as List<KeyValuePair<int, int>>;
+        d.Longs = args[5] as List<KeyValuePair<int, long>>;
+        d.Strings = args[6] as List<KeyValuePair<int, string>>;
+        d.Bytes = args.Length > 7 ? args[7] as List<KeyValuePair<int, byte[]>> : null;
+        return d;
+    }
+
+    /// <summary>Removes an int and a float value under this key (ZDOExtraData.RemoveInt / RemoveFloat).</summary>
+    public static void RemoveNumber(ZDOID id, int key)
+    {
+        foreach (var name in new[] { "RemoveInt", "RemoveFloat" })
+            AccessTools.Method(typeof(ZDOExtraData), name)?.Invoke(null, new object[] { id, key });
+    }
+}
+
 /// <summary>One raw value in an object's ZDO (the networked save data every component reads its state from).</summary>
 internal sealed class RawValue
 {
@@ -213,14 +273,24 @@ internal static class ObjectEditor
     }
 
     private static readonly MethodInfo? ItemDropSave = AccessTools.Method(typeof(ItemDrop), "Save");
+    private static readonly MethodInfo? ItemDropSaveToZdo = AccessTools.Method(typeof(ItemDrop), "SaveToZDO");
 
     /// <summary>After m_itemData changed: write it to the ZDO (ItemDrop.Save is private in the live game).</summary>
     private static void SaveItem(ItemDrop drop)
     {
         if (ItemDropSave != null)
             ItemDropSave.Invoke(drop, null);
-        else if (drop.GetComponent<ZNetView>() is { } v && v.IsValid())
-            ItemDrop.SaveToZDO(drop.m_itemData, v.GetZDO());
+        else if (drop.GetComponent<ZNetView>() is { } v && v.IsValid() && ItemDropSaveToZdo != null)
+        {
+            // the static save: (item, zdo) in the stub references, (item, zdo, index = -1) in the live game
+            var ps = ItemDropSaveToZdo.GetParameters();
+            var args = new object?[ps.Length];
+            args[0] = drop.m_itemData;
+            args[1] = v.GetZDO();
+            for (var i = 2; i < ps.Length; i++)
+                args[i] = ps[i].HasDefaultValue ? ps[i].DefaultValue : -1;
+            ItemDropSaveToZdo.Invoke(null, args);
+        }
     }
 
     private static void ItemFields(Target t, List<EditField> list)
@@ -425,7 +495,8 @@ internal static class ObjectEditor
         var zdo = Zdo(t);
         if (zdo == null)
             return list;
-        ZDOExtraData.GetData(zdo.m_uid, out var floats, out var vecs, out var quats, out var ints, out var longs, out var strings, out var bytes, out _);
+        var raw = ZdoRaw.Get(zdo.m_uid);
+        var (floats, vecs, quats, ints, longs, strings, bytes) = (raw.Floats, raw.Vecs, raw.Quats, raw.Ints, raw.Longs, raw.Strings, raw.Bytes);
         void Add(char type, int hash, string text) => list.Add(new RawValue { Type = type, Hash = hash, Name = NameOf(hash), Text = text });
         if (floats != null) foreach (var kv in floats) Add('f', kv.Key, F(kv.Value));
         if (ints != null) foreach (var kv in ints) Add('i', kv.Key, kv.Value.ToString(CultureInfo.InvariantCulture));
