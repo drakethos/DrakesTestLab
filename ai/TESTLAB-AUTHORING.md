@@ -212,12 +212,14 @@ owner round trips complete.
 | `peerChat` | `peer`, `text` | She types: plain text, `/s` `/shout`, `/w` `/whisper`, `/say`, or an emote (`/wave`, `/sit`, ...) |
 | `peerEmote`, `peerPing`, `chatClear` | `peer`, `emote` or `stop` / `peer`, position or `to` / - | Her emote; her map ping; forget the chat record and inboxes |
 | `pvp`, `peerPvp` | `on` / `peer`, `on` | Your PvP; hers (what her client's SetPVP writes) |
-| `attack` | `target` (her name, a tag), `weapon` (give + equip), `secondary` | You swing with the game's attack code; the hit goes to her client, which applies the PvP rule |
+| `attack` | `target` (her name, a tag), `weapon` (give + equip), `secondary`, `finish` (false = return mid-swing so a `peerAnim` check sees it) | You swing with the game's attack code; the hit goes to her client, which applies the PvP rule |
 | `peerAttack` | `peer`, `target` (default `me`), `weapon` or `damage` + `type`, `ignorePvp` | She hits: the RPC_Damage her client's attack sends |
 | `peerHealth` | `peer`, `health`, `max` | Her health (a downed player 2 is brought back) |
 
 Checks: `peerReceived` (`method`, `target`, `args` + `types` with `"*"`, `count` at least / `max`; `"max": 0` = must not
 arrive), `peerConnected`, `zdoOwner` (`me`, a virtual player, `none`: which client owns it, not who built it).
+
+Examples to copy: suites `DrakesTestLab-Animations` (emotes, gear, your swing and bow shot through `peerMirror`), `-Pose`, `-Chat`, `-Pvp`.
 
 Pose and chat checks: `peerAnim` (`peer`, then `param` + `expect` / `min` / `max`, or `state`, or `clip` text: what her
 animator is really doing), `chatSeen` (what reached YOUR chat: `from` me / her name / any, `type` say / shout / whisper /

@@ -1,0 +1,7 @@
+{
+  "name": "DrakesTestLab-Chat",
+  "description": "Player 2 (Bjornita, a virtual second client) and you: say, shout, whisper, pings and emotes both ways. Vanilla items only.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.6.2" } ],
+  "setup": { "timeOfDay": 0.5, "freezeTime": 1 },
+  "resetBetweenTests": true
+}

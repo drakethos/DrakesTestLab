@@ -13,6 +13,28 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.7 (beta): a Player 2 who acts like one
+
+Bjornita, the virtual second player, now does what a second player does, through the same messages a real second client
+sends, so you can test multiplayer behaviour in one game:
+
+- **Animations both ways.** `peerMirror` makes her copy *your* character every frame (pose, emotes, weapon, facing):
+  swing, shoot or emote and see it exactly as another client renders it. If a mod plays an animation only on its own
+  client and never syncs it, she will not show it either, which is the multiplayer bug you want to catch. `peerPose`,
+  `peerEquip` and `peerEmote` drive *her*; the `peerAnim` check reads what her animator is really playing.
+- **Chat.** You type into chat (`/s`, `/w`, emotes, any mod's own command) and she talks back: say, shout, whisper,
+  emotes and map pings. `chatSeen` and `peerHeard` check what each side received.
+- **PvP.** Toggle PvP on either side, swing at her with your real weapon, or have her hit you. The game's own PvP rule
+  decides what lands; `health` checks the result.
+
+![You draw a bow; Bjornita, mirroring you, shows the same pose as a second client would see it](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/feature-player2-mirror-bow.png)
+
+Examples ship in the `DrakesTestLab-Animations`, `-Pose`, `-Chat` and `-Pvp` suites. Also new: the **lab glasses** sit
+on your face, and the **lab clipboard** edits what you look at (health, level, stack, text, position, any raw value) and
+copies and pastes values between objects. Full reference: [Automation on the wiki](https://github.com/drakethos/DrakesTestLab/wiki/Automation).
+
+---
+
 ## New in 0.5: how long things take
 
 Every test run now says where the time went, how smooth the game was and how much memory it used. It is all in `config/DrakesTestLab/results/` (`latest.html`, `latest.md`, `latest.json`) and in the summary the `Run-TestLabSuites.ps1` runner prints.
@@ -69,7 +91,7 @@ Details and the design: [docs/MULTIPLAYER.md](https://github.com/drakethos/Drake
 - **Discovery:** unlock every item, recipe and station, or only up to a chosen biome, or forget everything again.
 - **Bosses:** mark bosses defeated with their world key, guardian power and trophy, or hook the trophy into the nearest boss stone.
 - **Ward test bench:** spawn a ward and set its owner, on/off and permitted players, or **play as** Alice, Bob, Carol or Bjornita (or any name) to see exactly what a stranger, an owner and a permitted player can do. Ready-made scenarios: stranger's ward, I'm permitted, ward off, overlapping wards.
-- **Player 2:** connect Bjornita as a virtual second client (Wards tab or the `peerJoin` step) to test what happens between two players.
+- **Player 2:** connect Bjornita as a virtual second client (Wards tab or the `peerJoin` step) to test what happens between two players: object ownership and RPCs, her animations and yours as she sees them, chat, emotes, pings and PvP.
 - **Share the world:** because the game logs straight in, the open / public / password choices come from the config (`[Server]`) and the Session tab, so friends can join the test world through Steam.
 - **Camera aim:** the `face` and `lookAt` steps tilt the view like the mouse (`up`, `down`, `left`, `right`, `pitch`, `yawOffset`), third-person camera included, so a test can look 1.5 m up a trunk or straight down at the floor. Plain `face` stays level.
 - **Fires:** one button refuels every fire and fuel-driven cooking station, or keeps them topped up.

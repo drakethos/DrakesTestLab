@@ -1,0 +1,7 @@
+{
+  "name": "DrakesTestLab-Animations",
+  "description": "Examples: making player 2 (Bjornita, a virtual second client) play animations, and checking what one client sees of the other's animations. Vanilla items only: copy a test and swap in your own weapon, emote or animator parameters.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.6.2" } ],
+  "setup": { "timeOfDay": 0.5, "freezeTime": 1, "god": 1 },
+  "resetBetweenTests": true
+}

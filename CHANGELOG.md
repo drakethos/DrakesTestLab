@@ -1,6 +1,9 @@
 # DrakesTestLab
 
-## 0.6.2
+## 0.7.0-beta.1
+
+Beta: everything since 0.6.1 (0.6.2 was never released). Player 2 (Bjornita) can now do what a second player does:
+pose and animate, mirror you, chat, emote, ping and fight, all through the messages a real second client sends.
 
 - **Version:** the DLL's assembly and file version now come from the package version (they were stuck at 0.1.0.0), and a local
   build rewrites the dev profile's `manifest.json`, so the mod manager no longer shows the version first installed.
@@ -43,6 +46,12 @@
 - Config hot reload runs on the main thread: the file watcher's event comes from a background thread, and reloading
   there threw (`Config reload failed: NullReferenceException`) whenever a suite's config overrides were written, which
   failed SelfTest 11's no-errors check.
+- **Animation examples** (`DrakesTestLab-Animations`, shipped): A-01 emotes on player 2 (wave, point, a held sit), A-02
+  weapons in her hands and a synced shield block, A-03 your club swing and bow shot as player 2 sees them through
+  `peerMirror`. Vanilla items only: copy a test and swap in your own weapon, emote or animator parameters. `attack` takes
+  `"finish": false` to return mid-swing so a check can catch the animation while it plays.
+- Local builds copy the shipped templates (example suites, cases, the test world) into the dev profile, so a new example
+  suite shows up without installing the Thunderstore zip.
 
 ## 0.6.1
 

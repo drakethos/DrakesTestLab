@@ -1,0 +1,24 @@
+// Gear and animator parameters on player 2: what she holds, and a pose her client would sync (blocking with a shield).
+// Swap the prefabs and parameter names for your own weapon.
+{
+  "name": "A-02 weapons in hand and a synced pose on player 2",
+  "steps": [
+    { "do": "teleport", "dx": 0.01, "dz": 0, "yaw": 0 },
+    { "do": "peerJoin", "name": "Bjornita", "dx": 0, "dz": 3, "as": "bjornita" },
+
+    { "do": "peerEquip", "peer": "Bjornita", "left": "Bow" },
+    { "do": "wait", "seconds": 0.5 },
+    { "do": "screenshot", "name": "anim-bow-held", "clean": true },
+
+    { "do": "peerEquip", "peer": "Bjornita", "left": "", "right": "Club", "rightBack": "", "chest": "ArmorLeatherChest" },
+    { "do": "peerEquip", "peer": "Bjornita", "left": "ShieldWood" },
+    { "do": "peerPose", "peer": "Bjornita", "bool": { "blocking": true } },
+    { "do": "wait", "seconds": 0.6 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "param": "blocking", "expect": true, "label": "she blocks behind her shield" },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "clip": "fight idle", "label": "in the guard animation" },
+    { "do": "screenshot", "name": "anim-block", "clean": true },
+    { "do": "peerPose", "peer": "Bjornita", "clear": true },
+    { "do": "wait", "seconds": 0.5 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "param": "blocking", "expect": false, "label": "clearing the pose lowers the shield" }
+  ]
+}

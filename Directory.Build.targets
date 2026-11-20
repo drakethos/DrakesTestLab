@@ -23,6 +23,16 @@
   </Target>
   <!-- A local deploy copies the DLL into the profile but used to leave the profile's manifest.json at whatever version was
        first installed, so the mod manager showed a stale version. Rewrite it with the current one after every deploy. -->
+  <!-- The dev deploy copies the DLL but not the shipped templates (example suites, cases, the test world), so a new or
+       changed template never reached the profile unless the Thunderstore zip was installed. Copy them too. TestLab only
+       seeds suites the config folder does not have yet, so your edited copies there are never overwritten. -->
+  <Target Name="SyncTestLabProfileTemplates" AfterTargets="CopyToGaleProfile;CopyToR2Profile" Condition="'$(CI_SKIP_POST_BUILD)' == ''">
+    <ItemGroup>
+      <_TestLabShippedTemplates Include="$(TargetDir)Assets/Presets/templates/**/*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_TestLabShippedTemplates)" DestinationFiles="@(_TestLabShippedTemplates->'$(GaleModDeployPath)/Assets/Presets/templates/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(GaleModDeployPath)' != '' and Exists('$(GaleModDeployPath)')" />
+    <Copy SourceFiles="@(_TestLabShippedTemplates)" DestinationFiles="@(_TestLabShippedTemplates->'$(R2ModDeployPath)/Assets/Presets/templates/%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(R2ModDeployPath)' != '' and Exists('$(R2ModDeployPath)')" />
+  </Target>
   <Target Name="SyncTestLabProfileManifest" AfterTargets="CopyToGaleProfile;CopyToR2Profile" Condition="'$(CI_SKIP_POST_BUILD)' == ''">
     <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="WriteThunderstoreManifest" Properties="ThunderstoreManifestDir=$(GaleModDeployPath);Configuration=$(Configuration)" Condition="'$(GaleModDeployPath)' != '' and Exists('$(GaleModDeployPath)')" />
     <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="WriteThunderstoreManifest" Properties="ThunderstoreManifestDir=$(R2ModDeployPath);Configuration=$(Configuration)" Condition="'$(R2ModDeployPath)' != '' and Exists('$(R2ModDeployPath)')" />

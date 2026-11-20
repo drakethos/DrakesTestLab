@@ -1,0 +1,28 @@
+// Emotes on player 2: one-shot emotes (wave, point) play once, held ones (sit) stay until stopped. Every other client reads
+// them from her character, the same way here.
+{
+  "name": "A-01 emotes on player 2",
+  "steps": [
+    { "do": "teleport", "dx": 0.01, "dz": 0, "yaw": 0 },
+    { "do": "peerJoin", "name": "Bjornita", "dx": 0, "dz": 3, "as": "bjornita" },
+    { "do": "peerMirror", "peer": "Bjornita", "on": false },
+
+    { "do": "peerEmote", "peer": "Bjornita", "emote": "wave" },
+    { "do": "wait", "seconds": 0.4 },
+    { "do": "check", "check": "emote", "who": "Bjornita", "expect": "wave", "label": "she waves" },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "clip": "Wave", "label": "player 1 sees the wave animation" },
+    { "do": "screenshot", "name": "anim-wave", "clean": true },
+
+    { "do": "peerEmote", "peer": "Bjornita", "emote": "point" },
+    { "do": "wait", "seconds": 0.4 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "clip": "Point", "label": "and the point animation" },
+
+    { "do": "peerEmote", "peer": "Bjornita", "emote": "sit" },
+    { "do": "wait", "seconds": 1.0 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "param": "emote_sit", "expect": true, "label": "a held emote: she stays sitting" },
+    { "do": "screenshot", "name": "anim-sit", "clean": true },
+    { "do": "peerEmote", "peer": "Bjornita", "stop": true },
+    { "do": "wait", "seconds": 0.6 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "param": "emote_sit", "expect": false, "label": "and stands up when it stops" }
+  ]
+}

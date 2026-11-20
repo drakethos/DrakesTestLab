@@ -68,6 +68,14 @@ internal static class PvpSteps
         if (!me.StartAttack(character, step.Bool("secondary")))
             throw new StepFailed("attack: the game refused to start the attack (busy, no stamina, or the weapon has no such attack)");
         ctx.Log($"  you attack {Readout(target)} with {me.GetCurrentWeapon()?.m_shared.m_name}");
+        // "finish": false returns mid-swing (after "wait" seconds), so a check can catch the animation while it plays
+        if (!step.Bool("finish", true))
+        {
+            var mid = Time.realtimeSinceStartup + step.Num("wait", 0.25f);
+            while (Time.realtimeSinceStartup < mid && !ctx.TimedOut)
+                yield return null;
+            yield break;
+        }
         var until = Time.realtimeSinceStartup + step.Num("timeout", 4f);
         yield return null;
         while (me.InAttack() && Time.realtimeSinceStartup < until && !ctx.TimedOut)

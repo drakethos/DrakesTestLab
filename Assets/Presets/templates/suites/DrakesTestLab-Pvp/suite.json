@@ -1,0 +1,7 @@
+{
+  "name": "DrakesTestLab-Pvp",
+  "description": "Player 2 (Bjornita, a virtual second client) and you: PvP on and off, attacks both ways, health and a downed player 2. Vanilla items only.",
+  "requireMods": [ { "guid": "com.drakemods.testlab", "minVersion": "0.6.2" } ],
+  "setup": { "timeOfDay": 0.5, "freezeTime": 1 },
+  "resetBetweenTests": true
+}

@@ -1,0 +1,25 @@
+// What the other client sees of YOUR weapon animations: player 2 mirrors you (pose, triggers, gear) while you attack with
+// the game's own attack code. A mod animation that only plays on the attacker's own animator (never synced) does not show
+// on the mirror: that is what a real second player would miss too. "finish": false returns mid-swing so the check sees
+// the animation while it plays. Weapons that must be loaded first (crossbows) need their reload done before "attack".
+{
+  "name": "A-03 your weapon animations, as player 2 sees them",
+  "steps": [
+    { "do": "teleport", "dx": 0.01, "dz": 0, "yaw": 0 },
+    { "do": "peerJoin", "name": "Bjornita", "dx": 2, "dz": 0, "as": "bjornita" },
+    { "do": "spawn", "prefab": "woodwall", "dz": 2.2, "as": "target" },
+    { "do": "peerMirror", "peer": "Bjornita", "face": "same" },
+
+    { "do": "attack", "target": "target", "weapon": "Club", "finish": false, "wait": 0.3 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "clip": "Attack", "label": "player 2 sees your club swing" },
+    { "do": "screenshot", "name": "anim-mirror-club", "clean": true },
+
+    { "do": "give", "prefab": "ArrowWood", "count": 20 },
+    { "do": "wait", "seconds": 1.5 },
+    { "do": "attack", "target": "target", "weapon": "Bow", "finish": false, "wait": 0.4 },
+    { "do": "check", "check": "peerAnim", "peer": "Bjornita", "clip": "Bow", "label": "and your bow shot" },
+    { "do": "screenshot", "name": "anim-mirror-bow", "clean": true },
+
+    { "do": "peerMirror", "peer": "Bjornita", "on": false }
+  ]
+}
