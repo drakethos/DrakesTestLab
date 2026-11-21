@@ -1,5 +1,9 @@
 # DrakesTestLab
 
+## 0.7.0
+
+Full release of 0.7.0-beta.1: the same code, now out of beta. Everything below in 0.7.0-beta.1 applies.
+
 ## 0.7.0-beta.1
 
 Beta: everything since 0.6.1 (0.6.2 was never released). Player 2 (Bjornita) can now do what a second player does:
