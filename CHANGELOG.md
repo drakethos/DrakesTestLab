@@ -1,5 +1,12 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **Linux: the mouse works in the F9 window right away.** The game re-locks the cursor every frame, and TestLab undid the lock
+  afterwards; on Linux each lock grabbed the pointer and pulled it to the screen centre, so the window could not be used until
+  the inventory had been opened once. While the window is open TestLab now frees the cursor the way the game's own menus do and
+  the game's lock is skipped.
+
 ## 0.7.0-beta.1
 
 Beta: everything since 0.6.1 (0.6.2 was never released). Player 2 (Bjornita) can now do what a second player does:
