@@ -88,6 +88,7 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> CaseOnLoad { get; private set; } = null!;
     public ConfigEntry<bool> CaseResetFirst { get; private set; } = null!;
     public ConfigEntry<bool> AutoBuildArena { get; private set; } = null!;
+    public ConfigEntry<bool> LiftTerrainLimit { get; private set; } = null!;
     public ConfigEntry<bool> KeepWorld { get; private set; } = null!;
     public ConfigEntry<bool> KeepCharacter { get; private set; } = null!;
     public ConfigEntry<bool> FreshCharacter { get; private set; } = null!;
@@ -235,6 +236,8 @@ internal sealed class TestLabConfig
             "Reset the test state (rules, modes, inventory, skills, discovery, boss keys, wards, identity, time) before applying a test case, so cases never stack on each other.");
         c.CaseOnLoad = config.Bind("Case", "OnLoad", "",
             "Name (no .json) of a test case in config/DrakesTestLab/cases to apply on every world load.");
+        c.LiftTerrainLimit = config.Bind("World", "LiftTerrainLimit", true,
+            "On = terrain edits may move the ground far more than vanilla's +-8 m from the generated height. Needed by template worlds baked with big edits (KydlFlat's flat disk and cliffs); off = vanilla limit.");
         c.AutoBuildArena = config.Bind("Arena", "AutoBuild", true,
             "On load (when no OnLoad case is set): build the test arena and house the way Placement says (levelled spawn area, or a flat-ground search).");
         c.KeepWorld = config.Bind("Save", "KeepWorld", false,

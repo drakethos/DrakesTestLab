@@ -1,0 +1,14 @@
+baked 2026-11-15 04:49:22
+valheim 1.0.21
+world TestLab, seed TestWorld
+centre 50 1, radius 320 m, falloff 40 m, keep radius 20 m
+flat height 53.00 m (start temple ground)
+start temple (5.6, 53.0, 4.2), 44 m from the centre
+heightmaps levelled 129, largest change 36.2 m, worst rebuilt vertex off by 0.000 m, tour points 69 x 2 rounds
+objects removed 20500 (Beech_small1 x3256, Beech_small2 x3139, Rock_4 x2506, Beech1 x2474, Bush01 x2077, Pickable_Stone x1910, Pickable_Branch x847, Rock_3 x732, Pickable_Dandelion x703, Rock_7 x365), kept 207, unknown 0
+survey spread 0.00 m (min 53.00, max 53.00) over 1961 points, water 0, naturals 0
+cliff small: bottom -100,-116 | top -100,-123 | rise 3.2 m, run 3 m, measured 3.20 m (ground 53.00 -> top 56.20)
+cliff medium: bottom 0,-116 | top 0,-126 | rise 7.0 m, run 6 m, measured 7.00 m (ground 53.00 -> top 60.00)
+cliff high: bottom 100,-116 | top 100,-128 | rise 12.0 m, run 8 m, measured 12.00 m (ground 53.00 -> top 65.00)
+cliff mountain: bottom 200,-116 | top 200,-145 | rise 20.0 m, run 25 m, measured 20.00 m (ground 53.00 -> top 73.00)
+lake: centre 50,201 | water surface 30.00 m | floor 50 x 50 m, 12 m deep, measured 12.00 m (floor 18.00) | bank 20 m | at least 4 m deep within 29.6 m of the centre (x and z)

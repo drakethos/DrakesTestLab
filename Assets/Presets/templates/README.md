@@ -1,4 +1,4 @@
 # Templates
 
-- `TestLab/` - the Valheim 1.0 world folder copied to worlds_local on every launch (seed `TestWorld`). `_manifest.txt` lists exactly which files belong to it. Regenerate it with Session > Re-bake blank world template; never edit the files by hand.
+- `TestLab/` - the Valheim 1.0 world folder copied to worlds_local on every launch (seed `TestWorld`). `_manifest.txt` lists exactly which files belong to it. Since 2026-11-23 it is the **KydlFlat** bake: a 320 m flat disk at 53.00 m around the start (50, 1) with no trees, rocks or creatures, four cliffs 119 m south (small 3.2 m at x -100, medium 7 m at x 0, high 12 m at x 100, mountain 20 m at x 200) and a 12 m deep lake at (50, 201); `bake.txt` has the measurements. Its terrain edits exceed vanilla's +-8 m, so it needs `[World] LiftTerrainLimit = true` (the default). Never edit the files by hand; Session > Re-bake blank world template replaces it with a plain (unflattened) world.
 - `MasterBjorn.fch` - optional character template, only used when `[Save] FreshCharacter = false`. By default a brand-new clean character is created instead.

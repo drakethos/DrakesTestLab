@@ -328,6 +328,7 @@
     <Compile Include="Gear\ClipboardMenu.cs" />
     <Compile Include="Gear\GearHost.cs" />
     <Compile Include="Patches\GearPatches.cs" />
+    <Compile Include="Patches\TerrainLimitPatches.cs" />
     <EmbeddedResource Include="Gear\Art\gear_atlas.png"><LogicalName>Gear/gear_atlas.png</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="Gear\Art\clipboard_icon.png"><LogicalName>Gear/clipboard_icon.png</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="Gear\Art\glasses_icon.png"><LogicalName>Gear/glasses_icon.png</LogicalName></EmbeddedResource>
