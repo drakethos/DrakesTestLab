@@ -1,6 +1,6 @@
 # DrakesTestLab
 
-## Unreleased (0.8)
+## 0.8.0
 
 **Combat Lab: a balance simulator.** Real fights (the game's own AI, attacks, blocking, parries, staggers, food and
 damage code) between a bot or you and monsters or a bot player, many times over, with a report. Guide: `docs/COMBAT.md`
