@@ -13,6 +13,37 @@ Part of the **DrakeMods** collection. **Full documentation: [the wiki](https://g
 
 ---
 
+## New in 0.8: Combat Lab, a balance simulator
+
+Is your sword too strong for its tier? How many players does a 1-star Troll need? Does your armour mod make the
+Plains too easy? Combat Lab answers with **real fights**: monsters use the game's own AI and attacks, the player's
+side is played by a human-like bot (or by you), every setup is fought many times, and the report gives win rates,
+kill times and damage taken with honest error bars.
+
+- **Fight it yourself (F9 > Combat).** Pick a monster (any creature, 0 to 2 stars, how many, bot teammates) or a
+  **PvP opponent, Bjornita or Bjorn**, at five difficulties (twig, trained, fighter, veteran, rogue) and in any gear
+  preset. Start: a 3 second countdown in a staked arena, then you play with your own keys. Every fight is recorded
+  like the simulator's, and your own gear comes back when you are done.
+- **Simulator.** Scenario files (JSON, like test suites) say who fights what, how often and under which rules: team
+  climbs ("players needed"), horde counts, mixed builds side by side, config variants of your mod, balance bands with
+  green / yellow / red verdicts, and baselines from a vanilla run.
+- **Fast, and checked.** Up to 4 fights side by side at up to 4x speed. 3 lanes at 3x match normal play on win rate and
+  kill time (damage taken reads about 11% low, which the docs say).
+- **Player-count scaling on demand.** Auto (the monster scales for the players really fighting it), vanilla, off, or
+  "as if N players were here".
+- **A whole-game difficulty database ships with it.** Every creature of every biome at 0 to 2 stars against a mid
+  player of the biome: win rate, kill time, damage taken, per weapon build, and players needed. 82 of the 96 rows are
+  real fights; the rest come from a model that predicted 34 of 36 fresh test fights.
+
+![A bot fights a Troll in the combat arena](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/combat-sim-troll.png)
+
+![PvP: Bjornita, played by the veteran bot, parries](https://raw.githubusercontent.com/drakethos/DrakesTestLab/main/docs/images/combat-pvp-bjornita.png)
+
+Guides: [Combat Lab](https://github.com/drakethos/DrakesTestLab/wiki/Combat-Lab), [Combat Scenarios](https://github.com/drakethos/DrakesTestLab/wiki/Combat-Scenarios) (how to write combat tests),
+[Difficulty Database](https://github.com/drakethos/DrakesTestLab/wiki/Difficulty-Database). In the repo: [docs/COMBAT.md](https://github.com/drakethos/DrakesTestLab/blob/main/docs/COMBAT.md).
+
+---
+
 ## New in 0.7 (beta): a Player 2 who acts like one
 
 Bjornita, the virtual second player, now does what a second player does, through the same messages a real second client

@@ -1,0 +1,53 @@
+{
+  "name": "mb-meadows-club-leather",
+  "tier": "meadows",
+  "meals": [
+    "CookedMeat",
+    "NeckTailGrilled",
+    "Honey"
+  ],
+  "food": {
+    "balanced": [
+      "CookedMeat",
+      "NeckTailGrilled",
+      "Honey"
+    ],
+    "health": [
+      "CookedMeat",
+      "NeckTailGrilled",
+      "BoarJerky"
+    ],
+    "stamina": [
+      "Honey",
+      "Raspberry",
+      "CookedMeat"
+    ]
+  },
+  "items": [
+    {
+      "prefab": "Club",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorLeatherChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorLeatherLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetLeather",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldWood",
+      "quality": 1,
+      "equip": true
+    }
+  ]
+}

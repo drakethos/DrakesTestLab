@@ -1,0 +1,21 @@
+{
+  "name": "game-plains-Lox-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

@@ -1,0 +1,17 @@
+{
+  "name": "mb-meadows-club-leather-vs-Troll",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-meadows-club-leather"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

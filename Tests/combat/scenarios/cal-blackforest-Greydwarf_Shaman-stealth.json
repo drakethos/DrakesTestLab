@@ -1,0 +1,21 @@
+{
+  "name": "cal-blackforest-Greydwarf_Shaman-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "blackforest",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-blackforest-stealth-knife"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Shaman",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

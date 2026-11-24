@@ -1,0 +1,19 @@
+{
+  "name": "game-mistlands-SeekerBrute-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mistlands-mid"
+  },
+  "foes": {
+    "prefab": "SeekerBrute",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

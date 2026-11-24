@@ -1,0 +1,45 @@
+{
+  "name": "spot-00",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-blackforest-mace-q1"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Shaman",
+    "stars": 0
+  },
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-mace-q1",
+      "foes": {
+        "prefab": "Greydwarf_Shaman",
+        "stars": 0
+      },
+      "label": "cal-blackforest-mace-q1 vs Greydwarf_Shaman 0*"
+    },
+    {
+      "loadout": "cal-blackforest-axe-q1",
+      "foes": {
+        "prefab": "Greydwarf",
+        "stars": 0
+      },
+      "label": "cal-blackforest-axe-q1 vs Greydwarf 0*"
+    },
+    {
+      "loadout": "cal-blackforest-spear-q2",
+      "foes": {
+        "prefab": "Ghost",
+        "stars": 2
+      },
+      "label": "cal-blackforest-spear-q2 vs Ghost 2*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

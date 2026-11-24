@@ -1,0 +1,23 @@
+{
+  "name": "spot-team-plains-Lox-1star",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true,
+  "difficulty": true,
+  "autoRuns": true
+}

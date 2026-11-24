@@ -1,0 +1,23 @@
+{
+  "name": "cal-plains-Lox-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-stealth-knife"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true,
+  "opener": "sneak",
+  "autoRuns": true
+}

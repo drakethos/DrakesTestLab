@@ -1,0 +1,46 @@
+{
+  "name": "cal-plains-GoblinShaman-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "GoblinShaman",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-plains-sword",
+      "foes": {
+        "prefab": "GoblinShaman",
+        "stars": 1
+      },
+      "label": "plains sword"
+    },
+    {
+      "loadout": "cal-plains-sword",
+      "foes": {
+        "prefab": "GoblinShaman",
+        "stars": 2
+      },
+      "label": "plains sword"
+    },
+    {
+      "loadout": "cal-plains-atgeir",
+      "foes": {
+        "prefab": "GoblinShaman",
+        "stars": 2
+      },
+      "label": "plains atgeir"
+    }
+  ],
+  "autoRuns": true
+}

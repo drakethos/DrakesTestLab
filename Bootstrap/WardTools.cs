@@ -54,6 +54,12 @@ internal static class WardTools
         Name = "Bjornita", Id = 100005, Model = 1, Hair = "Hair10", Beard = "", HairColor = new Vector3(0.95f, 0.85f, 0.55f), SkinColor = new Vector3(0.95f, 0.82f, 0.72f)
     };
 
+    /// <summary>Bjorn: the Combat Lab's PvP opponent besides Bjornita (not in the ward roster).</summary>
+    public static readonly Identity Bjorn = new()
+    {
+        Name = "Bjorn", Id = 100006, Model = 0, Hair = "Hair3", Beard = "Beard5", HairColor = new Vector3(0.55f, 0.3f, 0.12f), SkinColor = new Vector3(0.9f, 0.72f, 0.6f)
+    };
+
     /// <summary>The named test players, with fixed ids: Alice, Amy, Bob, Carol, Bjornita.</summary>
     public static readonly Identity[] Known = { Alice, Amy, Bob, Carol, Bjornita };
 

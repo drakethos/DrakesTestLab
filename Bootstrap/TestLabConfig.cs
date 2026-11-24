@@ -42,6 +42,15 @@ internal sealed class TestLabConfig
     public ConfigEntry<string> RunOnLaunch { get; private set; } = null!;
     public ConfigEntry<bool> QuitWhenDone { get; private set; } = null!;
     public ConfigEntry<bool> HotMode { get; private set; } = null!;
+    public ConfigEntry<bool> CombatSkipDeath { get; private set; } = null!;
+    public ConfigEntry<float> CombatArenaRadius { get; private set; } = null!;
+    public ConfigEntry<float> CombatMaxFightSeconds { get; private set; } = null!;
+    public ConfigEntry<float> CombatTimeScale { get; private set; } = null!;
+    public ConfigEntry<string> CombatTierSkills { get; private set; } = null!;
+    public ConfigEntry<bool> CombatAutoRuns { get; private set; } = null!;
+    public ConfigEntry<float> CombatSkillPerQuality { get; private set; } = null!;
+    public ConfigEntry<bool> CombatLean { get; private set; } = null!;
+    public ConfigEntry<float> CombatMaxRunMinutes { get; private set; } = null!;
     public ConfigEntry<float> StepDelay { get; private set; } = null!;
     public ConfigEntry<bool> CountObjects { get; private set; } = null!;
     public ConfigEntry<string> Screenshots { get; private set; } = null!;
@@ -165,6 +174,28 @@ internal sealed class TestLabConfig
             "Run automated test suites by themselves once the world is ready: empty = off, all = every suite, or suite folder names separated by commas.");
         c.QuitWhenDone = config.Bind("Automation", "QuitWhenDone", true,
             "After a RunOnLaunch run, quit the game with exit code 0 (all passed) or 1 (something failed). Results are in config/DrakesTestLab/results.");
+        c.CombatArenaRadius = config.Bind("Combat", "ArenaRadius", 26f,
+            new ConfigDescription("Combat Lab: radius in metres of the flat, cleared fighting ground and its ring of unbreakable stakes (20 to 30).", new AcceptableValueRange<float>(20f, 30f)));
+        c.CombatLean = config.Bind("Combat", "Lean", false,
+            "Combat Lab: draw nothing while fights run (cameras off, vsync and frame cap off, no shadows) so a small GPU spends its time on the simulation. Put back after each fight. A scenario's own \"lean\" overrides it.");
+        c.CombatTimeScale = config.Bind("Combat", "TimeScale", 1f,
+            new ConfigDescription("Combat Lab: speed of the game clock during fights (1 = normal, up to 4). Damage rolls, AI and the bot all run on game time, so a faster clock shortens the wait, not the fight. A scenario's own \"timeScale\" overrides it.", new AcceptableValueRange<float>(1f, 4f)));
+        c.CombatAutoRuns = config.Bind("Combat", "AutoRuns", true,
+            "Combat Lab: stop a scenario early once its numbers are settled: at least 3 runs; the outcome is unanimous over 5 runs or the win rate's 95% range is under 30 points; " +
+            "and the mean fight time and damage taken are known to within 10% (95%). The scenario's \"runs\" is then the cap. Off = always run the full count.");
+        c.CombatTierSkills = config.Bind("Combat", "TierSkills",
+            "meadows=1, bronze=15, blackforest=15, iron=25, swamp=25, silver=35, mountain=35, blackmetal=45, plains=45, mistlands=55, ashlands=65, deepnorth=75",
+            "Combat Lab: starting level of every skill (weapons, Blocking, Jump, Run...) for a loadout that names no skills, by the loadout's tier: a player who has reached that biome. " +
+            "The equipped weapon's skill and Blocking then move by [Combat] SkillPerQuality per weapon level above or below 2.");
+        c.CombatSkillPerQuality = config.Bind("Combat", "SkillPerQuality", 5f,
+            new ConfigDescription("Combat Lab: weapon skill and Blocking points per weapon level above or below 2 (bronze, 15 base: level 1 = 10, 2 = 15, 3 = 20, 4 = 25).", new AcceptableValueRange<float>(0f, 30f)));
+        c.CombatMaxFightSeconds = config.Bind("Combat", "MaxFightSeconds", 300f,
+            "Combat Lab: hard cap in real seconds for one fight, whatever the scenario's own timeout says. A fight that hits it is recorded as a timeout.");
+        c.CombatMaxRunMinutes = config.Bind("Combat", "MaxRunMinutes", 240f,
+            "Combat Lab: hard cap in real minutes for a whole combat run. When it is reached the run stops, the report so far is written and the game closes (0 = no cap).");
+        c.CombatSkipDeath = config.Bind("Combat", "SkipDeathReload", true,
+            "Combat Lab: when the player's side \"dies\" in a fight, record the death and carry on at once (the player is healed and put back) " +
+            "instead of playing the real death: no death screen, tombstone or respawn wait. Turn off to test real deaths and respawns.");
         c.HotMode = config.Bind("Automation", "HotMode", false,
             "Keep the game open after a RunOnLaunch run and take requests from config/DrakesTestLab/requests (run.txt = rerun 'failed' or a suite list, reset.txt = fresh world, quit.txt = close). " +
             "For test scripts that keep one game warm between runs. Off by default; the -testlab-hot command line also turns it on. Reads files only; needs no other plugin.");

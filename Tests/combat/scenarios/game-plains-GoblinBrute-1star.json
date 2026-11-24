@@ -1,0 +1,19 @@
+{
+  "name": "game-plains-GoblinBrute-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "foes": {
+    "prefab": "GoblinBrute",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

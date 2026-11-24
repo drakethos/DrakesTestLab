@@ -1,0 +1,21 @@
+{
+  "name": "cal-mountain-Ulv-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "mountain",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mountain-stealth-knife"
+  },
+  "foes": {
+    "prefab": "Ulv",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

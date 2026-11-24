@@ -1,0 +1,37 @@
+{
+  "name": "cal-blackforest-Troll-skill",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "blackforest",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-blackforest-sword"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-sword",
+      "bot": "twig",
+      "label": "blackforest sword (twig)"
+    },
+    {
+      "loadout": "cal-blackforest-sword",
+      "bot": "fighter",
+      "label": "blackforest sword (fighter)"
+    },
+    {
+      "loadout": "cal-blackforest-sword",
+      "bot": "veteran",
+      "label": "blackforest sword (veteran)"
+    }
+  ],
+  "autoRuns": true
+}

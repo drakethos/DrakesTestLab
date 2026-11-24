@@ -234,7 +234,7 @@ internal static class TestRunner
     }
 
     /// <summary>Copies files (and subfolders such as _blocks) that are not there yet.</summary>
-    private static void CopyMissing(string from, string to)
+    internal static void CopyMissing(string from, string to)
     {
         foreach (var dir in Directory.GetDirectories(from))
         {
@@ -339,6 +339,8 @@ internal static class TestRunner
     }
 
     /// <summary>[Automation] RunOnLaunch: once per game start, after the world and arena are ready.</summary>
+    private static bool _ranCombatOnLaunch;
+
     public static void MaybeRunOnLaunch()
     {
         // command line wins over the config:  -testlab-run all|SuiteA,SuiteB  [-testlab-stay] [-testlab-delay 0.5]
@@ -352,6 +354,24 @@ internal static class TestRunner
             _hotPolling = true;
             _quitOverride = false;
             ToolboxHost.Instance.StartCoroutine(RunRequests.Poll());
+        }
+
+        // combat testing from the command line, the same way a person or an AI starts suites:
+        //   -testlab-combat all|ScenarioA,ScenarioB|game-*  [-testlab-combat-runs N] [-testlab-combat-check] [-testlab-stay]
+        // The game quits when it is done (exit 0 fine, 1 a balance flag, 3 nothing ran) unless -testlab-stay or hot mode.
+        var combat = CommandLine.Value("-testlab-combat");
+        if (combat != null && !_ranCombatOnLaunch)
+        {
+            _ranCombatOnLaunch = true;
+            var runs = CommandLine.Value("-testlab-combat-runs");
+            if (runs != null && int.TryParse(runs, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n))
+                Combat.CombatRunner.RunsOverride = n;
+            Combat.CombatRunner.CheckOnly = CommandLine.Has("-testlab-combat-check");   // check names only, no fights
+            Combat.CombatRunner.DumpGameData = CommandLine.Has("-testlab-combat-dump"); // write combat/gamedata.json
+            var stay = CommandLine.Has("-testlab-stay") || _hotPolling;
+            TestLabPlugin.Log?.LogInfo($"Automation: combat run on launch ({combat}).");
+            Combat.CombatRunner.StartNamed(combat, quitWhenDone: !stay);
+            return;
         }
 
         if (_ranOnLaunch || what.Length == 0)

@@ -1,0 +1,19 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Greydwarf_Elite-style-veteran",
+  "runs": 6,
+  "timeout": 75,
+  "bot": "veteran",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "timeScale": 1,
+  "lanes": 3
+}

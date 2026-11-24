@@ -1,0 +1,37 @@
+{
+  "name": "cal-blackforest-sword",
+  "tier": "blackforest",
+  "build": "sword",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "SwordBronze",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

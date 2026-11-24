@@ -1,0 +1,45 @@
+{
+  "name": "spot-09",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-mistlands-sword-q3"
+  },
+  "foes": {
+    "prefab": "Tick",
+    "stars": 1
+  },
+  "lanes": [
+    {
+      "loadout": "cal-mistlands-sword-q3",
+      "foes": {
+        "prefab": "Tick",
+        "stars": 1
+      },
+      "label": "cal-mistlands-sword-q3 vs Tick 1*"
+    },
+    {
+      "loadout": "cal-mistlands-atgeir-q2",
+      "foes": {
+        "prefab": "Seeker",
+        "stars": 2
+      },
+      "label": "cal-mistlands-atgeir-q2 vs Seeker 2*"
+    },
+    {
+      "loadout": "cal-mistlands-sword-q2",
+      "foes": {
+        "prefab": "Tick",
+        "stars": 2
+      },
+      "label": "cal-mistlands-sword-q2 vs Tick 2*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

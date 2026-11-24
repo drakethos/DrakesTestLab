@@ -1,0 +1,38 @@
+{
+  "name": "cal-ashlands-spear-q1",
+  "tier": "ashlands",
+  "build": "spear",
+  "meals": [
+    "PiquantPie",
+    "MashedMeat",
+    "ScorchingMedley"
+  ],
+  "items": [
+    {
+      "prefab": "SpearSplitner",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFlametal",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldFlametal",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-ashlands-spear"
+}

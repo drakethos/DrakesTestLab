@@ -1,0 +1,17 @@
+{
+  "name": "iron-AtgeirIron-vs-Fenring",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "iron-AtgeirIron"
+  },
+  "foes": {
+    "prefab": "Fenring",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

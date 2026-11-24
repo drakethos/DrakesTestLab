@@ -1,0 +1,182 @@
+[
+ {
+  "label": "cal-blackforest-mace-q1 vs Greydwarf_Shaman 0*",
+  "predictedWin": 0.98,
+  "predictedTtk": 9.7
+ },
+ {
+  "label": "cal-blackforest-axe-q1 vs Greydwarf 0*",
+  "predictedWin": 0.98,
+  "predictedTtk": 8.8
+ },
+ {
+  "label": "cal-blackforest-spear-q2 vs Ghost 2*",
+  "predictedWin": 0.84,
+  "predictedTtk": 26.2
+ },
+ {
+  "label": "cal-blackforest-atgeir-q1 vs Greydwarf_Elite 2*",
+  "predictedWin": 0.74,
+  "predictedTtk": 44.0
+ },
+ {
+  "label": "cal-blackforest-atgeir-q2 vs Greydwarf_Shaman 2*",
+  "predictedWin": 0.74,
+  "predictedTtk": 22.7
+ },
+ {
+  "label": "cal-blackforest-sword-q4 vs Ghost 2*",
+  "predictedWin": 0.96,
+  "predictedTtk": 23.2
+ },
+ {
+  "label": "cal-swamp-atgeir-q2 vs Leech 2*",
+  "predictedWin": 0.96,
+  "predictedTtk": 6.5
+ },
+ {
+  "label": "cal-swamp-battleaxe-q1 vs BlobElite 0*",
+  "predictedWin": 0.89,
+  "predictedTtk": 19.3
+ },
+ {
+  "label": "cal-swamp-mace-q1 vs Draugr_Elite 1*",
+  "predictedWin": 0.88,
+  "predictedTtk": 16.1
+ },
+ {
+  "label": "cal-swamp-atgeir-q3 vs Draugr 2*",
+  "predictedWin": 0.64,
+  "predictedTtk": 12.0
+ },
+ {
+  "label": "cal-swamp-sword-q2 vs Draugr_Elite 1*",
+  "predictedWin": 0.89,
+  "predictedTtk": 17.6
+ },
+ {
+  "label": "cal-swamp-mace-q3 vs Abomination 1*",
+  "predictedWin": 0.07,
+  "predictedTtk": 179.1
+ },
+ {
+  "label": "cal-mountain-battleaxe-q4 vs Wolf 2*",
+  "predictedWin": 0.33,
+  "predictedTtk": 7.3
+ },
+ {
+  "label": "cal-mountain-battleaxe-q4 vs Fenring 1*",
+  "predictedWin": 0.76,
+  "predictedTtk": 13.5
+ },
+ {
+  "label": "cal-mountain-battleaxe-q1 vs StoneGolem 0*",
+  "predictedWin": 0.02,
+  "predictedTtk": 269.7
+ },
+ {
+  "label": "cal-mountain-spear-q1 vs Fenring 1*",
+  "predictedWin": 0.64,
+  "predictedTtk": 14.6
+ },
+ {
+  "label": "cal-mountain-mace-q4 vs Wolf 0*",
+  "predictedWin": 0.98,
+  "predictedTtk": 4.7
+ },
+ {
+  "label": "cal-mountain-battleaxe-q3 vs Fenring_Cultist 1*",
+  "predictedWin": 0.83,
+  "predictedTtk": 23.5
+ },
+ {
+  "label": "cal-plains-axe-q3 vs BlobTar 1*",
+  "predictedWin": 0.05,
+  "predictedTtk": 119.1
+ },
+ {
+  "label": "cal-plains-atgeir-q1 vs GoblinBrute 1*",
+  "predictedWin": 0.01,
+  "predictedTtk": 71.2
+ },
+ {
+  "label": "cal-plains-mace-q4 vs GoblinBrute 1*",
+  "predictedWin": 0.02,
+  "predictedTtk": 52.5
+ },
+ {
+  "label": "cal-plains-axe-q4 vs Lox 1*",
+  "predictedWin": 0.03,
+  "predictedTtk": 97.8
+ },
+ {
+  "label": "cal-plains-atgeir-q2 vs Goblin 2*",
+  "predictedWin": 0.98,
+  "predictedTtk": 11.0
+ },
+ {
+  "label": "cal-plains-sword-q1 vs Lox 2*",
+  "predictedWin": 0.0,
+  "predictedTtk": 167.8
+ },
+ {
+  "label": "cal-mistlands-sword-q1 vs Tick 1*",
+  "predictedWin": 0.96,
+  "predictedTtk": 7.2
+ },
+ {
+  "label": "cal-mistlands-atgeir-q4 vs SeekerBrute 1*",
+  "predictedWin": 0.25,
+  "predictedTtk": 139.0
+ },
+ {
+  "label": "cal-mistlands-axe-q1 vs Seeker 2*",
+  "predictedWin": 0.0,
+  "predictedTtk": 61.0
+ },
+ {
+  "label": "cal-mistlands-sword-q3 vs Tick 1*",
+  "predictedWin": 0.96,
+  "predictedTtk": 6.5
+ },
+ {
+  "label": "cal-mistlands-atgeir-q2 vs Seeker 2*",
+  "predictedWin": 0.79,
+  "predictedTtk": 13.1
+ },
+ {
+  "label": "cal-mistlands-sword-q2 vs Tick 2*",
+  "predictedWin": 0.96,
+  "predictedTtk": 6.7
+ },
+ {
+  "label": "cal-ashlands-sword-q3 vs BlobLava 1*",
+  "predictedWin": 0.91,
+  "predictedTtk": 3.7
+ },
+ {
+  "label": "cal-ashlands-spear-q1 vs BlobLava 2*",
+  "predictedWin": 0.74,
+  "predictedTtk": 3.9
+ },
+ {
+  "label": "cal-ashlands-axe-q1 vs BlobLava 1*",
+  "predictedWin": 0.92,
+  "predictedTtk": 3.4
+ },
+ {
+  "label": "cal-ashlands-mace-q1 vs BlobLava 1*",
+  "predictedWin": 0.9,
+  "predictedTtk": 5.0
+ },
+ {
+  "label": "cal-ashlands-axe-q1 vs BlobLava 0*",
+  "predictedWin": 0.98,
+  "predictedTtk": 3.5
+ },
+ {
+  "label": "cal-ashlands-sword-q4 vs Asksvin 2*",
+  "predictedWin": 0.06,
+  "predictedTtk": 34.1
+ }
+]

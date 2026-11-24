@@ -1,0 +1,37 @@
+{
+  "name": "cal-swamp-axe",
+  "tier": "swamp",
+  "build": "axe",
+  "meals": [
+    "Sausages",
+    "TurnipStew",
+    "BlackSoup"
+  ],
+  "items": [
+    {
+      "prefab": "AxeIron",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBanded",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

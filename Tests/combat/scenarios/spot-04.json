@@ -1,0 +1,45 @@
+{
+  "name": "spot-04",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-mountain-battleaxe-q4"
+  },
+  "foes": {
+    "prefab": "Wolf",
+    "stars": 2
+  },
+  "lanes": [
+    {
+      "loadout": "cal-mountain-battleaxe-q4",
+      "foes": {
+        "prefab": "Wolf",
+        "stars": 2
+      },
+      "label": "cal-mountain-battleaxe-q4 vs Wolf 2*"
+    },
+    {
+      "loadout": "cal-mountain-battleaxe-q4",
+      "foes": {
+        "prefab": "Fenring",
+        "stars": 1
+      },
+      "label": "cal-mountain-battleaxe-q4 vs Fenring 1*"
+    },
+    {
+      "loadout": "cal-mountain-battleaxe-q1",
+      "foes": {
+        "prefab": "StoneGolem",
+        "stars": 0
+      },
+      "label": "cal-mountain-battleaxe-q1 vs StoneGolem 0*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -31,6 +31,9 @@ internal sealed class TestLabInputDriver : MonoBehaviour
             // next step / pass / fail are on the lab bar (UI/Toolbox/LabBar.cs)
         }
 
+        if (Combat.CombatRunner.Running && KeyPressed(TestLabConfig.Instance.StopTestsKey.Value))
+            Combat.CombatRunner.Stop();
+
         var keyName = TestLabConfig.Instance.MenuKey.Value;
         if (string.IsNullOrWhiteSpace(keyName))
             return;

@@ -1,0 +1,38 @@
+{
+  "name": "cal-ashlands-mace-q1",
+  "tier": "ashlands",
+  "build": "mace",
+  "meals": [
+    "PiquantPie",
+    "MashedMeat",
+    "ScorchingMedley"
+  ],
+  "items": [
+    {
+      "prefab": "MaceEldner",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFlametal",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldFlametal",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-ashlands-mace"
+}

@@ -1,0 +1,33 @@
+{
+  "name": "cal-mistlands-atgeir-q4",
+  "tier": "mistlands",
+  "build": "atgeir",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirHimminAfl",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceChest",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceLegs",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetCarapace",
+      "quality": 4,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-mistlands-atgeir"
+}

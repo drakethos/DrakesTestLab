@@ -24,6 +24,9 @@
 [CmdletBinding()]
 param(
     [string]$Suites = 'all',
+    # combat testing (balance runs) instead of suites: scenario names from combat/scenarios, or 'all'. -Runs overrides every scenario's run count.
+    [string]$Combat = '',
+    [int]$Runs = 0,
     [string]$Profile = 'drakeTest',
     [string]$ProfilePath = '',
     [string]$SteamExe = 'C:\Program Files (x86)\Steam\steam.exe',
@@ -70,6 +73,7 @@ $bepInEx = Join-Path $ProfilePath 'BepInEx'
 $preloader = Join-Path $bepInEx 'core\BepInEx.Preloader.dll'
 $resultsDir = Join-Path $bepInEx 'config\DrakesTestLab\results'
 $latest = Join-Path $resultsDir 'latest.json'
+if ($Combat -ne '') { $latest = Join-Path $bepInEx 'config\DrakesTestLab\combat\results\latest.json' }
 
 if (-not (Test-Path -LiteralPath $preloader)) {
     Write-Host "Profile not found (no BepInEx preloader): $preloader"
@@ -90,6 +94,12 @@ if (Get-Process -Name 'valheim' -ErrorAction SilentlyContinue) {
 $launchArgs = @('-applaunch', "$ValheimAppId",
     '--doorstop-enabled', 'true', '--doorstop-target-assembly', "`"$preloader`"",
     '-testlab-run', "`"$Suites`"")
+if ($Combat -ne '') {
+    $launchArgs = @('-applaunch', "$ValheimAppId",
+        '--doorstop-enabled', 'true', '--doorstop-target-assembly', "`"$preloader`"",
+        '-testlab-combat', "`"$Combat`"")
+    if ($Runs -gt 0) { $launchArgs += @('-testlab-combat-runs', "$Runs") }
+}
 # -Attended: you answer the checkpoints (manual suites); the game stays open afterwards
 if ($Attended) { $Stay = $true; $launchArgs += '-testlab-attended' }
 if ($Hot) { $Stay = $true; $launchArgs += '-testlab-hot' }
@@ -202,6 +212,23 @@ if (-not $game.HasExited -and -not (& $runDone)) {
 }
 
 # ---- results
+if ($Combat -ne '' -and (& $haveResults)) {
+    $r = Get-Content -LiteralPath $latest -Raw | ConvertFrom-Json
+    Write-Host ''
+    Write-Host ("Combat: {0} cells, {1} balance flag(s)" -f @($r.cells).Count, $r.flags)
+    foreach ($c in $r.cells) {
+        $mark = switch ($c.verdict) { 'normal' { 'OK  ' } 'plus' { '+   ' } 'plusplus' { '++  ' } 'minus' { '-   ' } 'minusminus' { '--  ' } default { '    ' } }
+        Write-Host ('  [{0}] {1} vs {2} [{3}]: {4:0}% win ({5}/{6}), ttk {7:0.0}s' -f $mark, $c.loadout, $c.foe, $c.variant, ([double]$c.winRate * 100), $c.wins, $c.runs, [double]$c.ttkMean)
+    }
+    Write-Host ''
+    Write-Host "Report: $(Join-Path (Split-Path $latest) 'latest.html')"
+    if ([int]$r.flags -gt 0) { Finish 1 }
+    Finish 0
+}
+if ($Combat -ne '') {
+    Write-Host 'No combat results were written (the game may have crashed or never reached the test world).'
+    Finish 3
+}
 if (& $haveResults) {
     $r = Get-Content -LiteralPath $latest -Raw | ConvertFrom-Json
     Write-Host ''

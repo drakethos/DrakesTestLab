@@ -1,0 +1,46 @@
+{
+  "name": "cal-swamp-Draugr_Elite-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-sword"
+  },
+  "foes": {
+    "prefab": "Draugr_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-swamp-sword",
+      "foes": {
+        "prefab": "Draugr_Elite",
+        "stars": 1
+      },
+      "label": "swamp sword"
+    },
+    {
+      "loadout": "cal-swamp-sword",
+      "foes": {
+        "prefab": "Draugr_Elite",
+        "stars": 2
+      },
+      "label": "swamp sword"
+    },
+    {
+      "loadout": "cal-swamp-battleaxe",
+      "foes": {
+        "prefab": "Draugr_Elite",
+        "stars": 2
+      },
+      "label": "swamp battleaxe"
+    }
+  ],
+  "autoRuns": true
+}

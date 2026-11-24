@@ -1,0 +1,33 @@
+{
+  "name": "cal-mountain-battleaxe-q1",
+  "tier": "mountain",
+  "build": "battleaxe",
+  "meals": [
+    "SerpentStew",
+    "WolfMeatSkewer",
+    "Eyescream"
+  ],
+  "items": [
+    {
+      "prefab": "Battleaxe",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetDrake",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-mountain-battleaxe"
+}

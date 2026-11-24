@@ -1,0 +1,46 @@
+{
+  "name": "cal-swamp-BlobElite-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-sword"
+  },
+  "foes": {
+    "prefab": "BlobElite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-swamp-sword",
+      "foes": {
+        "prefab": "BlobElite",
+        "stars": 1
+      },
+      "label": "swamp sword"
+    },
+    {
+      "loadout": "cal-swamp-sword",
+      "foes": {
+        "prefab": "BlobElite",
+        "stars": 2
+      },
+      "label": "swamp sword"
+    },
+    {
+      "loadout": "cal-swamp-battleaxe",
+      "foes": {
+        "prefab": "BlobElite",
+        "stars": 2
+      },
+      "label": "swamp battleaxe"
+    }
+  ],
+  "autoRuns": true
+}

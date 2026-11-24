@@ -1,0 +1,17 @@
+{
+  "name": "mb-bronze-sword-q1-vs-Greydwarf_Elite",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q1"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

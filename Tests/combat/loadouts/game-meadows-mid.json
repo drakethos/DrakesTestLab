@@ -1,0 +1,36 @@
+{
+  "name": "game-meadows-mid",
+  "tier": "meadows",
+  "meals": [
+    "CookedMeat",
+    "NeckTailGrilled",
+    "Honey"
+  ],
+  "items": [
+    {
+      "prefab": "Club",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorLeatherChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorLeatherLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetLeather",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldWood",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

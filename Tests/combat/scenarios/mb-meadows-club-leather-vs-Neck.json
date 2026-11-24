@@ -1,0 +1,19 @@
+{
+  "name": "mb-meadows-club-leather-vs-Neck",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-meadows-club-leather"
+  },
+  "foes": {
+    "prefab": "Neck",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

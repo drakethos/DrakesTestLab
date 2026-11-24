@@ -1,0 +1,44 @@
+{
+  "name": "docs-shot-lanes",
+  "runs": 1,
+  "timeout": 40,
+  "bot": "fighter",
+  "timeScale": 1,
+  "stall": 0,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-sword",
+      "label": "sword"
+    },
+    {
+      "loadout": "cal-blackforest-axe",
+      "label": "axe"
+    },
+    {
+      "loadout": "cal-blackforest-mace",
+      "label": "mace"
+    }
+  ],
+  "screenshots": [
+    {
+      "at": 6,
+      "name": "combat-sim-lanes",
+      "clean": true
+    },
+    {
+      "at": 12,
+      "name": "combat-sim-lanes-2",
+      "clean": true
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

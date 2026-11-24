@@ -1,0 +1,36 @@
+{
+  "name": "game-mistlands-mid",
+  "tier": "mistlands",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "SwordMistwalker",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetCarapace",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldCarapace",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

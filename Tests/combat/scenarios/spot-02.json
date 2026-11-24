@@ -1,0 +1,45 @@
+{
+  "name": "spot-02",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-swamp-atgeir-q2"
+  },
+  "foes": {
+    "prefab": "Leech",
+    "stars": 2
+  },
+  "lanes": [
+    {
+      "loadout": "cal-swamp-atgeir-q2",
+      "foes": {
+        "prefab": "Leech",
+        "stars": 2
+      },
+      "label": "cal-swamp-atgeir-q2 vs Leech 2*"
+    },
+    {
+      "loadout": "cal-swamp-battleaxe-q1",
+      "foes": {
+        "prefab": "BlobElite",
+        "stars": 0
+      },
+      "label": "cal-swamp-battleaxe-q1 vs BlobElite 0*"
+    },
+    {
+      "loadout": "cal-swamp-mace-q1",
+      "foes": {
+        "prefab": "Draugr_Elite",
+        "stars": 1
+      },
+      "label": "cal-swamp-mace-q1 vs Draugr_Elite 1*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

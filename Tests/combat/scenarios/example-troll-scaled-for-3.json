@@ -1,0 +1,17 @@
+{
+  "name": "example-troll-scaled-for-3",
+  "description": "One player against a Troll that has the health and damage of a 3-player Troll (playerScaling 3).",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "playerScaling": 3,
+  "variants": [
+    "vanilla"
+  ]
+}

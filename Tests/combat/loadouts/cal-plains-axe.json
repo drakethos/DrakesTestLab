@@ -1,0 +1,37 @@
+{
+  "name": "cal-plains-axe",
+  "tier": "plains",
+  "build": "axe",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "AxeBlackMetal",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedCuirass",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedGreaves",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetPadded",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBlackmetal",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

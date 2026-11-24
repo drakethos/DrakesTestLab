@@ -1,0 +1,31 @@
+{
+  "name": "docs-shot-manual",
+  "runs": 1,
+  "timeout": 14,
+  "bot": "you",
+  "timeScale": 1,
+  "stall": 0,
+  "autoRuns": false,
+  "countdown": 3,
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "pvp": {
+    "loadout": "game-plains-mid",
+    "bot": "trained",
+    "name": "Bjorn"
+  },
+  "screenshots": [
+    {
+      "at": 2.5,
+      "name": "combat-live-you-vs-bjorn"
+    },
+    {
+      "at": 4.5,
+      "name": "combat-live-you-vs-bjorn-2"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

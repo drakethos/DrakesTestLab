@@ -1,0 +1,19 @@
+{
+  "name": "game-mountain-Fenring-2star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mountain-mid"
+  },
+  "foes": {
+    "prefab": "Fenring",
+    "stars": 2
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

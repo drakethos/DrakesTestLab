@@ -1,0 +1,19 @@
+{
+  "name": "game-mountain-Fenring_Cultist-0star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mountain-mid"
+  },
+  "foes": {
+    "prefab": "Fenring_Cultist",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

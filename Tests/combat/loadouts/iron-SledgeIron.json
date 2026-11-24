@@ -1,0 +1,28 @@
+{
+  "name": "iron-SledgeIron",
+  "tier": "iron",
+  "maxHealth": 150,
+  "maxStamina": 110,
+  "skills": {
+    "Clubs": 45,
+    "Blocking": 45
+  },
+  "items": [
+    {
+      "prefab": "SledgeIron",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "equip": true
+    }
+  ]
+}

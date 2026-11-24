@@ -1,0 +1,45 @@
+{
+  "name": "spot-10",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-ashlands-sword-q3"
+  },
+  "foes": {
+    "prefab": "BlobLava",
+    "stars": 1
+  },
+  "lanes": [
+    {
+      "loadout": "cal-ashlands-sword-q3",
+      "foes": {
+        "prefab": "BlobLava",
+        "stars": 1
+      },
+      "label": "cal-ashlands-sword-q3 vs BlobLava 1*"
+    },
+    {
+      "loadout": "cal-ashlands-spear-q1",
+      "foes": {
+        "prefab": "BlobLava",
+        "stars": 2
+      },
+      "label": "cal-ashlands-spear-q1 vs BlobLava 2*"
+    },
+    {
+      "loadout": "cal-ashlands-axe-q1",
+      "foes": {
+        "prefab": "BlobLava",
+        "stars": 1
+      },
+      "label": "cal-ashlands-axe-q1 vs BlobLava 1*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "cal-plains-Lox-skill",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true,
+  "lanes": [
+    {
+      "loadout": "cal-plains-sword",
+      "bot": "twig",
+      "label": "plains sword (twig)"
+    },
+    {
+      "loadout": "cal-plains-sword",
+      "bot": "fighter",
+      "label": "plains sword (fighter)"
+    },
+    {
+      "loadout": "cal-plains-sword",
+      "bot": "veteran",
+      "label": "plains sword (veteran)"
+    }
+  ],
+  "autoRuns": true
+}

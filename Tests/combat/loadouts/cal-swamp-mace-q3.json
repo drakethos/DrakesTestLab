@@ -1,0 +1,38 @@
+{
+  "name": "cal-swamp-mace-q3",
+  "tier": "swamp",
+  "build": "mace",
+  "meals": [
+    "Sausages",
+    "TurnipStew",
+    "BlackSoup"
+  ],
+  "items": [
+    {
+      "prefab": "MaceIron",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBanded",
+      "quality": 3,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-swamp-mace"
+}

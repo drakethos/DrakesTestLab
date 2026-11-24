@@ -1,0 +1,21 @@
+{
+  "name": "spot-team-mistlands-SeekerBrute-1star",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mistlands-sword"
+  },
+  "foes": {
+    "prefab": "SeekerBrute",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

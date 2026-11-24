@@ -1,0 +1,32 @@
+{
+  "name": "cal-blackforest-atgeir",
+  "tier": "blackforest",
+  "build": "atgeir",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirBronze",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

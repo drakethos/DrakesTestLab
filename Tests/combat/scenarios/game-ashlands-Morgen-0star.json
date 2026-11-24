@@ -1,0 +1,19 @@
+{
+  "name": "game-ashlands-Morgen-0star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-ashlands-mid"
+  },
+  "foes": {
+    "prefab": "Morgen",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

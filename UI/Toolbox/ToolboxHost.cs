@@ -38,6 +38,7 @@ internal sealed class ToolboxHost : MonoBehaviour
         _tabs.Add(new PlayerTab());
         _tabs.Add(new LabTab());
         _tabs.Add(new CasesTab());
+        _tabs.Add(new CombatTab());
         _tabs.Add(new WardsTab());
         _tabs.Add(new TestsTab());
         _tabs.Add(new RecordTab());
@@ -50,6 +51,7 @@ internal sealed class ToolboxHost : MonoBehaviour
 
         Chips.Add(() => Automation.Recorder.Recording ? ($"REC  {Automation.Recorder.Steps.Count} steps", Ui.Danger) : null);
         Chips.Add(() => Automation.TestRunner.Running ? ("Testing", Ui.Accent) : null);
+        Chips.Add(() => Combat.CombatRunner.Running ? ("Combat", new Color(0.89f, 0.38f, 0.29f)) : null);
         Chips.Add(() => WardTools.IsSwitched ? ("Playing as " + WardTools.Me().Name, Ui.Good) : null);
     }
 
@@ -97,7 +99,7 @@ internal sealed class ToolboxHost : MonoBehaviour
     private void OnGUI()
     {
         var cfg = TestLabConfig.Instance;
-        if (!IsOpen && !cfg.ShowOverlay.Value && !CraftHelper.ShouldShow() && !Automation.UiPicker.Active && !Automation.TestRunner.Running && !Automation.Recorder.Recording)
+        if (!IsOpen && !cfg.ShowOverlay.Value && !CraftHelper.ShouldShow() && !Automation.UiPicker.Active && !Automation.TestRunner.Running && !Combat.CombatRunner.Running && !Automation.Recorder.Recording)
             return;
 
         EnsureSkin();
@@ -116,6 +118,18 @@ internal sealed class ToolboxHost : MonoBehaviour
             GUI.Box(new Rect(Screen.width / s / 2f - 330f, 30f, 660f, 44f), GUIContent.none);
             GUI.Label(new Rect(Screen.width / s / 2f - 322f, 33f, 644f, 40f),
                 "<color=#f0b45a><b>Testing</b></color> " + Automation.TestRunner.Status + "  <color=#999999>(" + keys + ")</color>");
+        }
+
+        // combat testing: its own banner, red and one row lower, so it is never mistaken for a test run
+        if (Combat.CombatRunner.Running && !IsOpen && Time.frameCount > Automation.TestRunner.CleanShotUntilFrame)
+        {
+            var live = Combat.CombatRunner.LiveLine;
+            GUI.Box(new Rect(Screen.width / s / 2f - 330f, 80f, 660f, live.Length > 0 || Combat.CombatRunner.Tally.Length > 0 ? 66f : 44f), GUIContent.none);
+            GUI.Label(new Rect(Screen.width / s / 2f - 322f, 83f, 644f, 24f),
+                "<color=#e2604a><b>COMBAT LAB</b></color> " + Combat.CombatRunner.Status + "  <color=#999999>(" + cfg.StopTestsKey.Value + " stop)</color>");
+            var tally = Combat.CombatRunner.Tally;
+            if (live.Length > 0 || tally.Length > 0)
+                GUI.Label(new Rect(Screen.width / s / 2f - 322f, 108f, 644f, 24f), "<color=#e8e6e1>" + live + "</color>" + (tally.Length > 0 ? "   <color=#999999>" + tally + "</color>" : ""));
         }
 
         Automation.UiPicker.DrawOverlay();

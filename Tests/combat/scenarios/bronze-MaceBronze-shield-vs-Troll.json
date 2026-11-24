@@ -1,0 +1,17 @@
+{
+  "name": "bronze-MaceBronze-shield-vs-Troll",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "bronze-MaceBronze-shield"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

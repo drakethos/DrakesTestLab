@@ -1,0 +1,26 @@
+{
+  "name": "cal-mistlands-Dverger-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mistlands-atgeir"
+  },
+  "foes": {
+    "prefab": "Dverger",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mistlands-atgeir",
+      "label": "mistlands atgeir"
+    }
+  ],
+  "autoRuns": true
+}

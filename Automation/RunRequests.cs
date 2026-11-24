@@ -26,6 +26,7 @@ internal static class RunRequests
     public static string Folder => Path.Combine(Paths.ConfigPath, "DrakesTestLab", "requests");
     static string RunFile => Path.Combine(Folder, "run.txt");
     static string ResetFile => Path.Combine(Folder, "reset.txt");
+    static string CombatFile => Path.Combine(Folder, "combat.txt");
     static string QuitFile => Path.Combine(Folder, "quit.txt");
     static string StateFile => Path.Combine(Folder, "state.txt");
 
@@ -39,7 +40,7 @@ internal static class RunRequests
         {
             Directory.CreateDirectory(Folder);
             // stale requests from an earlier session must not fire
-            foreach (var f in new[] { RunFile, ResetFile, QuitFile })
+            foreach (var f in new[] { RunFile, ResetFile, QuitFile, CombatFile })
                 if (File.Exists(f)) File.Delete(f);
         }
         catch (Exception ex)
@@ -53,7 +54,7 @@ internal static class RunRequests
         while (true)
         {
             yield return wait;
-            if (TestRunner.Running || !WorldReady())
+            if (TestRunner.Running || Combat.CombatRunner.Running || !WorldReady())
             {
                 SetState("busy");
                 continue;
@@ -74,6 +75,14 @@ internal static class RunRequests
                 SetState("busy");
                 TestLabPlugin.Log?.LogInfo("Hot mode: reset requested (fresh world).");
                 yield return ResetAndWait();
+                continue;
+            }
+
+            if (TryTake(CombatFile, out var combatWhat))
+            {
+                SetState("busy");
+                TestLabPlugin.Log?.LogInfo($"Hot mode: combat run requested ({combatWhat}).");
+                Combat.CombatRunner.StartNamed(combatWhat.Length == 0 ? "all" : combatWhat, quitWhenDone: false);
                 continue;
             }
 

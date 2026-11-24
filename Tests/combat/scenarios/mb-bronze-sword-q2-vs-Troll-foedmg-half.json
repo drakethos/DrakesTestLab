@@ -1,0 +1,18 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Troll-foedmg-half",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "foeDamage": 0.5
+}

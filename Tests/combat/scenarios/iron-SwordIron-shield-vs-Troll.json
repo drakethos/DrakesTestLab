@@ -1,0 +1,17 @@
+{
+  "name": "iron-SwordIron-shield-vs-Troll",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "iron-SwordIron-shield"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

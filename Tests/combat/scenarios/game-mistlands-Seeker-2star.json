@@ -1,0 +1,19 @@
+{
+  "name": "game-mistlands-Seeker-2star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mistlands-mid"
+  },
+  "foes": {
+    "prefab": "Seeker",
+    "stars": 2
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "cal-mistlands-SeekerBrute-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "mistlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mistlands-stealth-knife"
+  },
+  "foes": {
+    "prefab": "SeekerBrute",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

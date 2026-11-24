@@ -1,0 +1,38 @@
+{
+  "name": "cal-mistlands-axe-q1",
+  "tier": "mistlands",
+  "build": "axe",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "AxeJotunBane",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetCarapace",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldCarapace",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-mistlands-axe"
+}

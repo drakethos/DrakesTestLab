@@ -1,0 +1,19 @@
+{
+  "name": "game-swamp-Wraith-2star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-swamp-mid"
+  },
+  "foes": {
+    "prefab": "Wraith",
+    "stars": 2
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

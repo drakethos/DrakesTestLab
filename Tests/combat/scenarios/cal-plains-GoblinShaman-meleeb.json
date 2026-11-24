@@ -1,0 +1,26 @@
+{
+  "name": "cal-plains-GoblinShaman-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-atgeir"
+  },
+  "foes": {
+    "prefab": "GoblinShaman",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-plains-atgeir",
+      "label": "plains atgeir"
+    }
+  ],
+  "autoRuns": true
+}

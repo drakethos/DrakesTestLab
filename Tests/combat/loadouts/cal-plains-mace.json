@@ -1,0 +1,37 @@
+{
+  "name": "cal-plains-mace",
+  "tier": "plains",
+  "build": "mace",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "MaceNeedle",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedCuirass",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedGreaves",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetPadded",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBlackmetal",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

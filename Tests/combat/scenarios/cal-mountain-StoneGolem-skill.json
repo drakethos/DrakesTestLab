@@ -1,0 +1,37 @@
+{
+  "name": "cal-mountain-StoneGolem-skill",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mountain-sword"
+  },
+  "foes": {
+    "prefab": "StoneGolem",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mountain-sword",
+      "bot": "twig",
+      "label": "mountain sword (twig)"
+    },
+    {
+      "loadout": "cal-mountain-sword",
+      "bot": "fighter",
+      "label": "mountain sword (fighter)"
+    },
+    {
+      "loadout": "cal-mountain-sword",
+      "bot": "veteran",
+      "label": "mountain sword (veteran)"
+    }
+  ],
+  "autoRuns": true
+}

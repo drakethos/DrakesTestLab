@@ -1,0 +1,27 @@
+{
+  "name": "example-variants",
+  "description": "Variants: the same fight with your mod's config changed. Replace the guid, section and key with your own mod's.",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "bronze-SwordBronze-shield"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite"
+  },
+  "variants": [
+    "vanilla",
+    {
+      "name": "double-damage",
+      "configOverrides": [
+        {
+          "guid": "com.example.mymod",
+          "section": "Balance",
+          "key": "DamageMultiplier",
+          "value": "2"
+        }
+      ]
+    }
+  ]
+}

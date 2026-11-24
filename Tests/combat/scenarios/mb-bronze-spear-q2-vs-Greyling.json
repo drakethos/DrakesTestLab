@@ -1,0 +1,19 @@
+{
+  "name": "mb-bronze-spear-q2-vs-Greyling",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-spear-q2"
+  },
+  "foes": {
+    "prefab": "Greyling",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

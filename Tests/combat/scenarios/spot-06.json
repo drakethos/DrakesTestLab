@@ -1,0 +1,45 @@
+{
+  "name": "spot-06",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-plains-axe-q3"
+  },
+  "foes": {
+    "prefab": "BlobTar",
+    "stars": 1
+  },
+  "lanes": [
+    {
+      "loadout": "cal-plains-axe-q3",
+      "foes": {
+        "prefab": "BlobTar",
+        "stars": 1
+      },
+      "label": "cal-plains-axe-q3 vs BlobTar 1*"
+    },
+    {
+      "loadout": "cal-plains-atgeir-q1",
+      "foes": {
+        "prefab": "GoblinBrute",
+        "stars": 1
+      },
+      "label": "cal-plains-atgeir-q1 vs GoblinBrute 1*"
+    },
+    {
+      "loadout": "cal-plains-mace-q4",
+      "foes": {
+        "prefab": "GoblinBrute",
+        "stars": 1
+      },
+      "label": "cal-plains-mace-q4 vs GoblinBrute 1*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "name": "cal-ashlands-Asksvin-meleea",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-ashlands-sword"
+  },
+  "foes": {
+    "prefab": "Asksvin",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-ashlands-sword",
+      "label": "ashlands sword"
+    },
+    {
+      "loadout": "cal-ashlands-axe",
+      "label": "ashlands axe"
+    },
+    {
+      "loadout": "cal-ashlands-mace",
+      "label": "ashlands mace"
+    }
+  ],
+  "autoRuns": true
+}

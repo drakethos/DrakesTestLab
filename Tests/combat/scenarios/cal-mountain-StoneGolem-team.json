@@ -1,0 +1,21 @@
+{
+  "name": "cal-mountain-StoneGolem-team",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mountain-sword"
+  },
+  "foes": {
+    "prefab": "StoneGolem",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

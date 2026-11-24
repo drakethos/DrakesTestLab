@@ -1,0 +1,21 @@
+{
+  "name": "cal-swamp-Abomination-team",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-sword"
+  },
+  "foes": {
+    "prefab": "Abomination",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

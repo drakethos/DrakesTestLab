@@ -1,0 +1,17 @@
+{
+  "name": "bronze-AxeBronze-shield-vs-Greydwarf_Elite",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "bronze-AxeBronze-shield"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

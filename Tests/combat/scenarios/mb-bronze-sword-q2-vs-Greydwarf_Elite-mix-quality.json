@@ -1,0 +1,35 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Greydwarf_Elite-mix-quality",
+  "runs": 10,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "mb-bronze-sword-q1",
+      "label": "bronze sword q1"
+    },
+    {
+      "loadout": "mb-bronze-sword-q2",
+      "label": "bronze sword q2"
+    },
+    {
+      "loadout": "mb-bronze-sword-q3",
+      "label": "bronze sword q3"
+    },
+    {
+      "loadout": "mb-bronze-sword-q4",
+      "label": "bronze sword q4"
+    }
+  ]
+}

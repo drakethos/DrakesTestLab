@@ -1,0 +1,40 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Troll-mix-stars",
+  "runs": 10,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "foes": {
+        "prefab": "Troll",
+        "stars": 0
+      },
+      "label": "bronze q2"
+    },
+    {
+      "foes": {
+        "prefab": "Troll",
+        "stars": 1
+      },
+      "label": "bronze q2"
+    },
+    {
+      "foes": {
+        "prefab": "Troll",
+        "stars": 2
+      },
+      "label": "bronze q2"
+    }
+  ]
+}

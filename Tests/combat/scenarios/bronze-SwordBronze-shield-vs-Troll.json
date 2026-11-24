@@ -1,0 +1,17 @@
+{
+  "name": "bronze-SwordBronze-shield-vs-Troll",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "bronze-SwordBronze-shield"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "game-blackforest-Ghost-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "blackforest",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Ghost",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "cal-plains-axe-q3",
+  "tier": "plains",
+  "build": "axe",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "AxeBlackMetal",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedCuirass",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedGreaves",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetPadded",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBlackmetal",
+      "quality": 3,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-plains-axe"
+}

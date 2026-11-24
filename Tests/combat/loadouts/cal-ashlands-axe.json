@@ -1,0 +1,32 @@
+{
+  "name": "cal-ashlands-axe",
+  "tier": "ashlands",
+  "build": "axe",
+  "meals": [
+    "PiquantPie",
+    "MashedMeat",
+    "ScorchingMedley"
+  ],
+  "items": [
+    {
+      "prefab": "AxeBerzerkr",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFlametal",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

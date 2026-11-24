@@ -1,0 +1,40 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Greydwarf-mix-count",
+  "runs": 10,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Greydwarf",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "foes": {
+        "prefab": "Greydwarf",
+        "count": 1
+      },
+      "label": "bronze q2"
+    },
+    {
+      "foes": {
+        "prefab": "Greydwarf",
+        "count": 2
+      },
+      "label": "bronze q2"
+    },
+    {
+      "foes": {
+        "prefab": "Greydwarf",
+        "count": 3
+      },
+      "label": "bronze q2"
+    }
+  ]
+}

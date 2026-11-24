@@ -1,0 +1,32 @@
+{
+  "name": "iron-AxeIron-shield",
+  "tier": "iron",
+  "maxHealth": 150,
+  "maxStamina": 110,
+  "skills": {
+    "Axes": 45,
+    "Blocking": 45
+  },
+  "items": [
+    {
+      "prefab": "AxeIron",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "equip": true
+    },
+    {
+      "prefab": "ShieldIronSquare",
+      "equip": true
+    }
+  ]
+}

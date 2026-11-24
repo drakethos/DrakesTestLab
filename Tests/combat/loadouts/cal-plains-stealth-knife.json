@@ -1,0 +1,32 @@
+{
+  "name": "cal-plains-stealth-knife",
+  "tier": "plains",
+  "build": "stealth-knife",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeBlackMetal",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFenring",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

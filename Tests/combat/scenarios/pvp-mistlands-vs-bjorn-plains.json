@@ -1,0 +1,18 @@
+{
+  "name": "pvp-mistlands-vs-bjorn-plains",
+  "description": "PvP across tiers: a Mistlands player against Bjorn in Plains gear (both fighter).",
+  "runs": 10,
+  "timeout": 180,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "game-mistlands-mid"
+  },
+  "pvp": {
+    "loadout": "game-plains-mid",
+    "bot": "fighter",
+    "name": "Bjorn"
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

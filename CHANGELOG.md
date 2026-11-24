@@ -1,5 +1,39 @@
 # DrakesTestLab
 
+## Unreleased (0.8)
+
+**Combat Lab: a balance simulator.** Real fights (the game's own AI, attacks, blocking, parries, staggers, food and
+damage code) between a bot or you and monsters or a bot player, many times over, with a report. Guide: `docs/COMBAT.md`
+and the wiki pages Combat Lab, Combat Scenarios and Difficulty Database. Handover notes: `docs/COMBAT-HANDOVER.md`.
+
+- **Combat tab (F9 > Scenario > Combat).** Fight it yourself: a monster (biome, creature, stars, count, bot teammates)
+  or PvP against Bjornita or Bjorn at five difficulties (twig, trained, fighter, veteran, rogue) in any gear. You
+  play (or watch a bot play you) in your current gear or a biome preset; a 3 second countdown, fights in a row, a
+  time limit, player-count scaling. Fights are recorded and reported like the simulator's; your gear, skills and food
+  are given back afterwards. Rematch, open the report, save your gear as a loadout, run scenario files, and the
+  difficulty database's verdict for the chosen monster.
+- **Scenarios and loadouts** (`config/DrakesTestLab/combat/`): runs, timeouts, auto-stop once settled, bots, foes
+  with stars and counts, PvP, team climbs (players needed), horde counts, mixed lanes, attack modes, food profiles,
+  config variants, balance bands with verdicts, baselines from other runs, raw-data switches (fearless, aggro, no
+  stagger, no knockback, damage multipliers), stealth openers, screenshots at set fight times.
+- **Speed:** up to 4 fights side by side (lanes) and a game clock up to 4x. 3 lanes at 3x are validated against
+  single fights at 1x (win rate, kill time and time to die match; damage taken reads about 11% low).
+- **Player-count scaling** (`"playerScaling"`): auto (the players really fighting; lanes count 1 each), vanilla, off,
+  or a fixed number of players.
+- **Difficulty database** (`combat/difficulty-db.json`, shipped): every creature of six biomes at 0 to 2 stars against
+  a mid player of the biome, per weapon build, with players needed. 82 of 96 rows fought, 14 modelled; the model held
+  34 of 36 fresh spot-checks. Rows from your own `"difficulty": true` scenarios replace the shipped ones.
+- **Bots** that play like people: reaction time, parry timing with human error, rolls, stamina management, combos,
+  strafing, punishing staggers, learning which attacks cannot be blocked; a stealth bot that backstabs.
+- **Command line:** `-testlab-combat <names|all|prefix*>`, `-testlab-combat-runs N`, `-testlab-combat-check`,
+  `-testlab-combat-dump`; `Run-TestLabSuites.ps1 -Combat`, `run_testlab_suites.py --combat`; hot-mode `combat.txt`.
+  Exit codes: 0 fine, 1 a far-off balance flag, 3 nothing ran.
+- **Config `[Combat]`:** ArenaRadius, TimeScale, Lean, AutoRuns, TierSkills, SkillPerQuality, MaxFightSeconds,
+  MaxRunMinutes, SkipDeathReload.
+- Shipped: biome loadouts (`game-<biome>-mid`), calibration builds, example scenarios (`example-*`), PvP presets
+  (`pvp-*`), and the scenarios the database was built from (`cal-*`, `game-*`).
+- Meta test M-46 takes the Combat tab's pictures for the docs.
+
 ## 0.7.0
 
 Full release of 0.7.0-beta.1: the same code, now out of beta. Everything below in 0.7.0-beta.1 applies.

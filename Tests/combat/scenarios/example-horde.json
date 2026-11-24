@@ -1,0 +1,23 @@
+{
+  "name": "example-horde",
+  "description": "How many Greydwarfs at once? Climbs the count until the player mostly loses; the report says 'can handle N'.",
+  "runs": 6,
+  "timeout": 120,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "bronze-SwordBronze-shield"
+  },
+  "foes": {
+    "prefab": "Greydwarf"
+  },
+  "calibrate": {
+    "from": 2,
+    "to": 8,
+    "step": 1,
+    "stopBelow": 0.2,
+    "capacityAt": 0.5
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

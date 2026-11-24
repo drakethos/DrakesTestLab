@@ -1,0 +1,46 @@
+{
+  "name": "cal-ashlands-Asksvin-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-ashlands-sword"
+  },
+  "foes": {
+    "prefab": "Asksvin",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-ashlands-sword",
+      "foes": {
+        "prefab": "Asksvin",
+        "stars": 1
+      },
+      "label": "ashlands sword"
+    },
+    {
+      "loadout": "cal-ashlands-sword",
+      "foes": {
+        "prefab": "Asksvin",
+        "stars": 2
+      },
+      "label": "ashlands sword"
+    },
+    {
+      "loadout": "cal-ashlands-spear",
+      "foes": {
+        "prefab": "Asksvin",
+        "stars": 2
+      },
+      "label": "ashlands spear"
+    }
+  ],
+  "autoRuns": true
+}

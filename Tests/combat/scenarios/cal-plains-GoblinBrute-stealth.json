@@ -1,0 +1,21 @@
+{
+  "name": "cal-plains-GoblinBrute-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-stealth-knife"
+  },
+  "foes": {
+    "prefab": "GoblinBrute",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

@@ -1,0 +1,19 @@
+{
+  "name": "game-mistlands-Dverger-0star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mistlands-mid"
+  },
+  "foes": {
+    "prefab": "Dverger",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "example-troll-players-needed",
+  "description": "Team climb: 1, 2, 3, then 4 mid players together until a team wins at least half its fights. The Troll scales for the team (playerScaling auto).",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "team": {
+    "from": 1,
+    "to": 4,
+    "needWin": 0.5
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

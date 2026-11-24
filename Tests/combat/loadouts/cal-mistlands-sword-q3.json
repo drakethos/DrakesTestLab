@@ -1,0 +1,38 @@
+{
+  "name": "cal-mistlands-sword-q3",
+  "tier": "mistlands",
+  "build": "sword",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "SwordMistwalker",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceChest",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceLegs",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetCarapace",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldCarapace",
+      "quality": 3,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-mistlands-sword"
+}

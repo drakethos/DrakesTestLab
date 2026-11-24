@@ -1,0 +1,19 @@
+{
+  "name": "game-mountain-StoneGolem-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-mountain-mid"
+  },
+  "foes": {
+    "prefab": "StoneGolem",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

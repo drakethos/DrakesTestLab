@@ -1,0 +1,34 @@
+{
+  "name": "cal-swamp-Wraith-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-spear"
+  },
+  "foes": {
+    "prefab": "Wraith",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-swamp-spear",
+      "label": "swamp spear"
+    },
+    {
+      "loadout": "cal-swamp-atgeir",
+      "label": "swamp atgeir"
+    },
+    {
+      "loadout": "cal-swamp-battleaxe",
+      "label": "swamp battleaxe"
+    }
+  ],
+  "autoRuns": true
+}

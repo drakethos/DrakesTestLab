@@ -1,0 +1,31 @@
+{
+  "name": "example-mixed-lanes",
+  "description": "Mixed lanes: three builds against the same Troll at once, rotating lanes every fight; one result row per build.",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-sword",
+      "label": "sword"
+    },
+    {
+      "loadout": "cal-blackforest-axe",
+      "label": "axe"
+    },
+    {
+      "loadout": "cal-blackforest-mace",
+      "label": "mace"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

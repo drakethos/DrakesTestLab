@@ -1,0 +1,19 @@
+{
+  "name": "game-swamp-Draugr_Elite-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-swamp-mid"
+  },
+  "foes": {
+    "prefab": "Draugr_Elite",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

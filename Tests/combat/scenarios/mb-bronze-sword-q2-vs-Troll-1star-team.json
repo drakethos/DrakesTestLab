@@ -1,0 +1,22 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Troll-1star-team",
+  "runs": 10,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "team": {
+    "from": 1,
+    "to": 4,
+    "needWin": 0.5
+  }
+}

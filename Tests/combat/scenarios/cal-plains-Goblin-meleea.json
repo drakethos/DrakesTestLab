@@ -1,0 +1,34 @@
+{
+  "name": "cal-plains-Goblin-meleea",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "Goblin",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-plains-sword",
+      "label": "plains sword"
+    },
+    {
+      "loadout": "cal-plains-axe",
+      "label": "plains axe"
+    },
+    {
+      "loadout": "cal-plains-mace",
+      "label": "plains mace"
+    }
+  ],
+  "autoRuns": true
+}

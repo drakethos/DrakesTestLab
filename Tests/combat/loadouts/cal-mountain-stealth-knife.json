@@ -1,0 +1,32 @@
+{
+  "name": "cal-mountain-stealth-knife",
+  "tier": "mountain",
+  "build": "stealth-knife",
+  "meals": [
+    "SerpentStew",
+    "WolfMeatSkewer",
+    "Eyescream"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeSilver",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFenring",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "spot-team-plains-GoblinBrute-1star",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "GoblinBrute",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

@@ -1,0 +1,38 @@
+{
+  "name": "cal-blackforest-spear-q3",
+  "tier": "blackforest",
+  "build": "spear",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "SpearBronze",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 3,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-blackforest-spear"
+}

@@ -1,0 +1,34 @@
+{
+  "name": "cal-swamp-Wraith-meleea",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-sword"
+  },
+  "foes": {
+    "prefab": "Wraith",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-swamp-sword",
+      "label": "swamp sword"
+    },
+    {
+      "loadout": "cal-swamp-axe",
+      "label": "swamp axe"
+    },
+    {
+      "loadout": "cal-swamp-mace",
+      "label": "swamp mace"
+    }
+  ],
+  "autoRuns": true
+}

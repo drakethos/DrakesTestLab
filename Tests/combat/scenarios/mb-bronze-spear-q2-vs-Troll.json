@@ -1,0 +1,17 @@
+{
+  "name": "mb-bronze-spear-q2-vs-Troll",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-spear-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

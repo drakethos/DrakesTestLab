@@ -616,6 +616,16 @@ T('N-12', 'expectFailure itself: a test expected to fail that passes is reported
 ], expectFailure='this text never appears in a reason', manualOnly=True,
   desc='Kept manual-only: it fails by design to show what a wrong expectFailure looks like.')
 
+T('M-46', 'Combat tab: fight a monster or Bjornita yourself (screenshots for the docs)', [
+    {'do': 'setConfig', 'guid': 'com.drakemods.testlab', 'values': {'Dev/UiOpacity': '1'}},
+    {'do': 'hook', 'name': 'testlab.combatTabPreset', 'args': {'pvp': False, 'biome': 'Black Forest', 'foe': 'Troll', 'stars': 0}},
+    {'do': 'hook', 'name': 'testlab.showTab', 'args': {'tab': 'Combat'}}, wait(0.6),
+    {'do': 'screenshot', 'name': 'tab-combat'},
+    {'do': 'hook', 'name': 'testlab.combatTabPreset', 'args': {'pvp': True, 'bot': 'veteran', 'gear': 'Plains'}}, wait(0.6),
+    {'do': 'screenshot', 'name': 'tab-combat-pvp'},
+    {'do': 'hook', 'name': 'testlab.closeToolbox'},
+], desc='Pictures of the Combat tab for the README and the wiki: the monster setup with its difficulty-database line, and PvP against Bjornita.')
+
 # ---------------------------------------------------------------- write
 if os.path.isdir(OUT):
     shutil.rmtree(OUT)

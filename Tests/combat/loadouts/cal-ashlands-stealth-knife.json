@@ -1,0 +1,32 @@
+{
+  "name": "cal-ashlands-stealth-knife",
+  "tier": "ashlands",
+  "build": "stealth-knife",
+  "meals": [
+    "PiquantPie",
+    "MashedMeat",
+    "ScorchingMedley"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeSkollAndHati",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorAshlandsMediumChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorAshlandsMediumlegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetAshlandsMediumHood",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

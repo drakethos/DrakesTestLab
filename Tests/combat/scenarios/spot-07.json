@@ -1,0 +1,45 @@
+{
+  "name": "spot-07",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-plains-axe-q4"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 1
+  },
+  "lanes": [
+    {
+      "loadout": "cal-plains-axe-q4",
+      "foes": {
+        "prefab": "Lox",
+        "stars": 1
+      },
+      "label": "cal-plains-axe-q4 vs Lox 1*"
+    },
+    {
+      "loadout": "cal-plains-atgeir-q2",
+      "foes": {
+        "prefab": "Goblin",
+        "stars": 2
+      },
+      "label": "cal-plains-atgeir-q2 vs Goblin 2*"
+    },
+    {
+      "loadout": "cal-plains-sword-q1",
+      "foes": {
+        "prefab": "Lox",
+        "stars": 2
+      },
+      "label": "cal-plains-sword-q1 vs Lox 2*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

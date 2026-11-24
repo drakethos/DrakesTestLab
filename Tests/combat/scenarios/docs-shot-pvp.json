@@ -1,0 +1,37 @@
+{
+  "name": "docs-shot-pvp",
+  "runs": 1,
+  "timeout": 40,
+  "bot": "fighter",
+  "timeScale": 1,
+  "stall": 0,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "pvp": {
+    "loadout": "game-plains-mid",
+    "bot": "veteran",
+    "name": "Bjornita"
+  },
+  "screenshots": [
+    {
+      "at": 4,
+      "name": "combat-pvp-bjornita",
+      "clean": true
+    },
+    {
+      "at": 8,
+      "name": "combat-pvp-bjornita-2",
+      "clean": true
+    },
+    {
+      "at": 11,
+      "name": "combat-tab-running",
+      "tab": "Combat"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

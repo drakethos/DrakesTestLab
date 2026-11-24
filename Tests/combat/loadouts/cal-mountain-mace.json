@@ -1,0 +1,37 @@
+{
+  "name": "cal-mountain-mace",
+  "tier": "mountain",
+  "build": "mace",
+  "meals": [
+    "SerpentStew",
+    "WolfMeatSkewer",
+    "Eyescream"
+  ],
+  "items": [
+    {
+      "prefab": "MaceSilver",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetDrake",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldSilver",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

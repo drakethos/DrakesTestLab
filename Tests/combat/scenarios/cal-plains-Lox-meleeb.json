@@ -1,0 +1,28 @@
+{
+  "name": "cal-plains-Lox-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-atgeir"
+  },
+  "foes": {
+    "prefab": "Lox",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true,
+  "lanes": [
+    {
+      "loadout": "cal-plains-atgeir",
+      "label": "plains atgeir"
+    }
+  ],
+  "autoRuns": true
+}

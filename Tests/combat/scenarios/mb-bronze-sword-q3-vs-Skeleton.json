@@ -1,0 +1,17 @@
+{
+  "name": "mb-bronze-sword-q3-vs-Skeleton",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q3"
+  },
+  "foes": {
+    "prefab": "Skeleton",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

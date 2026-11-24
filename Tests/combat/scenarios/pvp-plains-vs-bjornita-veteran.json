@@ -1,0 +1,18 @@
+{
+  "name": "pvp-plains-vs-bjornita-veteran",
+  "description": "PvP: a mid Plains player (fighter bot) against Bjornita playing as 'veteran', same gear.",
+  "runs": 10,
+  "timeout": 180,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "pvp": {
+    "loadout": "game-plains-mid",
+    "bot": "veteran",
+    "name": "Bjornita"
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

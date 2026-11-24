@@ -1,0 +1,21 @@
+{
+  "name": "game-meadows-Boar-1star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "meadows",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-meadows-mid"
+  },
+  "foes": {
+    "prefab": "Boar",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

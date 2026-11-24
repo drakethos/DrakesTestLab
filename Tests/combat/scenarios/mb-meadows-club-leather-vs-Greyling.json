@@ -1,0 +1,19 @@
+{
+  "name": "mb-meadows-club-leather-vs-Greyling",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-meadows-club-leather"
+  },
+  "foes": {
+    "prefab": "Greyling",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

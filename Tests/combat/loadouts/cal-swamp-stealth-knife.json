@@ -1,0 +1,32 @@
+{
+  "name": "cal-swamp-stealth-knife",
+  "tier": "swamp",
+  "build": "stealth-knife",
+  "meals": [
+    "Sausages",
+    "TurnipStew",
+    "BlackSoup"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeChitin",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorRootChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorRootLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetRoot",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

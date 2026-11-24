@@ -1,0 +1,46 @@
+{
+  "name": "cal-mistlands-Dverger-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mistlands-sword"
+  },
+  "foes": {
+    "prefab": "Dverger",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mistlands-sword",
+      "foes": {
+        "prefab": "Dverger",
+        "stars": 1
+      },
+      "label": "mistlands sword"
+    },
+    {
+      "loadout": "cal-mistlands-sword",
+      "foes": {
+        "prefab": "Dverger",
+        "stars": 2
+      },
+      "label": "mistlands sword"
+    },
+    {
+      "loadout": "cal-mistlands-atgeir",
+      "foes": {
+        "prefab": "Dverger",
+        "stars": 2
+      },
+      "label": "mistlands atgeir"
+    }
+  ],
+  "autoRuns": true
+}

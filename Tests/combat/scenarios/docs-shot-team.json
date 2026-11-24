@@ -1,0 +1,26 @@
+{
+  "name": "docs-shot-team",
+  "runs": 1,
+  "timeout": 40,
+  "bot": "fighter",
+  "timeScale": 1,
+  "stall": 0,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "team": 3,
+  "screenshots": [
+    {
+      "at": 5,
+      "name": "combat-team-troll",
+      "clean": true
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

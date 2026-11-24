@@ -1,0 +1,33 @@
+{
+  "name": "cal-swamp-battleaxe-q1",
+  "tier": "swamp",
+  "build": "battleaxe",
+  "meals": [
+    "Sausages",
+    "TurnipStew",
+    "BlackSoup"
+  ],
+  "items": [
+    {
+      "prefab": "Battleaxe",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-swamp-battleaxe"
+}

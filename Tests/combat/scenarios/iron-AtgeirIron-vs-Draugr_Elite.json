@@ -1,0 +1,17 @@
+{
+  "name": "iron-AtgeirIron-vs-Draugr_Elite",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "iron-AtgeirIron"
+  },
+  "foes": {
+    "prefab": "Draugr_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

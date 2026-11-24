@@ -1,0 +1,32 @@
+{
+  "name": "cal-blackforest-atgeir-q3",
+  "tier": "blackforest",
+  "build": "atgeir",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirBronze",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 3,
+      "equip": true
+    }
+  ]
+}

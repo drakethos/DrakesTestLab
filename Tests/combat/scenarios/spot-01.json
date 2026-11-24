@@ -1,0 +1,45 @@
+{
+  "name": "spot-01",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-blackforest-atgeir-q1"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 2
+  },
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-atgeir-q1",
+      "foes": {
+        "prefab": "Greydwarf_Elite",
+        "stars": 2
+      },
+      "label": "cal-blackforest-atgeir-q1 vs Greydwarf_Elite 2*"
+    },
+    {
+      "loadout": "cal-blackforest-atgeir-q2",
+      "foes": {
+        "prefab": "Greydwarf_Shaman",
+        "stars": 2
+      },
+      "label": "cal-blackforest-atgeir-q2 vs Greydwarf_Shaman 2*"
+    },
+    {
+      "loadout": "cal-blackforest-sword-q4",
+      "foes": {
+        "prefab": "Ghost",
+        "stars": 2
+      },
+      "label": "cal-blackforest-sword-q4 vs Ghost 2*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "mb-bronze-atgeir-q2-vs-Troll-attacks",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-atgeir-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "attack": [
+    "primary",
+    "secondary",
+    "mix:every3",
+    "mix:4s"
+  ]
+}

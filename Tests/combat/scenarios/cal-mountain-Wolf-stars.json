@@ -1,0 +1,46 @@
+{
+  "name": "cal-mountain-Wolf-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mountain-sword"
+  },
+  "foes": {
+    "prefab": "Wolf",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mountain-sword",
+      "foes": {
+        "prefab": "Wolf",
+        "stars": 1
+      },
+      "label": "mountain sword"
+    },
+    {
+      "loadout": "cal-mountain-sword",
+      "foes": {
+        "prefab": "Wolf",
+        "stars": 2
+      },
+      "label": "mountain sword"
+    },
+    {
+      "loadout": "cal-mountain-battleaxe",
+      "foes": {
+        "prefab": "Wolf",
+        "stars": 2
+      },
+      "label": "mountain battleaxe"
+    }
+  ],
+  "autoRuns": true
+}

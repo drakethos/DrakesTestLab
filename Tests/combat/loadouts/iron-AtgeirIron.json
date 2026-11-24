@@ -1,0 +1,28 @@
+{
+  "name": "iron-AtgeirIron",
+  "tier": "iron",
+  "maxHealth": 150,
+  "maxStamina": 110,
+  "skills": {
+    "Polearms": 45,
+    "Blocking": 45
+  },
+  "items": [
+    {
+      "prefab": "AtgeirIron",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "equip": true
+    }
+  ]
+}

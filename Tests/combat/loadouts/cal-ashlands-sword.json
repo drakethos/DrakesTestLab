@@ -1,0 +1,37 @@
+{
+  "name": "cal-ashlands-sword",
+  "tier": "ashlands",
+  "build": "sword",
+  "meals": [
+    "PiquantPie",
+    "MashedMeat",
+    "ScorchingMedley"
+  ],
+  "items": [
+    {
+      "prefab": "SwordNiedhogg",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFlametalLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFlametal",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldFlametal",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

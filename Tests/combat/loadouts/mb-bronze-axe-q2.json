@@ -1,0 +1,53 @@
+{
+  "name": "mb-bronze-axe-q2",
+  "tier": "bronze",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "food": {
+    "balanced": [
+      "DeerStew",
+      "MinceMeatSauce",
+      "QueensJam"
+    ],
+    "health": [
+      "DeerStew",
+      "MinceMeatSauce",
+      "CookedDeerMeat"
+    ],
+    "stamina": [
+      "QueensJam",
+      "CarrotSoup",
+      "DeerStew"
+    ]
+  },
+  "items": [
+    {
+      "prefab": "AxeBronze",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

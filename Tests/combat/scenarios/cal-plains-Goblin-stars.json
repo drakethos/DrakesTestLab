@@ -1,0 +1,46 @@
+{
+  "name": "cal-plains-Goblin-stars",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "plains",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-plains-sword"
+  },
+  "foes": {
+    "prefab": "Goblin",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-plains-sword",
+      "foes": {
+        "prefab": "Goblin",
+        "stars": 1
+      },
+      "label": "plains sword"
+    },
+    {
+      "loadout": "cal-plains-sword",
+      "foes": {
+        "prefab": "Goblin",
+        "stars": 2
+      },
+      "label": "plains sword"
+    },
+    {
+      "loadout": "cal-plains-atgeir",
+      "foes": {
+        "prefab": "Goblin",
+        "stars": 2
+      },
+      "label": "plains atgeir"
+    }
+  ],
+  "autoRuns": true
+}

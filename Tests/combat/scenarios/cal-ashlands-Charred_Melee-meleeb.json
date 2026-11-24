@@ -1,0 +1,26 @@
+{
+  "name": "cal-ashlands-Charred_Melee-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-ashlands-spear"
+  },
+  "foes": {
+    "prefab": "Charred_Melee",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-ashlands-spear",
+      "label": "ashlands spear"
+    }
+  ],
+  "autoRuns": true
+}

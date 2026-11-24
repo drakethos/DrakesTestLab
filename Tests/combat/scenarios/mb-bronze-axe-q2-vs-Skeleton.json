@@ -1,0 +1,17 @@
+{
+  "name": "mb-bronze-axe-q2-vs-Skeleton",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-axe-q2"
+  },
+  "foes": {
+    "prefab": "Skeleton",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "cal-mistlands-stealth-knife",
+  "tier": "mistlands",
+  "build": "stealth-knife",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeSkollAndHati",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorFenringLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetFenring",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

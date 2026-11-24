@@ -1,0 +1,19 @@
+{
+  "name": "game-ashlands-BlobLava-2star",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "difficulty": true,
+  "gear": {
+    "loadout": "game-ashlands-mid"
+  },
+  "foes": {
+    "prefab": "BlobLava",
+    "stars": 2
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

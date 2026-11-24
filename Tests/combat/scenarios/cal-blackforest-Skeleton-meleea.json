@@ -1,0 +1,34 @@
+{
+  "name": "cal-blackforest-Skeleton-meleea",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "blackforest",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-blackforest-sword"
+  },
+  "foes": {
+    "prefab": "Skeleton",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-sword",
+      "label": "blackforest sword"
+    },
+    {
+      "loadout": "cal-blackforest-axe",
+      "label": "blackforest axe"
+    },
+    {
+      "loadout": "cal-blackforest-mace",
+      "label": "blackforest mace"
+    }
+  ],
+  "autoRuns": true
+}

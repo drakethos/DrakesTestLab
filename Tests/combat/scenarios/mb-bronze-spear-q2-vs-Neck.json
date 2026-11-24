@@ -1,0 +1,19 @@
+{
+  "name": "mb-bronze-spear-q2-vs-Neck",
+  "runs": 3,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-spear-q2"
+  },
+  "foes": {
+    "prefab": "Neck",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "fearless": true,
+  "aggro": true
+}

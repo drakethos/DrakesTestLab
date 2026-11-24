@@ -1,0 +1,30 @@
+{
+  "name": "example-bot-skill",
+  "description": "Same gear, three bot skills (twig, fighter, veteran) against a Goblin Brute.",
+  "runs": 8,
+  "timeout": 150,
+  "timeScale": 3,
+  "gear": {
+    "loadout": "game-plains-mid"
+  },
+  "foes": {
+    "prefab": "GoblinBrute"
+  },
+  "lanes": [
+    {
+      "bot": "twig",
+      "label": "twig"
+    },
+    {
+      "bot": "fighter",
+      "label": "fighter"
+    },
+    {
+      "bot": "veteran",
+      "label": "veteran"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

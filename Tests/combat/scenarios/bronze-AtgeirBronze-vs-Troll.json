@@ -1,0 +1,17 @@
+{
+  "name": "bronze-AtgeirBronze-vs-Troll",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "bronze-AtgeirBronze"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

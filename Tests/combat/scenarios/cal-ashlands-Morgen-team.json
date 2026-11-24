@@ -1,0 +1,21 @@
+{
+  "name": "cal-ashlands-Morgen-team",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "ashlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-ashlands-sword"
+  },
+  "foes": {
+    "prefab": "Morgen",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

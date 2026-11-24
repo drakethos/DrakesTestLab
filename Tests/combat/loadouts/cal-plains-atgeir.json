@@ -1,0 +1,32 @@
+{
+  "name": "cal-plains-atgeir",
+  "tier": "plains",
+  "build": "atgeir",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirBlackmetal",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedCuirass",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedGreaves",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetPadded",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Troll-v-ctl",
+  "runs": 40,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "timeScale": 1,
+  "lanes": 1,
+  "autoRuns": false
+}

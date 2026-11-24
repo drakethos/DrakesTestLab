@@ -1,0 +1,45 @@
+{
+  "name": "spot-05",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-mountain-spear-q1"
+  },
+  "foes": {
+    "prefab": "Fenring",
+    "stars": 1
+  },
+  "lanes": [
+    {
+      "loadout": "cal-mountain-spear-q1",
+      "foes": {
+        "prefab": "Fenring",
+        "stars": 1
+      },
+      "label": "cal-mountain-spear-q1 vs Fenring 1*"
+    },
+    {
+      "loadout": "cal-mountain-mace-q4",
+      "foes": {
+        "prefab": "Wolf",
+        "stars": 0
+      },
+      "label": "cal-mountain-mace-q4 vs Wolf 0*"
+    },
+    {
+      "loadout": "cal-mountain-battleaxe-q3",
+      "foes": {
+        "prefab": "Fenring_Cultist",
+        "stars": 1
+      },
+      "label": "cal-mountain-battleaxe-q3 vs Fenring_Cultist 1*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

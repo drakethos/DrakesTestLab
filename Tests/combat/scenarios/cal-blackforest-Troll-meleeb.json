@@ -1,0 +1,30 @@
+{
+  "name": "cal-blackforest-Troll-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "blackforest",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-blackforest-spear"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-blackforest-spear",
+      "label": "blackforest spear"
+    },
+    {
+      "loadout": "cal-blackforest-atgeir",
+      "label": "blackforest atgeir"
+    }
+  ],
+  "autoRuns": true
+}

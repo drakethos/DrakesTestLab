@@ -1,0 +1,28 @@
+{
+  "name": "bronze-AtgeirBronze",
+  "tier": "bronze",
+  "maxHealth": 125,
+  "maxStamina": 100,
+  "skills": {
+    "Polearms": 30,
+    "Blocking": 30
+  },
+  "items": [
+    {
+      "prefab": "AtgeirBronze",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "equip": true
+    }
+  ]
+}

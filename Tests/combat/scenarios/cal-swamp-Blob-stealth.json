@@ -1,0 +1,21 @@
+{
+  "name": "cal-swamp-Blob-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-stealth-knife"
+  },
+  "foes": {
+    "prefab": "Blob",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

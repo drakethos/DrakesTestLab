@@ -1,0 +1,21 @@
+{
+  "name": "spot-team-blackforest-Troll-1star",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "blackforest",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-blackforest-sword"
+  },
+  "foes": {
+    "prefab": "Troll",
+    "stars": 1
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "difficulty": true,
+  "autoRuns": true
+}

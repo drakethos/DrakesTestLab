@@ -1,0 +1,33 @@
+{
+  "name": "cal-swamp-atgeir-q3",
+  "tier": "swamp",
+  "build": "atgeir",
+  "meals": [
+    "Sausages",
+    "TurnipStew",
+    "BlackSoup"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirIron",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronChest",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorIronLegs",
+      "quality": 3,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetIron",
+      "quality": 3,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-swamp-atgeir"
+}

@@ -1,0 +1,37 @@
+{
+  "name": "cal-blackforest-stealth-knife",
+  "tier": "blackforest",
+  "build": "stealth-knife",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "KnifeCopper",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorTrollLeatherChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorTrollLeatherLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetTrollLeather",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "CapeTrollHide",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

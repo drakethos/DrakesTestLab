@@ -1,0 +1,32 @@
+{
+  "name": "cal-mistlands-atgeir",
+  "tier": "mistlands",
+  "build": "atgeir",
+  "meals": [
+    "MeatPlatter",
+    "HoneyGlazedChicken",
+    "MushroomOmelette"
+  ],
+  "items": [
+    {
+      "prefab": "AtgeirHimminAfl",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceChest",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorCarapaceLegs",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetCarapace",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

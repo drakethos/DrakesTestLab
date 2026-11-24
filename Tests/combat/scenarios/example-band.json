@@ -1,0 +1,22 @@
+{
+  "name": "example-band",
+  "description": "A balance band: the report flags the cell when the win rate or kill time is outside it.",
+  "runs": 10,
+  "timeout": 90,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "bronze-SwordBronze-shield"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite"
+  },
+  "band": {
+    "winMin": 0.6,
+    "winMax": 0.95,
+    "ttkMin": 8,
+    "ttkMax": 25
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

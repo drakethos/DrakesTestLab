@@ -1,0 +1,37 @@
+{
+  "name": "cal-plains-sword",
+  "tier": "plains",
+  "build": "sword",
+  "meals": [
+    "LoxPie",
+    "FishWraps",
+    "BloodPudding"
+  ],
+  "items": [
+    {
+      "prefab": "SwordBlackmetal",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedCuirass",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorPaddedGreaves",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetPadded",
+      "quality": 2,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBlackmetal",
+      "quality": 2,
+      "equip": true
+    }
+  ]
+}

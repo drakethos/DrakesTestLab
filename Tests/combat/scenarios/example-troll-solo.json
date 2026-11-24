@@ -1,0 +1,16 @@
+{
+  "name": "example-troll-solo",
+  "description": "A mid Black Forest player (fighter bot) against a Troll, 10 fights at normal speed.",
+  "runs": 10,
+  "timeout": 120,
+  "bot": "fighter",
+  "gear": {
+    "loadout": "game-blackforest-mid"
+  },
+  "foes": {
+    "prefab": "Troll"
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

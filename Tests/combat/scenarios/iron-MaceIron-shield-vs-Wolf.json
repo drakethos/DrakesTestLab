@@ -1,0 +1,17 @@
+{
+  "name": "iron-MaceIron-shield-vs-Wolf",
+  "runs": 30,
+  "timeout": 75,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "iron-MaceIron-shield"
+  },
+  "foes": {
+    "prefab": "Wolf",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

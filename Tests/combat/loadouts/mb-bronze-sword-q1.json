@@ -1,0 +1,53 @@
+{
+  "name": "mb-bronze-sword-q1",
+  "tier": "bronze",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "food": {
+    "balanced": [
+      "DeerStew",
+      "MinceMeatSauce",
+      "QueensJam"
+    ],
+    "health": [
+      "DeerStew",
+      "MinceMeatSauce",
+      "CookedDeerMeat"
+    ],
+    "stamina": [
+      "QueensJam",
+      "CarrotSoup",
+      "DeerStew"
+    ]
+  },
+  "items": [
+    {
+      "prefab": "SwordBronze",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 1,
+      "equip": true
+    }
+  ]
+}

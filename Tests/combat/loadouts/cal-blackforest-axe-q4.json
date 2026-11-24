@@ -1,0 +1,38 @@
+{
+  "name": "cal-blackforest-axe-q4",
+  "tier": "blackforest",
+  "build": "axe",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "AxeBronze",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 4,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 4,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-blackforest-axe"
+}

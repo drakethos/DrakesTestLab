@@ -1,0 +1,32 @@
+{
+  "name": "bronze-AxeBronze-shield",
+  "tier": "bronze",
+  "maxHealth": 125,
+  "maxStamina": 100,
+  "skills": {
+    "Axes": 30,
+    "Blocking": 30
+  },
+  "items": [
+    {
+      "prefab": "AxeBronze",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "equip": true
+    }
+  ]
+}

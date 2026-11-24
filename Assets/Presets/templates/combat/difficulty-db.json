@@ -1,0 +1,6486 @@
+{
+ "about": "DrakesTestLab Combat Lab: game difficulty baseline. A mid player of each biome (q2 gear of the tier, the tier's skills, real meals, the 'fighter' bot) against each creature at 0-2 stars: win rate alone, per weapon build, and how many such players it takes to win at least half the time. 'fought' numbers are measured fights (8 per cell, 3x clock in lanes, validated against 1x); 'model' numbers are calculated from them and the game's own data (spot-checked: 34 of 36 fresh fights held). Rows written by your own runs replace these. Full rebuild: -testlab-combat \"cal-*\" then tools/combat_predict.py and tools/combat_build_db.py (takes hours).",
+ "updated": "2026-11-24T07:29:18",
+ "model": {
+  "k": 2.75,
+  "kTeam": 0.45,
+  "healthPerPlayer": 0.3,
+  "damagePerPlayer": 0.04
+ },
+ "rows": {
+  "ashlands/Asksvin/0": {
+   "biome": "ashlands",
+   "foe": "Asksvin",
+   "name": "$enemy_asksvin",
+   "stars": 0,
+   "health": 800,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 16.4,
+    "damageTakenPct": 30.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 16.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 9.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 15.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 26.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 1.7,
+     "runs": 5,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "ashlands/Asksvin/1": {
+   "biome": "ashlands",
+   "foe": "Asksvin",
+   "name": "$enemy_asksvin",
+   "stars": 1,
+   "health": 1600,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 2,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 3,
+    "winRate": 0.375,
+    "ttk": 42.0,
+    "damageTakenPct": 101.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.39
+    },
+    {
+     "size": 2,
+     "win": 0.51
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 5.6,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.67,
+     "ttk": 29.1,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.52,
+     "ttk": 42.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.39,
+     "ttk": 67.5,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.375,
+     "ttk": 42.0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "sword"
+  },
+  "ashlands/Asksvin/2": {
+   "biome": "ashlands",
+   "foe": "Asksvin",
+   "name": "$enemy_asksvin",
+   "stars": 2,
+   "health": 2400,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 105.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.99,
+     "ttk": 4.9,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.09,
+     "ttk": 25.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.06,
+     "ttk": 37.3,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "spear"
+  },
+  "ashlands/BlobLava/0": {
+   "biome": "ashlands",
+   "foe": "BlobLava",
+   "name": "$enemy_bloblava",
+   "stars": 0,
+   "health": 300,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 4.1,
+    "damageTakenPct": 13.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 4.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 3.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 5.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 3.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 1.5,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "ashlands/BlobLava/1": {
+   "biome": "ashlands",
+   "foe": "BlobLava",
+   "name": "$enemy_bloblava",
+   "stars": 1,
+   "health": 600,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 3.9,
+    "damageTakenPct": 13.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 3.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.99,
+     "ttk": 0.8,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.93,
+     "ttk": 3.3,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.91,
+     "ttk": 4.8,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.9,
+     "ttk": 3.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "spear"
+  },
+  "ashlands/BlobLava/2": {
+   "biome": "ashlands",
+   "foe": "BlobLava",
+   "name": "$enemy_bloblava",
+   "stars": 2,
+   "health": 900,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 4.3,
+    "damageTakenPct": 12.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 4.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 4.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.97,
+     "ttk": 0.9,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.82,
+     "ttk": 4.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.8,
+     "ttk": 6.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "mace"
+  },
+  "ashlands/Charred_Melee/0": {
+   "biome": "ashlands",
+   "foe": "Charred_Melee",
+   "name": "$enemy_charred_melee",
+   "stars": 0,
+   "health": 600,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 12.0,
+    "damageTakenPct": 30.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 12.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 7.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 13.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 36.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 9.6,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "ashlands/Charred_Melee/1": {
+   "biome": "ashlands",
+   "foe": "Charred_Melee",
+   "name": "$enemy_charred_melee",
+   "stars": 1,
+   "health": 1200,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 2,
+    "winRate": 0.25,
+    "ttk": 35.7,
+    "damageTakenPct": 91.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.28
+    },
+    {
+     "size": 2,
+     "win": 0.39
+    },
+    {
+     "size": 3,
+     "win": 0.45
+    },
+    {
+     "size": 4,
+     "win": 0.49
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.5,
+     "ttk": 13.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.44,
+     "ttk": 21.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.44,
+     "ttk": 42.4,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.25,
+     "ttk": 35.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.18,
+     "ttk": 114.6,
+     "source": "model"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "spear"
+  },
+  "ashlands/Charred_Melee/2": {
+   "biome": "ashlands",
+   "foe": "Charred_Melee",
+   "name": "$enemy_charred_melee",
+   "stars": 2,
+   "health": 1800,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 101.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.09,
+     "ttk": 11.6,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.06,
+     "ttk": 18.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.06,
+     "ttk": 36.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "spear"
+  },
+  "ashlands/Morgen/0": {
+   "biome": "ashlands",
+   "foe": "Morgen",
+   "name": "$enemy_morgen",
+   "stars": 0,
+   "health": 1600,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 2,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 2,
+    "winRate": 0.25,
+    "ttk": 72.1,
+    "damageTakenPct": 117.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 2,
+     "runs": 8,
+     "fell": 0.75
+    },
+    {
+     "size": 2,
+     "wins": 4,
+     "runs": 8,
+     "fell": 1.12
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.25,
+     "ttk": 72.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.25,
+     "ttk": 36.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "ashlands/Morgen/1": {
+   "biome": "ashlands",
+   "foe": "Morgen",
+   "name": "$enemy_morgen",
+   "stars": 1,
+   "health": 3200,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.01,
+    "ttk": 137.2,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 0,
+     "runs": 8,
+     "fell": 2
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 5,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 8,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.02,
+     "ttk": 183.8,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.01,
+     "ttk": 101.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 554.4,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 200.7,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.01,
+     "ttk": 137.2,
+     "source": "model"
+    }
+   },
+   "best": "mace",
+   "worst": "sword"
+  },
+  "ashlands/Morgen/2": {
+   "biome": "ashlands",
+   "foe": "Morgen",
+   "name": "$enemy_morgen",
+   "stars": 2,
+   "health": 4800,
+   "loadout": "cal-ashlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 233.2,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.0
+    },
+    {
+     "size": 2,
+     "win": 0.01
+    },
+    {
+     "size": 3,
+     "win": 0.01
+    },
+    {
+     "size": 4,
+     "win": 0.01
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.02,
+     "ttk": 312.5,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 942.5,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 341.2,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 173.3,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 233.2,
+     "source": "model"
+    }
+   },
+   "best": "mace",
+   "worst": "sword"
+  },
+  "blackforest/Ghost/0": {
+   "biome": "blackforest",
+   "foe": "Ghost",
+   "name": "$enemy_ghost",
+   "stars": 0,
+   "health": 60,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 9.8,
+    "damageTakenPct": 4.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 9.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 10.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 10.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 8.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 7.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 12.3,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Ghost/1": {
+   "biome": "blackforest",
+   "foe": "Ghost",
+   "name": "$enemy_ghost",
+   "stars": 1,
+   "health": 120,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 19.8,
+    "damageTakenPct": 15.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 19.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 10.8,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.94,
+     "ttk": 17.4,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.91,
+     "ttk": 15.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.9,
+     "ttk": 22.7,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.87,
+     "ttk": 21.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "blackforest/Ghost/2": {
+   "biome": "blackforest",
+   "foe": "Ghost",
+   "name": "$enemy_ghost",
+   "stars": 2,
+   "health": 180,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 25.3,
+    "damageTakenPct": 33.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 25.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 28.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.99,
+     "ttk": 16.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.84,
+     "ttk": 26.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.77,
+     "ttk": 34.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.69,
+     "ttk": 32.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "blackforest/Greydwarf/0": {
+   "biome": "blackforest",
+   "foe": "Greydwarf",
+   "name": "$enemy_greydwarf",
+   "stars": 0,
+   "health": 40,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.7,
+    "damageTakenPct": 0.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 8.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 5.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 5.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 5.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 6.3,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Greydwarf/1": {
+   "biome": "blackforest",
+   "foe": "Greydwarf",
+   "name": "$enemy_greydwarf",
+   "stars": 1,
+   "health": 80,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.8,
+    "damageTakenPct": 0.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 6.8,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 9.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 6.0,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 6.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 3.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Greydwarf/2": {
+   "biome": "blackforest",
+   "foe": "Greydwarf",
+   "name": "$enemy_greydwarf",
+   "stars": 2,
+   "health": 120,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 12.2,
+    "damageTakenPct": 4.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 12.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 7.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 13.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 8.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 8.4,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 4.2,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Greydwarf_Elite/0": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Elite",
+   "name": "$enemy_greydwarfbrute",
+   "stars": 0,
+   "health": 150,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 13.1,
+    "damageTakenPct": 6.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 13.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 19.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 13.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 19.9,
+     "runs": 7,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 10.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 32.2,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Greydwarf_Elite/1": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Elite",
+   "name": "$enemy_greydwarfbrute",
+   "stars": 1,
+   "health": 300,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 35.4,
+    "damageTakenPct": 40.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 35.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.99,
+     "ttk": 28.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.98,
+     "ttk": 43.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.97,
+     "ttk": 34.1,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 50.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.88,
+     "ttk": 40.3,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "mace"
+  },
+  "blackforest/Greydwarf_Elite/2": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Elite",
+   "name": "$enemy_greydwarfbrute",
+   "stars": 2,
+   "health": 450,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 6,
+    "winRate": 0.75,
+    "ttk": 42.4,
+    "damageTakenPct": 90.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.72
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.875,
+     "ttk": 44.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.75,
+     "ttk": 42.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.67,
+     "ttk": 60.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.57,
+     "ttk": 46.9,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.47,
+     "ttk": 69.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.22,
+     "ttk": 55.4,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "mace"
+  },
+  "blackforest/Greydwarf_Shaman/0": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Shaman",
+   "name": "$enemy_greydwarfshaman",
+   "stars": 0,
+   "health": 60,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.7,
+    "damageTakenPct": 4.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 11.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 9.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 7.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 7.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 11.4,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Greydwarf_Shaman/1": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Shaman",
+   "name": "$enemy_greydwarfshaman",
+   "stars": 1,
+   "health": 120,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 10.6,
+    "damageTakenPct": 13.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 10.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 7.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.95,
+     "ttk": 14.3,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.9,
+     "ttk": 15.9,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.87,
+     "ttk": 13.2,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.86,
+     "ttk": 18.6,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "blackforest/Greydwarf_Shaman/2": {
+   "biome": "blackforest",
+   "foe": "Greydwarf_Shaman",
+   "name": "$enemy_greydwarfshaman",
+   "stars": 2,
+   "health": 180,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 19.3,
+    "damageTakenPct": 33.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 19.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 21.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.99,
+     "ttk": 12.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.86,
+     "ttk": 24.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.79,
+     "ttk": 27.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.7,
+     "ttk": 31.8,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "blackforest/Skeleton/0": {
+   "biome": "blackforest",
+   "foe": "Skeleton",
+   "name": "$enemy_skeleton",
+   "stars": 0,
+   "health": 40,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.2,
+    "damageTakenPct": 0.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 7.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 4.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 15.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 9.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 2.9,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Skeleton/1": {
+   "biome": "blackforest",
+   "foe": "Skeleton",
+   "name": "$enemy_skeleton",
+   "stars": 1,
+   "health": 80,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 7.4,
+    "damageTakenPct": 2.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 7.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 12.2,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 9.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 7.1,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 18.3,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 2.9,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Skeleton/2": {
+   "biome": "blackforest",
+   "foe": "Skeleton",
+   "name": "$enemy_skeleton",
+   "stars": 2,
+   "health": 120,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 8.5,
+    "damageTakenPct": 10.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 8.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 17.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.98,
+     "ttk": 9.2,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 3.8,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.85,
+     "ttk": 12.6,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.52,
+     "ttk": 24.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "spear"
+  },
+  "blackforest/Troll/0": {
+   "biome": "blackforest",
+   "foe": "Troll",
+   "name": "$enemy_troll",
+   "stars": 0,
+   "health": 600,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 3,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 3,
+    "winRate": 0.375,
+    "ttk": 30.6,
+    "damageTakenPct": 91.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 3,
+     "runs": 8,
+     "fell": 0.62
+    },
+    {
+     "size": 2,
+     "wins": 3,
+     "runs": 8,
+     "fell": 1.25
+    },
+    {
+     "size": 3,
+     "wins": 6,
+     "runs": 8,
+     "fell": 1
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.75,
+     "ttk": 27.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.5,
+     "ttk": 42.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.375,
+     "ttk": 30.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.375,
+     "ttk": 60.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.125,
+     "ttk": 58.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "atgeir",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Troll/1": {
+   "biome": "blackforest",
+   "foe": "Troll",
+   "name": "$enemy_troll",
+   "stars": 1,
+   "health": 1200,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.02,
+    "ttk": 80.6,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 0,
+     "runs": 8,
+     "fell": 2
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 8,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 8,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.06,
+     "ttk": 49.2,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.02,
+     "ttk": 91.0,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.02,
+     "ttk": 115.5,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.02,
+     "ttk": 80.6,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 159.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 662.0,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "stealth-knife"
+  },
+  "blackforest/Troll/2": {
+   "biome": "blackforest",
+   "foe": "Troll",
+   "name": "$enemy_troll",
+   "stars": 2,
+   "health": 1800,
+   "loadout": "cal-blackforest-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 137.0,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.0
+    },
+    {
+     "size": 2,
+     "win": 0.01
+    },
+    {
+     "size": 3,
+     "win": 0.01
+    },
+    {
+     "size": 4,
+     "win": 0.01
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 1125.4,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 83.7,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 154.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.0,
+     "ttk": 196.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 270.2,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 137.0,
+     "source": "model"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "sword"
+  },
+  "mistlands/Dverger/0": {
+   "biome": "mistlands",
+   "foe": "Dverger",
+   "name": "$enemy_dvergr",
+   "stars": 0,
+   "health": 350,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 13.8,
+    "damageTakenPct": 4.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 13.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 34.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 38.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 17.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 46.8,
+     "runs": 6,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mistlands/Dverger/1": {
+   "biome": "mistlands",
+   "foe": "Dverger",
+   "name": "$enemy_dvergr",
+   "stars": 1,
+   "health": 700,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 30.5,
+    "damageTakenPct": 55.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 30.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.67,
+     "ttk": 26.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.43,
+     "ttk": 68.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.37,
+     "ttk": 126.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.3,
+     "ttk": 86.1,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "mistlands/Dverger/2": {
+   "biome": "mistlands",
+   "foe": "Dverger",
+   "name": "$enemy_dvergr",
+   "stars": 2,
+   "health": 1050,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 111
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.02,
+     "ttk": 150.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.01,
+     "ttk": 102.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 81.8,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "atgeir"
+  },
+  "mistlands/Seeker/0": {
+   "biome": "mistlands",
+   "foe": "Seeker",
+   "name": "$enemy_seeker",
+   "stars": 0,
+   "health": 200,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 10.0,
+    "damageTakenPct": 5.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 10.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 17.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 23.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 4.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 3.6,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mistlands/Seeker/1": {
+   "biome": "mistlands",
+   "foe": "Seeker",
+   "name": "$enemy_seeker",
+   "stars": 1,
+   "health": 400,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 7,
+    "winRate": 0.875,
+    "ttk": 18.8,
+    "damageTakenPct": 46.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.83
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.98,
+     "ttk": 9.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.93,
+     "ttk": 4.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.875,
+     "ttk": 18.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.66,
+     "ttk": 23.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.31,
+     "ttk": 40.3,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "axe"
+  },
+  "mistlands/Seeker/2": {
+   "biome": "mistlands",
+   "foe": "Seeker",
+   "name": "$enemy_seeker",
+   "stars": 2,
+   "health": 600,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 2,
+    "winRate": 0.25,
+    "ttk": 24.4,
+    "damageTakenPct": 98.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.28
+    },
+    {
+     "size": 2,
+     "win": 0.39
+    },
+    {
+     "size": 3,
+     "win": 0.45
+    },
+    {
+     "size": 4,
+     "win": 0.49
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.25,
+     "ttk": 24.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.25,
+     "ttk": 14.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.22,
+     "ttk": 6.7,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.03,
+     "ttk": 34.1,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 59.1,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "mistlands/SeekerBrute/0": {
+   "biome": "mistlands",
+   "foe": "SeekerBrute",
+   "name": "$enemy_seekerbrute",
+   "stars": 0,
+   "health": 1500,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 7,
+    "wins": 6,
+    "winRate": 0.857,
+    "ttk": 78.6,
+    "damageTakenPct": 85.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 8,
+     "runs": 8,
+     "fell": 0
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 98.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.857,
+     "ttk": 78.6,
+     "runs": 7,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.1,
+     "ttk": 223.0,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.08,
+     "ttk": 245.9,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "atgeir",
+   "worst": "stealth-knife"
+  },
+  "mistlands/SeekerBrute/1": {
+   "biome": "mistlands",
+   "foe": "SeekerBrute",
+   "name": "$enemy_seekerbrute",
+   "stars": 1,
+   "health": 3000,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.16,
+    "ttk": 111.4,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 0.88
+    },
+    {
+     "size": 2,
+     "wins": 2,
+     "runs": 8,
+     "fell": 1.62
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 8,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 1,
+     "runs": 8,
+     "fell": 3.62
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.16,
+     "ttk": 111.4,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.15,
+     "ttk": 157.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.02,
+     "ttk": 110.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 374.0,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 412.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "spear"
+  },
+  "mistlands/SeekerBrute/2": {
+   "biome": "mistlands",
+   "foe": "SeekerBrute",
+   "name": "$enemy_seekerbrute",
+   "stars": 2,
+   "health": 4500,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.01,
+    "ttk": 189.4,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.01
+    },
+    {
+     "size": 2,
+     "win": 0.02
+    },
+    {
+     "size": 3,
+     "win": 0.02
+    },
+    {
+     "size": 4,
+     "win": 0.02
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.02,
+     "ttk": 187.5,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.01,
+     "ttk": 268.3,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.01,
+     "ttk": 189.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 635.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 701.1,
+     "source": "model"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "spear"
+  },
+  "mistlands/Tick/0": {
+   "biome": "mistlands",
+   "foe": "Tick",
+   "name": "$enemy_tick",
+   "stars": 0,
+   "health": 50,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.0,
+    "damageTakenPct": 0.9
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 5.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 5.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 4.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 1.4,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mistlands/Tick/1": {
+   "biome": "mistlands",
+   "foe": "Tick",
+   "name": "$enemy_tick",
+   "stars": 1,
+   "health": 100,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.9,
+    "damageTakenPct": 2.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 7.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 7.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 7.3,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 2.1,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mistlands/Tick/2": {
+   "biome": "mistlands",
+   "foe": "Tick",
+   "name": "$enemy_tick",
+   "stars": 2,
+   "health": 150,
+   "loadout": "cal-mistlands-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 7.9,
+    "damageTakenPct": 6.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 7.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 6.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 7.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 2.1,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.92,
+     "ttk": 7.1,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "spear"
+  },
+  "mountain/Fenring/0": {
+   "biome": "mountain",
+   "foe": "Fenring",
+   "name": "$enemy_fenring",
+   "stars": 0,
+   "health": 300,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 10.1,
+    "damageTakenPct": 26.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 10.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 11.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 14.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 15.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 24.8,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Fenring/1": {
+   "biome": "mountain",
+   "foe": "Fenring",
+   "name": "$enemy_fenring",
+   "stars": 1,
+   "health": 600,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 6,
+    "winRate": 0.75,
+    "ttk": 14.7,
+    "damageTakenPct": 50.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.72
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.84,
+     "ttk": 8.1,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.75,
+     "ttk": 14.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.73,
+     "ttk": 13.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.71,
+     "ttk": 15.5,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.58,
+     "ttk": 15.7,
+     "source": "model"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "battleaxe"
+  },
+  "mountain/Fenring/2": {
+   "biome": "mountain",
+   "foe": "Fenring",
+   "name": "$enemy_fenring",
+   "stars": 2,
+   "health": 900,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 1,
+    "winRate": 0.125,
+    "ttk": 14.3,
+    "damageTakenPct": 92.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.17
+    },
+    {
+     "size": 2,
+     "win": 0.25
+    },
+    {
+     "size": 3,
+     "win": 0.3
+    },
+    {
+     "size": 4,
+     "win": 0.33
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.2,
+     "ttk": 7.9,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.125,
+     "ttk": 14.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.09,
+     "ttk": 15.1,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.09,
+     "ttk": 13.2,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "battleaxe"
+  },
+  "mountain/Fenring_Cultist/0": {
+   "biome": "mountain",
+   "foe": "Fenring_Cultist",
+   "name": "$enemy_fenringcultist",
+   "stars": 0,
+   "health": 200,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 8.2,
+    "damageTakenPct": 17.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 8.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 10.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 12.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 12.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 22.8,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Fenring_Cultist/1": {
+   "biome": "mountain",
+   "foe": "Fenring_Cultist",
+   "name": "$enemy_fenringcultist",
+   "stars": 1,
+   "health": 400,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 15.7,
+    "damageTakenPct": 69.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 15.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.9,
+     "ttk": 14.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.83,
+     "ttk": 21.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.82,
+     "ttk": 21.8,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.76,
+     "ttk": 25.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "battleaxe"
+  },
+  "mountain/Fenring_Cultist/2": {
+   "biome": "mountain",
+   "foe": "Fenring_Cultist",
+   "name": "$enemy_fenringcultist",
+   "stars": 2,
+   "health": 600,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 103.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.09,
+     "ttk": 19.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.03,
+     "ttk": 29.0,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.03,
+     "ttk": 29.9,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "battleaxe"
+  },
+  "mountain/StoneGolem/0": {
+   "biome": "mountain",
+   "foe": "StoneGolem",
+   "name": "$enemy_stonegolem",
+   "stars": 0,
+   "health": 800,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 7,
+    "wins": 6,
+    "winRate": 0.857,
+    "ttk": 108.6,
+    "damageTakenPct": 112.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 3,
+     "runs": 8,
+     "fell": 0.5
+    },
+    {
+     "size": 2,
+     "wins": 5,
+     "runs": 8,
+     "fell": 1
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.857,
+     "ttk": 108.6,
+     "runs": 7,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.429,
+     "ttk": 120.6,
+     "runs": 7,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 6,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 6,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/StoneGolem/1": {
+   "biome": "mountain",
+   "foe": "StoneGolem",
+   "name": "$enemy_stonegolem",
+   "stars": 1,
+   "health": 1600,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.01,
+    "ttk": 240.4,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 0,
+     "runs": 8,
+     "fell": 2
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 8,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 8,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "battleaxe": {
+     "win": 0.01,
+     "ttk": 416.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.01,
+     "ttk": 259.5,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 1355.2,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 2199.4,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.01,
+     "ttk": 240.4,
+     "source": "model"
+    }
+   },
+   "best": "battleaxe",
+   "worst": "sword"
+  },
+  "mountain/StoneGolem/2": {
+   "biome": "mountain",
+   "foe": "StoneGolem",
+   "name": "$enemy_stonegolem",
+   "stars": 2,
+   "health": 2400,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 408.8,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.0
+    },
+    {
+     "size": 2,
+     "win": 0.01
+    },
+    {
+     "size": 3,
+     "win": 0.01
+    },
+    {
+     "size": 4,
+     "win": 0.01
+    }
+   ],
+   "builds": {
+    "battleaxe": {
+     "win": 0.01,
+     "ttk": 708.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.01,
+     "ttk": 2303.9,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 3739.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.0,
+     "ttk": 441.2,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 408.8,
+     "source": "model"
+    }
+   },
+   "best": "battleaxe",
+   "worst": "sword"
+  },
+  "mountain/Ulv/0": {
+   "biome": "mountain",
+   "foe": "Ulv",
+   "name": "$enemy_ulv",
+   "stars": 0,
+   "health": 50,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 4.3,
+    "damageTakenPct": 2.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 4.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 4.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 4.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 3.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 7.5,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Ulv/1": {
+   "biome": "mountain",
+   "foe": "Ulv",
+   "name": "$enemy_ulv",
+   "stars": 1,
+   "health": 100,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 4.2,
+    "damageTakenPct": 2.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 4.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.96,
+     "ttk": 4.0,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 4.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 4.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.33,
+     "ttk": 7.6,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Ulv/2": {
+   "biome": "mountain",
+   "foe": "Ulv",
+   "name": "$enemy_ulv",
+   "stars": 2,
+   "health": 150,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 7,
+    "winRate": 0.875,
+    "ttk": 7.8,
+    "damageTakenPct": 49.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.83
+    }
+   ],
+   "builds": {
+    "spear": {
+     "win": 0.94,
+     "ttk": 8.6,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.89,
+     "ttk": 8.1,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.875,
+     "ttk": 7.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.875,
+     "ttk": 7.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.02,
+     "ttk": 13.8,
+     "source": "model"
+    }
+   },
+   "best": "spear",
+   "worst": "stealth-knife"
+  },
+  "mountain/Wolf/0": {
+   "biome": "mountain",
+   "foe": "Wolf",
+   "name": "$enemy_wolf",
+   "stars": 0,
+   "health": 80,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 4.5,
+    "damageTakenPct": 1.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 4.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 5.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 5.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 5.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 11.2,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Wolf/1": {
+   "biome": "mountain",
+   "foe": "Wolf",
+   "name": "$enemy_wolf",
+   "stars": 1,
+   "health": 160,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.7,
+    "damageTakenPct": 28.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 8.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 7.4,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.9,
+     "ttk": 7.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.72,
+     "ttk": 12.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "mountain/Wolf/2": {
+   "biome": "mountain",
+   "foe": "Wolf",
+   "name": "$enemy_wolf",
+   "stars": 2,
+   "health": 240,
+   "loadout": "cal-mountain-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 2,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 3,
+    "winRate": 0.375,
+    "ttk": 7.5,
+    "damageTakenPct": 72.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.39
+    },
+    {
+     "size": 2,
+     "win": 0.51
+    }
+   ],
+   "builds": {
+    "spear": {
+     "win": 0.85,
+     "ttk": 8.9,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.53,
+     "ttk": 9.7,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.5,
+     "ttk": 9.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.375,
+     "ttk": 7.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.09,
+     "ttk": 14.9,
+     "source": "model"
+    }
+   },
+   "best": "spear",
+   "worst": "stealth-knife"
+  },
+  "plains/BlobTar/0": {
+   "biome": "plains",
+   "foe": "BlobTar",
+   "name": "$enemy_blobtar",
+   "stars": 0,
+   "health": 100,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 5,
+    "winRate": 0.625,
+    "ttk": 20.7,
+    "damageTakenPct": 70.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.61
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 1.0,
+     "ttk": 15.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.625,
+     "ttk": 20.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.125,
+     "ttk": 35.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "mace",
+   "worst": "stealth-knife"
+  },
+  "plains/BlobTar/1": {
+   "biome": "plains",
+   "foe": "BlobTar",
+   "name": "$enemy_blobtar",
+   "stars": 1,
+   "health": 200,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 2,
+    "winRate": 0.25,
+    "ttk": 23.9,
+    "damageTakenPct": 101.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.28
+    },
+    {
+     "size": 2,
+     "win": 0.39
+    },
+    {
+     "size": 3,
+     "win": 0.45
+    },
+    {
+     "size": 4,
+     "win": 0.49
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.68,
+     "ttk": 11.9,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.25,
+     "ttk": 23.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.05,
+     "ttk": 124.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.05,
+     "ttk": 727.7,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.03,
+     "ttk": 143.1,
+     "source": "model"
+    }
+   },
+   "best": "mace",
+   "worst": "atgeir"
+  },
+  "plains/BlobTar/2": {
+   "biome": "plains",
+   "foe": "BlobTar",
+   "name": "$enemy_blobtar",
+   "stars": 2,
+   "health": 300,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 103.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.125,
+     "ttk": 0.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.07,
+     "ttk": 0.1,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.07,
+     "ttk": 0.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.04,
+     "ttk": 0.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "atgeir",
+   "worst": "sword"
+  },
+  "plains/Goblin/0": {
+   "biome": "plains",
+   "foe": "Goblin",
+   "name": "$enemy_goblin",
+   "stars": 0,
+   "health": 175,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.0,
+    "damageTakenPct": 2.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 6.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 6.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 3.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 1.6,
+     "runs": 5,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "plains/Goblin/1": {
+   "biome": "plains",
+   "foe": "Goblin",
+   "name": "$enemy_goblin",
+   "stars": 1,
+   "health": 350,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 8.6,
+    "damageTakenPct": 8.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 8.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 7.0,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 10.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 11.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 2.9,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "plains/Goblin/2": {
+   "biome": "plains",
+   "foe": "Goblin",
+   "name": "$enemy_goblin",
+   "stars": 2,
+   "health": 525,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 7,
+    "winRate": 0.875,
+    "ttk": 14.1,
+    "damageTakenPct": 32.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.83
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 10.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.98,
+     "ttk": 17.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 4.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.875,
+     "ttk": 14.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.67,
+     "ttk": 16.7,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "axe"
+  },
+  "plains/GoblinBrute/0": {
+   "biome": "plains",
+   "foe": "GoblinBrute",
+   "name": "$enemy_goblinbrute",
+   "stars": 0,
+   "health": 800,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 2,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 4,
+    "winRate": 0.5,
+    "ttk": 31.6,
+    "damageTakenPct": 92.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 3,
+     "runs": 8,
+     "fell": 0.62
+    },
+    {
+     "size": 2,
+     "wins": 5,
+     "runs": 8,
+     "fell": 0.75
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.5,
+     "ttk": 31.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.5,
+     "ttk": 37.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.25,
+     "ttk": 27.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "plains/GoblinBrute/1": {
+   "biome": "plains",
+   "foe": "GoblinBrute",
+   "name": "$enemy_goblinbrute",
+   "stars": 1,
+   "health": 1600,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.01,
+    "ttk": 60.5,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 6,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 0,
+     "runs": 8,
+     "fell": 2
+    },
+    {
+     "size": 3,
+     "wins": 1,
+     "runs": 8,
+     "fell": 2.75
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 5,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.02,
+     "ttk": 67.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.01,
+     "ttk": 173.6,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.01,
+     "ttk": 58.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 129.9,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.01,
+     "ttk": 60.5,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "sword"
+  },
+  "plains/GoblinBrute/2": {
+   "biome": "plains",
+   "foe": "GoblinBrute",
+   "name": "$enemy_goblinbrute",
+   "stars": 2,
+   "health": 2400,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 102.9,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.0
+    },
+    {
+     "size": 2,
+     "win": 0.01
+    },
+    {
+     "size": 3,
+     "win": 0.01
+    },
+    {
+     "size": 4,
+     "win": 0.01
+    }
+   ],
+   "builds": {
+    "axe": {
+     "win": 0.01,
+     "ttk": 295.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 220.8,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 114.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.0,
+     "ttk": 99.8,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 102.9,
+     "source": "model"
+    }
+   },
+   "best": "axe",
+   "worst": "sword"
+  },
+  "plains/GoblinShaman/0": {
+   "biome": "plains",
+   "foe": "GoblinShaman",
+   "name": "$enemy_goblinshaman",
+   "stars": 0,
+   "health": 100,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.2,
+    "damageTakenPct": 2.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 6.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 13.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.875,
+     "ttk": 18.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.875,
+     "ttk": 2.0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "plains/GoblinShaman/1": {
+   "biome": "plains",
+   "foe": "GoblinShaman",
+   "name": "$enemy_goblinshaman",
+   "stars": 1,
+   "health": 200,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 6.8,
+    "damageTakenPct": 11.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 6.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 7.8,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.3,
+     "ttk": 11.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.2,
+     "ttk": 2.5,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.07,
+     "ttk": 23.8,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "plains/GoblinShaman/2": {
+   "biome": "plains",
+   "foe": "GoblinShaman",
+   "name": "$enemy_goblinshaman",
+   "stars": 2,
+   "health": 300,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 6,
+    "winRate": 0.75,
+    "ttk": 12.0,
+    "damageTakenPct": 51.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.72
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.99,
+     "ttk": 11.0,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.75,
+     "ttk": 12.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.25,
+     "ttk": 12.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.06,
+     "ttk": 3.6,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.01,
+     "ttk": 33.4,
+     "source": "model"
+    }
+   },
+   "best": "mace",
+   "worst": "axe"
+  },
+  "plains/Lox/0": {
+   "biome": "plains",
+   "foe": "Lox",
+   "name": "$enemy_lox",
+   "stars": 0,
+   "health": 1000,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 7,
+    "winRate": 0.875,
+    "ttk": 57.4,
+    "damageTakenPct": 98.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 5,
+     "runs": 8,
+     "fell": 0.38
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 1.0,
+     "ttk": 41.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 33.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "sword": {
+     "win": 0.875,
+     "ttk": 57.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.5,
+     "ttk": 63.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "mace",
+   "worst": "stealth-knife"
+  },
+  "plains/Lox/1": {
+   "biome": "plains",
+   "foe": "Lox",
+   "name": "$enemy_lox",
+   "stars": 1,
+   "health": 2000,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.02,
+    "ttk": 92.9,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 0,
+     "runs": 8,
+     "fell": 2
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 8,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 8,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.22,
+     "ttk": 41.6,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.15,
+     "ttk": 68.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.02,
+     "ttk": 107.1,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.02,
+     "ttk": 92.9,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 109.7,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "stealth-knife"
+  },
+  "plains/Lox/2": {
+   "biome": "plains",
+   "foe": "Lox",
+   "name": "$enemy_lox",
+   "stars": 2,
+   "health": 3000,
+   "loadout": "cal-plains-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 157.9,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.0
+    },
+    {
+     "size": 2,
+     "win": 0.01
+    },
+    {
+     "size": 3,
+     "win": 0.01
+    },
+    {
+     "size": 4,
+     "win": 0.01
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.01,
+     "ttk": 70.8,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.01,
+     "ttk": 116.3,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 186.5,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.0,
+     "ttk": 182.1,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 157.9,
+     "source": "model"
+    }
+   },
+   "best": "atgeir",
+   "worst": "sword"
+  },
+  "swamp/Abomination/0": {
+   "biome": "swamp",
+   "foe": "Abomination",
+   "name": "$enemy_abomination",
+   "stars": 0,
+   "health": 800,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 55.1,
+    "damageTakenPct": 64.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 8,
+     "runs": 8,
+     "fell": 0
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 55.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 85.7,
+     "runs": 4,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 74.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.857,
+     "ttk": 115.0,
+     "runs": 7,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.14,
+     "ttk": 159.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.03,
+     "ttk": 283.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Abomination/1": {
+   "biome": "swamp",
+   "foe": "Abomination",
+   "name": "$enemy_abomination",
+   "stars": 1,
+   "health": 1600,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "fought",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.16,
+    "ttk": 94.1,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "wins": 0,
+     "runs": 8,
+     "fell": 1
+    },
+    {
+     "size": 2,
+     "wins": 1,
+     "runs": 8,
+     "fell": 1.75
+    },
+    {
+     "size": 3,
+     "wins": 0,
+     "runs": 8,
+     "fell": 3
+    },
+    {
+     "size": 4,
+     "wins": 0,
+     "runs": 8,
+     "fell": 4
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 0.16,
+     "ttk": 94.1,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.12,
+     "ttk": 118.9,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.04,
+     "ttk": 187.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.04,
+     "ttk": 196.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 421.9,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 267.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 475.8,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "spear"
+  },
+  "swamp/Abomination/2": {
+   "biome": "swamp",
+   "foe": "Abomination",
+   "name": "$enemy_abomination",
+   "stars": 2,
+   "health": 2400,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "model",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 0,
+    "wins": 0,
+    "winRate": 0.01,
+    "ttk": 160.1,
+    "damageTakenPct": null
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.01
+    },
+    {
+     "size": 2,
+     "win": 0.02
+    },
+    {
+     "size": 3,
+     "win": 0.02
+    },
+    {
+     "size": 4,
+     "win": 0.02
+    }
+   ],
+   "builds": {
+    "axe": {
+     "win": 0.01,
+     "ttk": 318.6,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.01,
+     "ttk": 202.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.01,
+     "ttk": 334.4,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.01,
+     "ttk": 717.3,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.01,
+     "ttk": 160.1,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.0,
+     "ttk": 454.4,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.0,
+     "ttk": 808.8,
+     "source": "model"
+    }
+   },
+   "best": "axe",
+   "worst": "spear"
+  },
+  "swamp/Blob/0": {
+   "biome": "swamp",
+   "foe": "Blob",
+   "name": "$enemy_blob",
+   "stars": 0,
+   "health": 50,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 7.5,
+    "damageTakenPct": 7.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 7.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 8.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 3.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 6.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 6.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 8.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 42.2,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Blob/1": {
+   "biome": "swamp",
+   "foe": "Blob",
+   "name": "$enemy_blob",
+   "stars": 1,
+   "health": 100,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 13.0,
+    "damageTakenPct": 54.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 13.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.99,
+     "ttk": 6.8,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.88,
+     "ttk": 14.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.84,
+     "ttk": 11.7,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.82,
+     "ttk": 11.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.82,
+     "ttk": 14.3,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.77,
+     "ttk": 62.9,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Blob/2": {
+   "biome": "swamp",
+   "foe": "Blob",
+   "name": "$enemy_blob",
+   "stars": 2,
+   "health": 150,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 17.7,
+    "damageTakenPct": 61.7
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 17.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 20.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.97,
+     "ttk": 9.4,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.65,
+     "ttk": 15.7,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.65,
+     "ttk": 16.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.6,
+     "ttk": 19.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.6,
+     "ttk": 87.2,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/BlobElite/0": {
+   "biome": "swamp",
+   "foe": "BlobElite",
+   "name": "$enemy_blobelite",
+   "stars": 0,
+   "health": 150,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 17.0,
+    "damageTakenPct": 59.0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 17.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 34.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 6.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 28.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 14.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 18.3,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.22,
+     "ttk": 35.7,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/BlobElite/1": {
+   "biome": "swamp",
+   "foe": "BlobElite",
+   "name": "$enemy_blobelite",
+   "stars": 1,
+   "health": 300,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 6,
+    "wins": 6,
+    "winRate": 1.0,
+    "ttk": 34.4,
+    "damageTakenPct": 100.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.93
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 34.4,
+     "runs": 6,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.8,
+     "ttk": 27.7,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.8,
+     "ttk": 13.0,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.78,
+     "ttk": 36.5,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.76,
+     "ttk": 54.6,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.74,
+     "ttk": 65.0,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.08,
+     "ttk": 73.4,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/BlobElite/2": {
+   "biome": "swamp",
+   "foe": "BlobElite",
+   "name": "$enemy_blobelite",
+   "stars": 2,
+   "health": 450,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 6,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 117.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.07
+    },
+    {
+     "size": 2,
+     "win": 0.11
+    },
+    {
+     "size": 3,
+     "win": 0.14
+    },
+    {
+     "size": 4,
+     "win": 0.16
+    }
+   ],
+   "builds": {
+    "atgeir": {
+     "win": 0.06,
+     "ttk": 38.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.06,
+     "ttk": 18.1,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.03,
+     "ttk": 90.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.03,
+     "ttk": 75.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.02,
+     "ttk": 101.8,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 6,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 6,
+     "source": "fought"
+    }
+   },
+   "best": "atgeir",
+   "worst": "battleaxe"
+  },
+  "swamp/Draugr/0": {
+   "biome": "swamp",
+   "foe": "Draugr",
+   "name": "$enemy_draugr",
+   "stars": 0,
+   "health": 100,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 8.0,
+    "damageTakenPct": 4.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 8.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 13.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 7.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 14.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 6.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 5.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 4.8,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Draugr/1": {
+   "biome": "swamp",
+   "foe": "Draugr",
+   "name": "$enemy_draugr",
+   "stars": 1,
+   "health": 200,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 10.7,
+    "damageTakenPct": 27.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 10.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.98,
+     "ttk": 8.2,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 3.9,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.95,
+     "ttk": 9.2,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.88,
+     "ttk": 11.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.88,
+     "ttk": 18.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.6,
+     "ttk": 18.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "axe"
+  },
+  "swamp/Draugr/2": {
+   "biome": "swamp",
+   "foe": "Draugr",
+   "name": "$enemy_draugr",
+   "stars": 2,
+   "health": 300,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 7,
+    "winRate": 0.875,
+    "ttk": 14.0,
+    "damageTakenPct": 45.3
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.83
+    }
+   ],
+   "builds": {
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 12.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 5.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.875,
+     "ttk": 14.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.51,
+     "ttk": 13.0,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.25,
+     "ttk": 15.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.25,
+     "ttk": 25.8,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.07,
+     "ttk": 25.3,
+     "source": "model"
+    }
+   },
+   "best": "battleaxe",
+   "worst": "axe"
+  },
+  "swamp/Draugr_Elite/0": {
+   "biome": "swamp",
+   "foe": "Draugr_Elite",
+   "name": "$enemy_draugrelite",
+   "stars": 0,
+   "health": 200,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 9.5,
+    "damageTakenPct": 9.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 9.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 8.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 8.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 15.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 7.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 7.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 10.9,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Draugr_Elite/1": {
+   "biome": "swamp",
+   "foe": "Draugr_Elite",
+   "name": "$enemy_draugrelite",
+   "stars": 1,
+   "health": 400,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 17.6,
+    "damageTakenPct": 35.8
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 17.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.99,
+     "ttk": 13.1,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.99,
+     "ttk": 19.7,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.98,
+     "ttk": 7.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.94,
+     "ttk": 15.1,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.93,
+     "ttk": 15.1,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.93,
+     "ttk": 14.5,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "mace"
+  },
+  "swamp/Draugr_Elite/2": {
+   "biome": "swamp",
+   "foe": "Draugr_Elite",
+   "name": "$enemy_draugrelite",
+   "stars": 2,
+   "health": 600,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 1,
+    "winRate": 0.125,
+    "ttk": 29.7,
+    "damageTakenPct": 103.1
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.17
+    },
+    {
+     "size": 2,
+     "win": 0.25
+    },
+    {
+     "size": 3,
+     "win": 0.3
+    },
+    {
+     "size": 4,
+     "win": 0.33
+    }
+   ],
+   "builds": {
+    "stealth-knife": {
+     "win": 0.26,
+     "ttk": 12.2,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.24,
+     "ttk": 33.2,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.125,
+     "ttk": 29.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.06,
+     "ttk": 25.5,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.06,
+     "ttk": 24.6,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.05,
+     "ttk": 25.5,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "stealth-knife",
+   "worst": "battleaxe"
+  },
+  "swamp/Leech/0": {
+   "biome": "swamp",
+   "foe": "Leech",
+   "name": "$enemy_leech",
+   "stars": 0,
+   "health": 60,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 3.4,
+    "damageTakenPct": 0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 3.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 4.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 4.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 3.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 3.5,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 4.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 31.9,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Leech/1": {
+   "biome": "swamp",
+   "foe": "Leech",
+   "name": "$enemy_leech",
+   "stars": 1,
+   "health": 120,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.4,
+    "damageTakenPct": 0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 5.2,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 7.5,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.96,
+     "ttk": 7.4,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 6.1,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 5.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 53.8,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Leech/2": {
+   "biome": "swamp",
+   "foe": "Leech",
+   "name": "$enemy_leech",
+   "stars": 2,
+   "health": 180,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 7.6,
+    "damageTakenPct": 0
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 7.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 8.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 0.96,
+     "ttk": 6.5,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.96,
+     "ttk": 9.3,
+     "source": "model"
+    },
+    "mace": {
+     "win": 0.96,
+     "ttk": 7.6,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.96,
+     "ttk": 7.2,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.96,
+     "ttk": 67.0,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Surtling/0": {
+   "biome": "swamp",
+   "foe": "Surtling",
+   "name": "$enemy_surtling",
+   "stars": 0,
+   "health": 20,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 5.7,
+    "damageTakenPct": 5.4
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 5.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 20.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 7.9,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 9.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 14.8,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 17.2,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 0.875,
+     "ttk": 1.7,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Surtling/1": {
+   "biome": "swamp",
+   "foe": "Surtling",
+   "name": "$enemy_surtling",
+   "stars": 1,
+   "health": 40,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 9.6,
+    "damageTakenPct": 29.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 9.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.93,
+     "ttk": 11.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.92,
+     "ttk": 11.7,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.81,
+     "ttk": 14.5,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.58,
+     "ttk": 23.3,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.53,
+     "ttk": 20.3,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.29,
+     "ttk": 3.5,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Surtling/2": {
+   "biome": "swamp",
+   "foe": "Surtling",
+   "name": "$enemy_surtling",
+   "stars": 2,
+   "health": 60,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 9.1,
+    "damageTakenPct": 35.5
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 9.1,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 0.76,
+     "ttk": 9.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.74,
+     "ttk": 9.5,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.53,
+     "ttk": 11.8,
+     "source": "model"
+    },
+    "battleaxe": {
+     "win": 0.5,
+     "ttk": 14.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 0.24,
+     "ttk": 19.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.13,
+     "ttk": 2.9,
+     "source": "model"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Wraith/0": {
+   "biome": "swamp",
+   "foe": "Wraith",
+   "name": "$enemy_wraith",
+   "stars": 0,
+   "health": 100,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 8,
+    "winRate": 1.0,
+    "ttk": 13.0,
+    "damageTakenPct": 13.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.94
+    }
+   ],
+   "builds": {
+    "sword": {
+     "win": 1.0,
+     "ttk": 13.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "axe": {
+     "win": 1.0,
+     "ttk": 14.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "mace": {
+     "win": 1.0,
+     "ttk": 11.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "spear": {
+     "win": 1.0,
+     "ttk": 38.4,
+     "runs": 8,
+     "source": "fought"
+    },
+    "atgeir": {
+     "win": 1.0,
+     "ttk": 10.7,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 1.0,
+     "ttk": 22.0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "stealth-knife": {
+     "win": 1.0,
+     "ttk": 33.9,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "sword",
+   "worst": "stealth-knife"
+  },
+  "swamp/Wraith/1": {
+   "biome": "swamp",
+   "foe": "Wraith",
+   "name": "$enemy_wraith",
+   "stars": 1,
+   "health": 200,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 1,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 6,
+    "winRate": 0.75,
+    "ttk": 30.6,
+    "damageTakenPct": 82.6
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.72
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.96,
+     "ttk": 27.1,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.93,
+     "ttk": 25.3,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.93,
+     "ttk": 35.9,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.83,
+     "ttk": 90.6,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.75,
+     "ttk": 30.6,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.52,
+     "ttk": 45.1,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.44,
+     "ttk": 60.4,
+     "source": "model"
+    }
+   },
+   "best": "mace",
+   "worst": "stealth-knife"
+  },
+  "swamp/Wraith/2": {
+   "biome": "swamp",
+   "foe": "Wraith",
+   "name": "$enemy_wraith",
+   "stars": 2,
+   "health": 300,
+   "loadout": "cal-swamp-sword",
+   "bot": "fighter",
+   "scenario": "calibration + model",
+   "source": "fought",
+   "playersNeeded": 0,
+   "playersNeededSource": "model",
+   "teamTried": 4,
+   "needWin": 0.5,
+   "solo": {
+    "runs": 8,
+    "wins": 0,
+    "winRate": 0.0,
+    "ttk": 0,
+    "damageTakenPct": 102.2
+   },
+   "teams": [
+    {
+     "size": 1,
+     "win": 0.06
+    },
+    {
+     "size": 2,
+     "win": 0.09
+    },
+    {
+     "size": 3,
+     "win": 0.11
+    },
+    {
+     "size": 4,
+     "win": 0.13
+    }
+   ],
+   "builds": {
+    "mace": {
+     "win": 0.42,
+     "ttk": 30.4,
+     "source": "model"
+    },
+    "atgeir": {
+     "win": 0.28,
+     "ttk": 28.4,
+     "source": "model"
+    },
+    "axe": {
+     "win": 0.28,
+     "ttk": 40.3,
+     "source": "model"
+    },
+    "spear": {
+     "win": 0.12,
+     "ttk": 101.8,
+     "source": "model"
+    },
+    "stealth-knife": {
+     "win": 0.03,
+     "ttk": 67.9,
+     "source": "model"
+    },
+    "sword": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    },
+    "battleaxe": {
+     "win": 0.0,
+     "ttk": 0,
+     "runs": 8,
+     "source": "fought"
+    }
+   },
+   "best": "mace",
+   "worst": "battleaxe"
+  }
+ }
+}

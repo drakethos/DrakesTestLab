@@ -1,0 +1,38 @@
+{
+  "name": "cal-mountain-spear-q1",
+  "tier": "mountain",
+  "build": "spear",
+  "meals": [
+    "SerpentStew",
+    "WolfMeatSkewer",
+    "Eyescream"
+  ],
+  "items": [
+    {
+      "prefab": "SpearWolfFang",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorWolfLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetDrake",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldSilver",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-mountain-spear"
+}

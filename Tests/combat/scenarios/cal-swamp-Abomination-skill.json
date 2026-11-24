@@ -1,0 +1,37 @@
+{
+  "name": "cal-swamp-Abomination-skill",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "swamp",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-swamp-sword"
+  },
+  "foes": {
+    "prefab": "Abomination",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-swamp-sword",
+      "bot": "twig",
+      "label": "swamp sword (twig)"
+    },
+    {
+      "loadout": "cal-swamp-sword",
+      "bot": "fighter",
+      "label": "swamp sword (fighter)"
+    },
+    {
+      "loadout": "cal-swamp-sword",
+      "bot": "veteran",
+      "label": "swamp sword (veteran)"
+    }
+  ],
+  "autoRuns": true
+}

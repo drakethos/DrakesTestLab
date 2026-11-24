@@ -1,0 +1,45 @@
+{
+  "name": "spot-03",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "timeScale": 3,
+  "autoRuns": false,
+  "gear": {
+    "loadout": "cal-swamp-atgeir-q3"
+  },
+  "foes": {
+    "prefab": "Draugr",
+    "stars": 2
+  },
+  "lanes": [
+    {
+      "loadout": "cal-swamp-atgeir-q3",
+      "foes": {
+        "prefab": "Draugr",
+        "stars": 2
+      },
+      "label": "cal-swamp-atgeir-q3 vs Draugr 2*"
+    },
+    {
+      "loadout": "cal-swamp-sword-q2",
+      "foes": {
+        "prefab": "Draugr_Elite",
+        "stars": 1
+      },
+      "label": "cal-swamp-sword-q2 vs Draugr_Elite 1*"
+    },
+    {
+      "loadout": "cal-swamp-mace-q3",
+      "foes": {
+        "prefab": "Abomination",
+        "stars": 1
+      },
+      "label": "cal-swamp-mace-q3 vs Abomination 1*"
+    }
+  ],
+  "variants": [
+    "vanilla"
+  ]
+}

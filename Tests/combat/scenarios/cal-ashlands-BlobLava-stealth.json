@@ -1,0 +1,21 @@
+{
+  "name": "cal-ashlands-BlobLava-stealth",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "rogue",
+  "seed": 1,
+  "biome": "ashlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-ashlands-stealth-knife"
+  },
+  "foes": {
+    "prefab": "BlobLava",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "opener": "sneak",
+  "autoRuns": true
+}

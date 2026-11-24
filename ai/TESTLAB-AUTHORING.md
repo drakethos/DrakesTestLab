@@ -318,3 +318,33 @@ Results: `BepInEx/config/DrakesTestLab/results/latest.html` (report with screens
 Players can record a test in game (F9 > Tests > Record) and save the current game as a case (F9 > Cases). Those files use the same
 steps and case fields as hand-written ones (`pieces`, `configs`, item `crafter` / `data`), so treat them as a first draft: rename
 tags, drop accidental steps, turn recorded checks into the ones the test is really about.
+
+## Combat tests (balance: Combat Lab)
+
+Suites check that a mod **works**. Combat scenarios measure **balance**: real fights, many times, with win rates, kill
+times and damage taken. Full reference: `docs/COMBAT.md` (wiki: Combat Lab, Combat Scenarios, Difficulty Database).
+
+- Files live in `BepInEx/config/DrakesTestLab/combat/`: `loadouts/<name>.json` (gear) and `scenarios/<name>.json` (the
+  fight). Shipped presets: `game-<biome>-mid` (a mid player of each biome), `cal-<biome>-<weapon>`, `bronze-*`, `iron-*`;
+  examples `example-*`, PvP presets `pvp-*`.
+- Loadout: `{ "name", "tier", "items": [ { "prefab", "quality", "count", "equip" } ], "meals": [3 food prefabs], "skills": { "Swords": 30 } }`.
+  No `skills` = every skill at the tier's level (`[Combat] TierSkills`).
+- Scenario, smallest: `{ "name": "x", "gear": { "loadout": "game-blackforest-mid" }, "foes": { "prefab": "Troll" } }`.
+  Common keys: `runs` (20), `timeout` (60), `bot` (`twig|trained|fighter|veteran|rogue`, default trained; `fighter` is
+  the realistic default for balance), `foes` (`prefab`, `stars` 0-2, `count`), `pvp` (`{ "loadout", "bot", "name": "Bjornita|Bjorn" }`),
+  `team` (`2`, or `{ "from": 1, "to": 4, "needWin": 0.5 }` = players needed), `calibrate` (horde size), `band`
+  (`winMin/winMax/ttkMin/ttkMax`: verdicts and exit code 1 when far off), `variants` (`"vanilla"` plus
+  `{ "name", "configOverrides": [ { "guid", "section", "key", "value" } ] }`), `playerScaling` (`auto|vanilla|off|N`),
+  `timeScale` (1-4), `lanes` (1-4, or a list of `{ "loadout", "bot", "foes", "label" }` for mixed builds), `attack`
+  (`primary|secondary|mix|mix:every3|mix:4s`), `food` (profile names), `screenshots` (`[{ "at", "name", "tab", "clean" }]`).
+- Raw-data switches (off = real Valheim): `fearless`, `aggro`, `noStagger` (`none|foes|gear|all`), `noKnockback`,
+  `foeDamage`, `gearDamage`.
+- Stalled and timed-out fights are missing data, not losses. A loadout that cannot equip voids the fight.
+- Comparing a mod with vanilla: run the scenario without the mod, copy `combat/results/latest.json` to
+  `combat/baselines/vanilla.json`, run with the mod: the report lines the cells up. Within one game, use `variants`.
+- Run: `-testlab-combat name1,name2|all|prefix*` (`-testlab-combat-runs N`, `-testlab-combat-check` to validate names
+  without fighting), `run_testlab_suites.py --combat ...`, or F9 > Combat. Results: `combat/results/latest.html|json`.
+- Trustworthy speed: `"lanes": 3, "timeScale": 3` is validated against 1x single fights (damage taken reads ~11% low).
+  Keep `playerScaling` at `auto` with lanes; `vanilla` would scale every lane's monster for all lanes.
+- Sample size: 8 fights tell easy from hard; 30+ fights are needed to see a 10-point change. The report only calls a
+  difference "clear" when the 95% intervals do not overlap.

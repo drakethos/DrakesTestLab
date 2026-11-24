@@ -1,0 +1,20 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Greydwarf_Elite-d-v-lanes3",
+  "runs": 12,
+  "timeout": 75,
+  "bot": "fighter",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "timeScale": 1,
+  "autoRuns": false,
+  "lanes": 3
+}

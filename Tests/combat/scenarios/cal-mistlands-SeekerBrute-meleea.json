@@ -1,0 +1,34 @@
+{
+  "name": "cal-mistlands-SeekerBrute-meleea",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mistlands",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mistlands-sword"
+  },
+  "foes": {
+    "prefab": "SeekerBrute",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mistlands-sword",
+      "label": "mistlands sword"
+    },
+    {
+      "loadout": "cal-mistlands-axe",
+      "label": "mistlands axe"
+    },
+    {
+      "loadout": "cal-mistlands-spear",
+      "label": "mistlands spear"
+    }
+  ],
+  "autoRuns": true
+}

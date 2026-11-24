@@ -1,0 +1,18 @@
+{
+  "name": "example-fast-lanes",
+  "description": "Three lanes (three fights side by side) at 3x game speed: the validated fast setup. Each lane is its own solo fight.",
+  "runs": 12,
+  "timeout": 120,
+  "bot": "fighter",
+  "timeScale": 3,
+  "lanes": 3,
+  "gear": {
+    "loadout": "bronze-SwordBronze-shield"
+  },
+  "foes": {
+    "prefab": "Greydwarf_Elite"
+  },
+  "variants": [
+    "vanilla"
+  ]
+}

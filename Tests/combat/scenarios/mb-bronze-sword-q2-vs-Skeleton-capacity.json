@@ -1,0 +1,29 @@
+{
+  "name": "mb-bronze-sword-q2-vs-Skeleton-capacity",
+  "runs": 3,
+  "timeout": 90,
+  "bot": "trained",
+  "seed": 1,
+  "gear": {
+    "loadout": "mb-bronze-sword-q2"
+  },
+  "foes": {
+    "prefab": "Skeleton",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "food": [
+    "balanced",
+    "health",
+    "stamina"
+  ],
+  "calibrate": {
+    "from": 1,
+    "to": 12,
+    "step": 1,
+    "stopBelow": 0.2,
+    "capacityAt": 0.5
+  }
+}

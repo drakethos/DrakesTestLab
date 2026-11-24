@@ -1,0 +1,26 @@
+{
+  "name": "cal-mountain-Fenring-meleeb",
+  "runs": 8,
+  "timeout": 150,
+  "bot": "fighter",
+  "seed": 1,
+  "biome": "mountain",
+  "timeScale": 3,
+  "gear": {
+    "loadout": "cal-mountain-battleaxe"
+  },
+  "foes": {
+    "prefab": "Fenring",
+    "stars": 0
+  },
+  "variants": [
+    "vanilla"
+  ],
+  "lanes": [
+    {
+      "loadout": "cal-mountain-battleaxe",
+      "label": "mountain battleaxe"
+    }
+  ],
+  "autoRuns": true
+}

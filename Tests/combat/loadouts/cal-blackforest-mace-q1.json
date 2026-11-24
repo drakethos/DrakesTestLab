@@ -1,0 +1,38 @@
+{
+  "name": "cal-blackforest-mace-q1",
+  "tier": "blackforest",
+  "build": "mace",
+  "meals": [
+    "DeerStew",
+    "MinceMeatSauce",
+    "QueensJam"
+  ],
+  "items": [
+    {
+      "prefab": "MaceBronze",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeChest",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ArmorBronzeLegs",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "HelmetBronze",
+      "quality": 1,
+      "equip": true
+    },
+    {
+      "prefab": "ShieldBronzeBuckler",
+      "quality": 1,
+      "equip": true
+    }
+  ],
+  "spotOf": "cal-blackforest-mace"
+}
