@@ -1,5 +1,12 @@
 # DrakesTestLab
 
+## Unreleased
+
+- **Linux: the mouse works in the F9 window right away.** The game re-locks the cursor every frame, and TestLab undid the lock
+  afterwards; on Linux each lock grabbed the pointer and pulled it to the screen centre, so the window could not be used until
+  the inventory had been opened once. While the window is open TestLab now frees the cursor the way the game's own menus do and
+  the game's lock is skipped.
+
 ## 0.8.0
 
 **Combat Lab: a balance simulator.** Real fights (the game's own AI, attacks, blocking, parries, staggers, food and
