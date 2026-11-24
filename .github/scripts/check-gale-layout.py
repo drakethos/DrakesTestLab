@@ -32,9 +32,16 @@ def main():
     names = [n for n in zipfile.ZipFile(zpath).namelist() if not n.endswith("/")]
     mapped = {n: map_file(n, pkg) for n in names if n not in ROOT_ONLY}
     base = f"BepInEx/plugins/{pkg}/"
-    want = [base + "DrakesTestLab.dll", "BepInEx/patchers/" + pkg + "/DrakesTestLab.Preload.dll", base + "Assets/Presets/templates/TestLab/_main.1.fwl2",
-            base + "Assets/Presets/templates/TestLab/_manifest.txt", base + "Assets/Presets/templates/MasterBjorn.fch"]
+    want = [base + "DrakesTestLab.dll", "BepInEx/patchers/" + pkg + "/DrakesTestLab.Preload.dll",
+            base + "Assets/Presets/templates/TestLab/_manifest.txt", base + "Assets/Presets/templates/MasterBjorn.fch",
+            base + "Assets/Presets/templates/combat/difficulty-db.json",
+            base + "Assets/Presets/templates/combat/loadouts/game-plains-mid.json",
+            base + "Assets/Presets/templates/combat/scenarios/example-troll-solo.json"]
     got = set(mapped.values())
+    # the world's save files carry a generation number (_main.<n>.fwl2) that changes with every bake
+    world = base + "Assets/Presets/templates/TestLab/"
+    if not any(g.startswith(world + "_main.") and g.endswith(".fwl2") for g in got):
+        want.append(world + "_main.<n>.fwl2")
     missing = [w for w in want if w not in got]
     flattened = [n for n, m in mapped.items() if "/" in n and m.count("/") < n.count("/") + 2 and
                  m == base + n.split("/")[-1] and not n.startswith("plugins/")]

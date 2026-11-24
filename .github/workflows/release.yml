@@ -147,6 +147,12 @@ jobs:
           mkdir -p "$PKG_DIR/plugins/Assets/Presets/templates/docs"
           cp ai/TESTLAB-AUTHORING.md ai/CHAT-PROMPT.md "$PKG_DIR/plugins/Assets/Presets/templates/docs/"
           test -f "$PKG_DIR/plugins/Assets/Presets/templates/TestLab/_manifest.txt" || { echo "::error::world template missing from package" >&2; exit 1; }
+          # Combat Lab data: the source lives in Tests/combat (the csproj links the same files into the build output)
+          COMBAT_DIR="$PKG_DIR/plugins/Assets/Presets/templates/combat"
+          mkdir -p "$COMBAT_DIR/loadouts" "$COMBAT_DIR/scenarios"
+          cp Tests/combat/loadouts/*.json "$COMBAT_DIR/loadouts/"
+          for prefix in cal game pvp example bronze iron; do cp Tests/combat/scenarios/${prefix}-*.json "$COMBAT_DIR/scenarios/"; done
+          test -f "$COMBAT_DIR/scenarios/example-troll-solo.json" || { echo "::error::combat scenarios missing from package" >&2; exit 1; }
 
           dotnet msbuild DrakesTestLab.csproj \
             /p:Version="$VERSION" \
