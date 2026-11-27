@@ -24,6 +24,7 @@ import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCRIPTS = os.path.normpath(os.path.join(HERE, "..", "..", "scripts"))
@@ -82,6 +83,29 @@ def print_results(r, started, latest):
             print(f"  suite {s}: {secs:.1f}s")
     print(f"\nDetails: {latest}")
 
+
+def steam_launch_blocker(since: float) -> str:
+    """Why Steam has not started the game, if its console log says it is waiting for the user ('' if not)."""
+    for d in (Path.home() / ".steam" / "steam" / "logs", Path.home() / ".steam" / "debian-installation" / "logs",
+              Path.home() / ".local" / "share" / "Steam" / "logs"):
+        log = d / "console_log.txt"
+        try:
+            if not log.exists() or log.stat().st_mtime < since - 5:
+                continue
+            with open(log, "rb") as f:
+                f.seek(max(0, log.stat().st_size - 65536))
+                tail = f.read().decode("utf-8", "replace").splitlines()
+        except OSError:
+            continue
+        # only Steam's latest word on the Valheim launch counts: an earlier wait it got past means nothing now
+        launch = [l for l in tail if "GameAction [AppID 892970" in l or "AppID 892970 state changed" in l]
+        if not launch or "waiting for user response to" not in launch[-1]:
+            continue
+        what = launch[-1].split("waiting for user response to", 1)[1].strip()
+        if "syncfailed" in what or "SynchronizingCloud" in what:
+            return "Steam Cloud sync failed and it is asking what to do (\"Cloud sync failed\" dialog)"
+        return f"it is waiting for an answer to {what}"
+    return ""
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -258,6 +282,11 @@ def main(argv=None):
             game = pids[0] if pids else None
         if not game:
             print("Valheim did not start within 2 minutes.")
+            blocker = steam_launch_blocker(started)
+            if blocker:
+                print(f"Steam is holding the launch: {blocker}. Answer that dialog in the Steam window (it may be behind "
+                      "other windows), then run again. A cloud-sync dialog usually means the game is still open on another "
+                      "computer under the same account.", flush=True)
             return finish(3)
 
         print(f"Valheim started (pid {game}); waiting for the tests...", flush=True)

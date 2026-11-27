@@ -29,8 +29,13 @@ internal static class Asserts
         }
         catch (Exception ex)
         {
+            // The check itself threw (often a UI mod building screens the lab does not expect). Say so, so it does not
+            // read like the mod under test failing, and keep the stack in the log.
             r.Passed = false;
-            r.Detail = ex.Message;
+            var frame = new System.Diagnostics.StackTrace(ex, false).GetFrame(0)?.GetMethod();
+            r.Detail = $"the '{kind}' check itself failed ({ex.GetType().Name}: {ex.Message}"
+                       + (frame != null ? $" in {frame.DeclaringType?.Name}.{frame.Name}" : "") + ")";
+            TestLabPlugin.Log?.LogWarning($"Check '{kind}' threw: {ex}");
         }
 
         return r;
@@ -360,6 +365,19 @@ internal static class Asserts
         return "";
     }
 
+    /// <summary>
+    /// Errors the unmodded game logs on its own that say nothing about the mods under test: noErrors skips them. Only
+    /// Unity's own log lines, matched exactly, so a real error from the game or any mod still fails the check.
+    /// </summary>
+    private static readonly string[] KnownVanillaNoise =
+    {
+        // the save-file scan at the main menu, about old auto-backup world folders (every relog, every patch)
+        "EnsureSorted called before all files have been added",
+    };
+
+    private static bool IsKnownVanillaNoise(string source, string message) =>
+        source == "Unity Log" && KnownVanillaNoise.Any(n => message.IndexOf(n, StringComparison.Ordinal) >= 0);
+
     private static string? FindLog(RunContext ctx, string source, string text, bool errorsOnly)
     {
         var capture = LogCapture.Instance;
@@ -369,6 +387,8 @@ internal static class Asserts
             if (e.Time < ctx.StartedAt)
                 continue;
             if (errorsOnly && (e.Level & (LogLevel.Error | LogLevel.Fatal)) == 0)
+                continue;
+            if (errorsOnly && IsKnownVanillaNoise(e.Source, e.Message))
                 continue;
             if (source.Length > 0 && !e.Source.Equals(source, StringComparison.OrdinalIgnoreCase))
                 continue;

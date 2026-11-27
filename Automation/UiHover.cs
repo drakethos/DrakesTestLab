@@ -241,8 +241,39 @@ internal static class UiHover
 
         if (where.Length > 0)
             all = all.Where(r => PathOf(r).IndexOf(where, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-        // a stable order: on-screen position, left to right then top to bottom
-        return all.Where(r => OnScreen(ScreenCenter(r))).OrderBy(r => PathOf(r)).ThenBy(r => ScreenCenter(r).x).ToList();
+        // Matches the pointer would really land on come first: with the inventory open, the hotbar's copy of an icon
+        // sits under the inventory grid, and hovering it showed the tooltip of whatever inventory slot covered it (or
+        // none). Then a stable order: path, then left to right.
+        return all.Where(r => OnScreen(ScreenCenter(r)))
+                  .OrderBy(r => IsOnTop(r) ? 0 : 1)
+                  .ThenBy(r => PathOf(r))
+                  .ThenBy(r => ScreenCenter(r).x)
+                  .ToList();
+    }
+
+    /// <summary>
+    /// True when the topmost UI raycast hit at the element's centre is the element itself, inside it, or inside its
+    /// parent (an icon's slot), i.e. nothing else is drawn over it there.
+    /// </summary>
+    private static bool IsOnTop(RectTransform rt)
+    {
+        try
+        {
+            var es = EventSystem.current;
+            if (es == null)
+                return true;
+            var results = new List<RaycastResult>();
+            es.RaycastAll(new PointerEventData(es) { position = ScreenCenter(rt) }, results);
+            if (results.Count == 0)
+                return true;
+            var top = results[0].gameObject.transform;
+            var slot = rt.parent != null ? rt.parent : rt.transform;
+            return top == rt.transform || top.IsChildOf(slot) || rt.transform.IsChildOf(top);
+        }
+        catch
+        {
+            return true;
+        }
     }
 
     private static Sprite? IconOf(string prefab)

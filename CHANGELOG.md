@@ -1,7 +1,12 @@
 # DrakesTestLab
 
-## Unreleased
+## 0.8.1
 
+- **`uiHover` prefers the copy of an icon that is really on top.** With the inventory open, an item in the first slots also shows on the hotbar underneath it, and `uiHover` used to pick that covered hotbar copy first. It now tries the matches the pointer would actually land on first, so the hover reaches the element the test named.
+- **Fix: UI checks no longer crash under UI mods.** `uiVisible` / `uiText` threw a NullReferenceException when a mod (SeneaL UI and others) had TextMeshPro objects with no text yet. Text is read null-safe, and when a check itself throws, the result now says the check failed (with where), not just "Object reference not set".
+- **Long `wait` steps keep the run alive.** The unattended runner stops a game whose log is silent for 60 s; waits over 20 s now log a line every 15 s, so an intentional hold (a look-around test) is not taken for a frozen game.
+- **Runner (Linux): says when Steam is holding the launch.** If the game does not start and Steam's log shows it waiting on a dialog (for example "Cloud sync failed" when the game is still open on another computer), the runner says so instead of only "did not start within 2 minutes".
+- **`noErrors` ignores vanilla's `EnsureSorted called before all files have been added`**, logged by the unmodded game's save-file scan of old world backups at every main menu. Only that exact Unity line; any other error still fails.
 - **Fix (Valheim 1.0.30+): reading an object's raw ZDO data came back empty.** `ZDOExtraData.GetData` now hands out `FastIterableKeyValues<int, T>` instead of `List<KeyValuePair<int, T>>`, and the lab cast the result as a list, so every read silently returned nothing. `peerMirror` copied none of your synced state to player 2 (no animations, held items or mod data) and the clipboard's raw-value view was empty. The lab now reads both shapes, so it works on older and current game versions.
 - **Linux: the mouse works in the F9 window right away.** The game re-locks the cursor every frame, and TestLab undid the lock
   afterwards; on Linux each lock grabbed the pointer and pulled it to the screen centre, so the window could not be used until

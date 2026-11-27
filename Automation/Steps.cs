@@ -780,24 +780,57 @@ internal static class Steps
         }
     }
 
+    /// <summary>
+    /// A long wait writes nothing, and the unattended runner stops a game whose log is silent for 60 s as frozen. Waits
+    /// over 20 s log a short line every 15 s, so an intentional hold (a look-around test) is not mistaken for a hang.
+    /// </summary>
+    private sealed class WaitHeartbeat
+    {
+        private readonly bool _on;
+        private float _next;
+
+        public WaitHeartbeat(float seconds)
+        {
+            _on = seconds > 20f;
+            _next = Time.realtimeSinceStartup + 15f;
+        }
+
+        public void Tick(float end)
+        {
+            if (!_on || Time.realtimeSinceStartup < _next)
+                return;
+            _next = Time.realtimeSinceStartup + 15f;
+            TestLabPlugin.Log?.LogInfo($"[wait] still waiting, {Mathf.Max(0f, end - Time.realtimeSinceStartup):0} s left");
+        }
+    }
+
     private static IEnumerator Wait(Dictionary<string, object?> step, RunContext ctx)
     {
         var until = step.Obj("until");
         if (until == null)
         {
-            var end = Time.realtimeSinceStartup + step.Num("seconds", step.Num("time", 1f));
+            var seconds = step.Num("seconds", step.Num("time", 1f));
+            var end = Time.realtimeSinceStartup + seconds;
+            var beat = new WaitHeartbeat(seconds);
             while (Time.realtimeSinceStartup < end && !ctx.TimedOut)
+            {
+                beat.Tick(end);
                 yield return null;
+            }
+
             yield break;
         }
 
-        var limit = Time.realtimeSinceStartup + step.Num("timeout", 10f);
+        var timeout = step.Num("timeout", 10f);
+        var limit = Time.realtimeSinceStartup + timeout;
+        var waitBeat = new WaitHeartbeat(timeout);
         var last = new AssertResult();
         while (Time.realtimeSinceStartup < limit && !ctx.TimedOut)
         {
             last = Asserts.Evaluate(until, ctx);
             if (last.Passed)
                 yield break;
+            waitBeat.Tick(limit);
             yield return null;
         }
 

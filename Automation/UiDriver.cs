@@ -26,7 +26,7 @@ internal static class UiDriver
         if (tmp != null && !string.IsNullOrEmpty(tmp.text))
             return tmp.text;
         var legacy = c.GetComponentInChildren<Text>();
-        return legacy != null ? legacy.text : "";
+        return legacy?.text ?? "";
     }
 
     /// <summary>Match order: exact object name, exact label, path ending, label contains.</summary>
@@ -54,8 +54,11 @@ internal static class UiDriver
         return byLabel ?? byPath ?? byContains;
     }
 
-    private static string Clean(string s)
+    private static string Clean(string? s)
     {
+        // UI mods (SeneaL UI and others) build TextMeshPro objects whose text is still null: treat that as empty.
+        if (string.IsNullOrEmpty(s))
+            return "";
         // strip rich-text tags like <color=...> so labels compare as shown
         var sb = new StringBuilder();
         var inTag = false;
@@ -186,7 +189,7 @@ internal static class UiDriver
         var q = name.Trim();
         foreach (var t in UnityEngine.Object.FindObjectsOfType<TMP_Text>())
         {
-            if (t != null && t.gameObject.activeInHierarchy && string.Equals(t.text.Trim(), q, StringComparison.OrdinalIgnoreCase))
+            if (t != null && t.gameObject.activeInHierarchy && string.Equals((t.text ?? "").Trim(), q, StringComparison.OrdinalIgnoreCase))
                 return true;
         }
 
@@ -212,7 +215,7 @@ internal static class UiDriver
                 continue;
             if (t.name.Equals(q, StringComparison.OrdinalIgnoreCase) || PathOf(t.transform).EndsWith(q, StringComparison.OrdinalIgnoreCase))
                 return t;
-            if (contains == null && t.text.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (contains == null && (t.text ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
                 contains = t;
         }
 
