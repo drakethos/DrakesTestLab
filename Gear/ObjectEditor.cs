@@ -62,14 +62,49 @@ internal static class ZdoRaw
         var args = new object?[GetDataMethod.GetParameters().Length];
         args[0] = id;
         GetDataMethod.Invoke(null, args);
-        d.Floats = args[1] as List<KeyValuePair<int, float>>;
-        d.Vecs = args[2] as List<KeyValuePair<int, Vector3>>;
-        d.Quats = args[3] as List<KeyValuePair<int, Quaternion>>;
-        d.Ints = args[4] as List<KeyValuePair<int, int>>;
-        d.Longs = args[5] as List<KeyValuePair<int, long>>;
-        d.Strings = args[6] as List<KeyValuePair<int, string>>;
-        d.Bytes = args.Length > 7 ? args[7] as List<KeyValuePair<int, byte[]>> : null;
+        d.Floats = Pairs<float>(args[1]);
+        d.Vecs = Pairs<Vector3>(args[2]);
+        d.Quats = Pairs<Quaternion>(args[3]);
+        d.Ints = Pairs<int>(args[4]);
+        d.Longs = Pairs<long>(args[5]);
+        d.Strings = Pairs<string>(args[6]);
+        d.Bytes = args.Length > 7 ? Pairs<byte[]>(args[7]) : null;
         return d;
+    }
+
+    /// <summary>
+    /// One GetData out value as a list. Before Valheim 1.0.30 it is a List&lt;KeyValuePair&lt;int, T&gt;&gt;; from 1.0.30 it is a
+    /// FastIterableKeyValues&lt;int, T&gt; struct (assembly_utils) with Count and an indexer returning the pair. A plain
+    /// "as List" cast silently gave null there, so every ZDO read (peerMirror, the clipboard's raw view) came back empty.
+    /// </summary>
+    private static List<KeyValuePair<int, T>>? Pairs<T>(object? value)
+    {
+        switch (value)
+        {
+            case null:
+                return null;
+            case List<KeyValuePair<int, T>> list:
+                return list;
+            case IEnumerable<KeyValuePair<int, T>> seq:
+                return new List<KeyValuePair<int, T>>(seq);
+        }
+
+        var type = value.GetType();
+        var count = type.GetProperty("Count");
+        var item = type.GetProperty("Item", new[] { typeof(int) });
+        if (count == null || item == null)
+            return null;
+        var n = (int)count.GetValue(value);
+        var result = new List<KeyValuePair<int, T>>(n);
+        var index = new object[1];
+        for (var i = 0; i < n; i++)
+        {
+            index[0] = i;
+            if (item.GetValue(value, index) is KeyValuePair<int, T> pair)
+                result.Add(pair);
+        }
+
+        return result;
     }
 
     /// <summary>Removes an int and a float value under this key (ZDOExtraData.RemoveInt / RemoveFloat).</summary>

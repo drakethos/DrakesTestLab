@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Fix (Valheim 1.0.30+): reading an object's raw ZDO data came back empty.** `ZDOExtraData.GetData` now hands out `FastIterableKeyValues<int, T>` instead of `List<KeyValuePair<int, T>>`, and the lab cast the result as a list, so every read silently returned nothing. `peerMirror` copied none of your synced state to player 2 (no animations, held items or mod data) and the clipboard's raw-value view was empty. The lab now reads both shapes, so it works on older and current game versions.
 - **Linux: the mouse works in the F9 window right away.** The game re-locks the cursor every frame, and TestLab undid the lock
   afterwards; on Linux each lock grabbed the pointer and pulled it to the screen centre, so the window could not be used until
   the inventory had been opened once. While the window is open TestLab now frees the cursor the way the game's own menus do and
